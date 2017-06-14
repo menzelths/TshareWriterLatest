@@ -277,14 +277,17 @@ $(function() {
 			//druckansicht=true;
 			
 			// neu: alle svg-teile sammeln und dann in neuem fenster darstellen
-			
+		
+             var js="PGhlYWQ+PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZlbnQudGFyZ2V0O3ZhciB6YWVobGVyPTA7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCd2aXNpYmxlJyk7ICBicmVhazt9emFlaGxlcisrO31pZiAoemFlaGxlcj09MTApe2ZvciAodmFyIGk9MDtpPDEwO2krKyl7dmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCkge2VsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywnaGlkZGVuJyk7ICB9IH0gZm9yICh2YXIgaT0wO2k8MTA7aSsrKXsgdmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCYmZWxlbWVudC5nZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknKT09J2hpZGRlbicpeyBlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTticmVhazsgfX19fTwvc2NyaXB0PjwvaGVhZD4=";
+        
 			var code="";
 			$(".zeichenflaeche").each(function(){
-				code+=$(this).html()+"\n";
+				//code+=$(this).html()+"\n";
+                code+="<div class='zeichenflaeche' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
 			});
 			var w=window.open();
 			w.document.open();
-			w.document.write("<!DOCTYPE html><html>"+code+"</html>");
+			w.document.write("<!DOCTYPE html>"+window.atob(js)+"<html>"+code+"</html>");
 			w.document.close();
 			//window.open("data:text/html,<!DOCTYPE html><html>"+code+"</html>");
 			

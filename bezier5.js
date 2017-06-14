@@ -278,6 +278,7 @@ var QreatorBezier = new function() {
 			event.preventDefault();
 			daten = [];
 			gedrueckt = true;
+            berechnung=false;
 			touch = true;
 			maus = false;
 			// $("#info").html("touchstart");
@@ -303,6 +304,7 @@ var QreatorBezier = new function() {
 			event.preventDefault();
 			daten = [];
 			gedrueckt = true;
+            berechnung=false;
 			maus = true;
 			touch = false;
 			// $("#info").html("onmousedown");
@@ -489,7 +491,7 @@ var QreatorBezier = new function() {
 			var text = $("html").html();
 			window.open("data:text/csv," + text);
 		});
-		$("#farben").on("input",function(event) {
+		$("#farben").change(function(event) {
 			event.preventDefault();
 			farbe = $(this).val();;
 			//farbwahl = parseInt($(this).attr("nr"));
@@ -505,6 +507,7 @@ var QreatorBezier = new function() {
 			zeichenbreite = dicken[stiftdicke];
 			//$("#farben").css("background-color","'"+farbe+"'");
 			// zeichenbreite = stiftdicke;
+            $("#stift").focus();
 			updateAuswahl();
 			
 			
@@ -524,6 +527,7 @@ var QreatorBezier = new function() {
 			// $(".dicke").removeClass("aktiv");
 			// $(this).addClass("aktiv");
 			updateAuswahl();
+            
 		});
 		$(".layer").click(function(event) {
 			event.preventDefault();
@@ -1358,7 +1362,9 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 			zeichne(x, y);
 
 		}
+            if (berechnung===true){
 		zeichneOderRadiere();
+            }
 		}
 	}
 
@@ -1773,9 +1779,11 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 			var y = e.pageY - c.offsetTop - $("#rahmen")[0].offsetTop;
 			zeichne(x, y);
 		}
-		zeichneOderRadiere();
+		if (berechnung===true) {
+            zeichneOderRadiere();
 		}
 	}
+    }
 
 	function kleinsterAbstand(a, b, c) {
 		if (b.x === c.x) {
