@@ -12,6 +12,7 @@ $(function() {
 	var aktuellerDateiname="";
 	var aktuellesBild="";
 	var zeichenbreite=0,zeichenhoehe=0,hochkant=false;
+    var knopfJS="<button class='loeschen'>Darüber liegende Zeichenfläche löschen</button><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button><button class='markdownEinfuegen'>Neuer Textabschnitt</button><button class='bildEinfuegen'>Neues Bild</button>";
 	//$("body").html("<button id='druckansicht'>Druckansicht</button><button id='speichern'>Speichern</button><br><button class='neueZeichenflaeche' >Neue Zeichenfläche</button>");
 	//QreatorBezier.init("#zeichnen");
 	
@@ -323,11 +324,25 @@ $(function() {
 			$("#zeichnung").removeAttr("id");
 			bearbeitungAn=false;
 		}
-		$(this).next().after("<div class='zeichnung' id='zeichnung'></div><button class='loeschen'>Darüber liegende Zeichenfläche löschen</button><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button>");
+		$(this).next().next().next().after("<div class='zeichnung' id='zeichnung'></div>"+knopfJS); // wo erscheint der neue Abschnitt
 		bearbeitungAn=true;
 		breite=breiteStandard;
 		hoehe=hoeheStandard;
 		QreatorBezier.init("#zeichnung",breiteStandard,hoeheStandard,"#menu", true); // menu: id der fläche, wo das menü erscheint, true, dass es horizontal ist
+		
+	
+	});
+    
+    $(document).on("click",".markdownEinfuegen",function(){
+		if (bearbeitungAn==true){
+			QreatorBezier.showSVG("zeichenflaeche");
+			$("#zeichnung").removeAttr("id");
+			bearbeitungAn=false;
+		}
+		$(this).next().after("<div class='markdown' id='markdown'></div>"+knopfJS); // wo erscheint der neue Abschnitt
+		Textabschnitt.init("#markdown","#menu");
+		
+		
 		
 	
 	});
@@ -337,7 +352,7 @@ $(function() {
 			$("#zeichnung").removeAttr("id");
 			bearbeitungAn=false;
 		}
-		$(this).after("<div id='einsetzen'></div>");
+		$(this).next().next().after("<div id='einsetzen'></div>"); // next=textabschnitt
 		$("body").append("<div class='transparent'></div>");
 		$(".transparent").append("<div class='fenster'><input id='pdfInput' type='file' accept='application/pdf' required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
 		//$(".transparent").append("<div class='fenster'><input id='pdfInput' type='file'  required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
@@ -463,7 +478,7 @@ $(function() {
 				    		//bearbeitungAn=true;
 				    		//QreatorBezier.init("#zeichnung",breite,hoehe,"#menu", true); // menu: id der fläche, wo das menü erscheint, true, dass es horizontal ist
 				            that.zaehler++;
-				            QreatorBezier.insertImgAsSVG(this,breite,hoehe,"einsetzen"+that2.seitennummer,"<button class='loeschen'>Darüber liegende Zeichenfläche löschen</button><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button>");
+				            QreatorBezier.insertImgAsSVG(this,breite,hoehe,"einsetzen"+that2.seitennummer,knopfJS);
 				            console.log("Zähler "+that.zaehler+" Seitennummer: "+ that2.seitennummer);
 				            if (that.zaehler==numPages){ // marker entfernene
 				            	$(".einsetzen").remove();
@@ -543,7 +558,7 @@ $(function() {
 	        //console.log($(container).html());
 	        $(container).find(".zeichenflaeche").each(function(){
 	        	$("#content").append("<div class='zeichenflaeche'>"+$(this).html()+"</div>");
-	        	$("#content").append("<button class='loeschen'>Darüber liegende Zeichenfläche löschen</button><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button>");
+	        	$("#content").append(knopfJS);
 	        	//console.log($(this).html());
 	        });
 	        /*
@@ -896,6 +911,9 @@ $(document).on("change",".fenster .parameter",function(){
 		$(this).prev().remove(); //zeichenflaeche
 		$(this).next().remove(); //neu-knopf
 		$(this).next().remove(); // pdf einfügen
+            
+            $(this).next().remove(); // Textabschnitt einfügen
+            $(this).next().remove(); // Bild einfügen
 		$(this).remove(); // knopf selber
 		}
 	});
