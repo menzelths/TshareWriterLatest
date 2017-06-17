@@ -9,6 +9,7 @@ $(function() {
 	var breite=998,hoehe=701; //701
 	var breiteStandard=998, hoeheStandard=701;
 	bearbeitungAn=false;
+    var bearbeitungsTyp="";
 	var aktuellerDateiname="";
 	var aktuellesBild="";
 	var zeichenbreite=0,zeichenhoehe=0,hochkant=false;
@@ -210,11 +211,7 @@ $(function() {
 	}
 	
 	$("#speichern").click(function(){
-		if (bearbeitungAn==true){
-			QreatorBezier.showSVG("zeichenflaeche");
-			$("#zeichnung").removeAttr("id");
-			bearbeitungAn=false;
-		}
+		raeumeAuf();
 		
 		$("body").append("<div class='transparent'></div>");
 		var platzhalter=aktuellerDateiname;
@@ -240,9 +237,9 @@ $(function() {
 	    		dateiname="Notiz";
 	    	}
             
-           // var js="<head><script>function nextLayer(evt){var a =event.target;var zaehler=0;for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){element.setAttribute('visibility','visible');  break;}zaehler++;}if (zaehler==10){for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null) {element.setAttribute('visibility','hidden');  } } for (var i=0;i<10;i++){ var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){ element.setAttribute('visibility','visible');break; }}}}</script></head>";
+           // var js="<script>function nextLayer(evt){var a =event.target;var zaehler=0;for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){element.setAttribute('visibility','visible');  break;}zaehler++;}if (zaehler==10){for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null) {element.setAttribute('visibility','hidden');  } } for (var i=0;i<10;i++){ var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){ element.setAttribute('visibility','visible');break; }}}}</script>";
             
-            var js="PGhlYWQ+PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZlbnQudGFyZ2V0O3ZhciB6YWVobGVyPTA7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCd2aXNpYmxlJyk7ICBicmVhazt9emFlaGxlcisrO31pZiAoemFlaGxlcj09MTApe2ZvciAodmFyIGk9MDtpPDEwO2krKyl7dmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCkge2VsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywnaGlkZGVuJyk7ICB9IH0gZm9yICh2YXIgaT0wO2k8MTA7aSsrKXsgdmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCYmZWxlbWVudC5nZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknKT09J2hpZGRlbicpeyBlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTticmVhazsgfX19fTwvc2NyaXB0PjwvaGVhZD4=";
+            var js="PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZlbnQudGFyZ2V0O3ZhciB6YWVobGVyPTA7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCd2aXNpYmxlJyk7ICBicmVhazt9emFlaGxlcisrO31pZiAoemFlaGxlcj09MTApe2ZvciAodmFyIGk9MDtpPDEwO2krKyl7dmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCkge2VsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywnaGlkZGVuJyk7ICB9IH0gZm9yICh2YXIgaT0wO2k8MTA7aSsrKXsgdmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCYmZWxlbWVudC5nZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknKT09J2hpZGRlbicpeyBlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTticmVhazsgfX19fTwvc2NyaXB0Pg==";
             
         
 	    	aktuellerDateiname=dateiname;
@@ -253,10 +250,17 @@ $(function() {
 			saveAs(blob,dateiname+"_Editor_"+anhang+".html");
 	    	} else {
 			var code="";
-			$(".zeichenflaeche").each(function(){
-				code+="<div class='zeichenflaeche' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
+			$(".tshareElement").each(function(){
+				//code+=$(this).html()+"\n";
+                if ($(this).hasClass("zeichenflaeche")){
+                code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
+                } else if ($(this).hasClass("markdown")){
+                    code+="<div class='markdown tshareElement'>"+$(this).html()+"</div>\n";
+                } else if ($(this).hasClass("datei")){
+                    code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
+                }
 			});
-			var blob = new Blob(["<!DOCTYPE html>"+window.atob(js)+"<html>"+code+"</html>"], {type: "text/html;charset=utf-8"});
+			var blob = new Blob(["<!DOCTYPE html><head>"+window.atob(js)+"<style>"+$("#katexStyle").text()+"</style><html>"+code+"</html>"], {type: "text/html;charset=utf-8"});
 			saveAs(blob, dateiname+"_"+anhang+".html");
 	    	}
 		
@@ -268,27 +272,29 @@ $(function() {
 	});
 	$("#druckansicht").click(function(){
 	
-			if (bearbeitungAn==true){
-				QreatorBezier.showSVG("zeichenflaeche");
-				$("#zeichnung").removeAttr("id");
-				bearbeitungAn=false;
-			}
+			raeumeAuf();
 			//$(".loeschen").hide();
 			//$(".neueZeichenflaeche").hide();
 			//druckansicht=true;
 			
 			// neu: alle svg-teile sammeln und dann in neuem fenster darstellen
 		
-             var js="PGhlYWQ+PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZlbnQudGFyZ2V0O3ZhciB6YWVobGVyPTA7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCd2aXNpYmxlJyk7ICBicmVhazt9emFlaGxlcisrO31pZiAoemFlaGxlcj09MTApe2ZvciAodmFyIGk9MDtpPDEwO2krKyl7dmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCkge2VsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywnaGlkZGVuJyk7ICB9IH0gZm9yICh2YXIgaT0wO2k8MTA7aSsrKXsgdmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCYmZWxlbWVudC5nZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknKT09J2hpZGRlbicpeyBlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTticmVhazsgfX19fTwvc2NyaXB0PjwvaGVhZD4=";
+             var js="PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZlbnQudGFyZ2V0O3ZhciB6YWVobGVyPTA7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCd2aXNpYmxlJyk7ICBicmVhazt9emFlaGxlcisrO31pZiAoemFlaGxlcj09MTApe2ZvciAodmFyIGk9MDtpPDEwO2krKyl7dmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCkge2VsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywnaGlkZGVuJyk7ICB9IH0gZm9yICh2YXIgaT0wO2k8MTA7aSsrKXsgdmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCYmZWxlbWVudC5nZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknKT09J2hpZGRlbicpeyBlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTticmVhazsgfX19fTwvc2NyaXB0Pg==";
         
 			var code="";
-			$(".zeichenflaeche").each(function(){
+			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
+                if ($(this).hasClass("zeichenflaeche")){
                 code+="<div class='zeichenflaeche' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
+                } else if ($(this).hasClass("markdown")){
+                    code+="<div class='markdown'>"+$(this).html()+"</div>\n";
+                } else if ($(this).hasClass("datei")){
+                    code+="<div class='datei'>"+$(this).html()+"</div>\n";
+                }
 			});
 			var w=window.open();
 			w.document.open();
-			w.document.write("<!DOCTYPE html>"+window.atob(js)+"<html>"+code+"</html>");
+			w.document.write("<!DOCTYPE html><head>"+window.atob(js)+"<style>"+$("#katexStyle").text()+"</style></head><html>"+code+"</html>");
 			w.document.close();
 			//window.open("data:text/html,<!DOCTYPE html><html>"+code+"</html>");
 			
@@ -319,13 +325,10 @@ $(function() {
 	});
 	
 	$(document).on("click",".neueZeichenflaeche",function(){
-		if (bearbeitungAn==true){
-			QreatorBezier.showSVG("zeichenflaeche");
-			$("#zeichnung").removeAttr("id");
-			bearbeitungAn=false;
-		}
-		$(this).next().next().next().after("<div class='zeichnung' id='zeichnung'></div>"+knopfJS); // wo erscheint der neue Abschnitt
+		raeumeAuf();
+		$(this).next().next().next().after("<div class='zeichnung tshareElement' id='zeichnung'></div>"+knopfJS); // wo erscheint der neue Abschnitt
 		bearbeitungAn=true;
+        bearbeitungsTyp="zeichenflaeche";
 		breite=breiteStandard;
 		hoehe=hoeheStandard;
 		QreatorBezier.init("#zeichnung",breiteStandard,hoeheStandard,"#menu", true); // menu: id der fläche, wo das menü erscheint, true, dass es horizontal ist
@@ -334,24 +337,73 @@ $(function() {
 	});
     
     $(document).on("click",".markdownEinfuegen",function(){
-		if (bearbeitungAn==true){
-			QreatorBezier.showSVG("zeichenflaeche");
-			$("#zeichnung").removeAttr("id");
-			bearbeitungAn=false;
-		}
-		$(this).next().after("<div class='markdown' id='markdown'></div>"+knopfJS); // wo erscheint der neue Abschnitt
+		raeumeAuf();
+		$(this).next().after("<div class='markdown tshareElement' id='markdown'></div>"+knopfJS); // wo erscheint der neue Abschnitt
+        
+        bearbeitungAn=true;
+        bearbeitungsTyp="markdown";
 		Textabschnitt.init("#markdown","#menu");
 		
 		
 		
 	
 	});
+    
+    $(document).on("click",".bildEinfuegen",function(){
+		raeumeAuf();
+		$(this).after("<div id='einsetzen'></div>"); // direkt nach Bild einfügen
+		$("body").append("<div class='transparent'></div>");
+		$(".transparent").append("<div class='fenster'><input id='bildInput' type='file' required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
+		//$(".transparent").append("<div class='fenster'><input id='pdfInput' type='file'  required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
+		
+		$("#bildInput").trigger("click");
+		
+		/*
+		
+		$(this).after("<div class='zeichnung' id='zeichnung'></div><button class='loeschen'>Darüber liegende Zeichenfläche löschen</button><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button>");
+		bearbeitungAn=true;
+		QreatorBezier.init("#zeichnung",breite,hoehe,"#menu", true); // menu: id der fläche, wo das menü erscheint, true, dass es horizontal ist
+		*/
+	
+	});
+	
+	
+	$(document).on("change","#bildInput",function(){
+		var fileList = $("#bildInput")[0].files;
+	    var file = fileList[0];
+	    
+
+	    var fileReader = new FileReader();
+	    fileReader.onload = function(e) {
+            $("#bildInput").hide();
+	    	    $("#abbrechen").hide().after("<div id='ladeInfo'>Bitte warten ...</div>");
+            var inhalt64=window.btoa(unescape(encodeURIComponent(e.target.result)));
+            if (file.type.split("/")[0]=="image"){
+                $("#einsetzen").before("<div class='datei tshareElement'><img id='bildNeu' ></img></div>"+knopfJS);
+                $("#bildNeu")[0].src=e.target.result;
+                $("#bildNeu").removeAttr("id");
+            } else {
+                /*$("#einsetzen").before("<div class='datei tshareElement'>"+file.name+"<button class='downloadFile' data='"+inhalt64+"' datatype='"+file.type+"' filename='"+file.name+"'>Download</button></div>"+knopfJS);*/
+            }
+            $(".transparent").remove();
+            $("#einsetzen").remove();
+        }
+	    fileReader.readAsDataURL(file);
+        
+	});
+    
+    
+    
+    $(document).on("click",".downloadFile",function(){
+        var text=$(this).attr("data");
+       
+        var ab=Base64Binary.decodeArrayBuffer(text);
+        var blob=new Blob([ab],{type:$(this).attr("datatype")}); 
+        saveAs([ab], $(this).attr("filename"));
+    });
+    
 	$(document).on("click",".pdf",function(){
-		if (bearbeitungAn==true){
-			QreatorBezier.showSVG("zeichenflaeche");
-			$("#zeichnung").removeAttr("id");
-			bearbeitungAn=false;
-		}
+		raeumeAuf();
 		$(this).next().next().after("<div id='einsetzen'></div>"); // next=textabschnitt
 		$("body").append("<div class='transparent'></div>");
 		$(".transparent").append("<div class='fenster'><input id='pdfInput' type='file' accept='application/pdf' required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
@@ -521,18 +573,30 @@ $(function() {
 	    }
 	    fileReader.readAsDataURL(file);
 	});
+    
+    function raeumeAuf(){
+        if (bearbeitungAn==true){
+            if (bearbeitungsTyp=="zeichenflaeche"){
+			 QreatorBezier.showSVG("zeichenflaeche tshareElement");
+			 bearbeitungAn=false;
+			 $("#zeichnung").removeAttr("id");
+            } else if (bearbeitungsTyp=="markdown"){
+                Textabschnitt.zeigeMarkdown("#markdownTable");
+                bearbeitungAn=false;
+                $("#markdown").removeAttr("id");
+                
+            }
+		 }
+    }
 	
 	//QreatorBezier.loadSVG('<svg width="800" height="600" id="svgbild"><g fill="none" stroke-linecap="round" id="global"><g id="layer_0"><path d=" M250,492 c15.8,0 29.2,-14.8 40,-24 c9.3,-7.9 18.2,-16.4 28,-24 c24.3,-18.7 68.3,-47.4 92,-65 c17.7,-13.1 34.4,-27.6 52,-41 c35.3,-26.8 65.7,-45.2 97,-76 c15.5,-15.2 19.9,-21.2 25,-39 c1.6,-5.7 1.6,-10.1 -4,-12 M346,143 c15.1,0 32.2,-1.8 47,1 c14.2,2.7 62.7,19.5 74,24 c30.4,12 61.9,21.5 74,55 c1.6,4.6 16.6,68.6 17,70 c2.1,9.6 2.8,19.6 6,29 c2.5,7.3 15.9,32 22,40 c13.5,17.6 21.7,21.2 46,29 c14.4,4.6 27.9,5.6 40,-5 c8.8,-7.8 8.5,-17.7 10,-28 M570,145 c-8.6,0 -18,0 -26,4 c-27.4,13.7 -34.4,52.9 -40,80 c-5.7,28.2 -2.9,15.9 -6,45 c-0.5,5 -2.3,9.9 -2,15 c0.3,5.1 4.7,9.8 4,15 c-0.4,3 -4.1,4.8 -7,6 c-7.1,2.9 -15.3,1.7 -23,2 c-11.9,0.3 -24,0 -36,0 c-2.3,0 -4.9,1 -7,0 c-2.9,-1.4 -4.7,-4.5 -7,-7 c-4.7,-5.2 -9.2,-10.7 -14,-16 c-13.6,-15.2 -27.5,-30.5 -42,-45" stroke="#000000" stroke-width="2"></path></g></g></svg>');
 	$(document).on("click",".zeichenflaeche",function(){
 	
-		 if (bearbeitungAn==true){
-			 QreatorBezier.showSVG("zeichenflaeche");
-			 bearbeitungAn=false;
-			 $("#zeichnung").removeAttr("id");
-		 }
+		 raeumeAuf();
 		 var text=$(this).html();
 		 $(this).removeClass("zeichenflaeche"); // sonst immer auf klick reagieren
 		 bearbeitungAn=true;
+         bearbeitungsTyp="zeichenflaeche";
 		 breite=parseInt($(this).find("svg").attr("width"));
 		 hoehe=parseInt($(this).find("svg").attr("height"));
 		// console.log("Breite aus svg: "+$(this).find("svg").attr("width"));
@@ -542,6 +606,18 @@ $(function() {
 		 QreatorBezier.loadSVG(text);
 
 	});
+    
+    $(document).on("click",".markdownText",function(){
+        raeumeAuf();
+       var originalText=$(this).find(".originaltext").text();
+       // "<div class='markdown' id='markdown'></div>"
+       $(this).parent().attr("id","markdown");
+        bearbeitungAn=true;
+        bearbeitungsTyp="markdown";
+       Textabschnitt.init("#markdown","#menu",originalText);
+       
+       
+    });
 	$(document).on("change","#fileInput",function(){
 		var fileList = $("#fileInput")[0].files;
 	    var file = fileList[0];
@@ -554,11 +630,20 @@ $(function() {
 	        var container = document.createElement('div');
 	        container.id = 'container';
 	        container.innerHTML=text;
-	        $("#content").html("<button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button>");
+	        $("#content").html("<button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button><button class='markdownEinfuegen'>Neuer Textabschnitt</button><button class='bildEinfuegen'>Neues Bild</button>");
 	        //console.log($(container).html());
-	        $(container).find(".zeichenflaeche").each(function(){
-	        	$("#content").append("<div class='zeichenflaeche'>"+$(this).html()+"</div>");
+	        $(container).find(".tshareElement").each(function(){
+                if ($(this).hasClass("zeichenflaeche")){
+	        	$("#content").append("<div class='zeichenflaeche tshareElement'>"+$(this).html()+"</div>");
 	        	$("#content").append(knopfJS);
+                } else if ($(this).hasClass("markdown")){
+                    $("#content").append("<div class='markdown tshareElement'>"+$(this).html()+"</div>");
+	        	$("#content").append(knopfJS);
+                }
+                else if ($(this).hasClass("datei")){
+                    $("#content").append("<div class='datei tshareElement'>"+$(this).html()+"</div>");
+	        	$("#content").append(knopfJS);
+                }
 	        	//console.log($(this).html());
 	        });
 	        /*
@@ -908,6 +993,7 @@ $(document).on("change",".fenster .parameter",function(){
 	$(document).on("click",".loeschen",function(){
 		var nachfrage=confirm("Sind Sie sicher, dass die gewählte Zeichenfläche inklusive Inhalt entfernt werden soll? Dieser Schritt kann nicht rückgängig gemacht werden!");
 		if (nachfrage==true){
+            raeumeAuf();
 		$(this).prev().remove(); //zeichenflaeche
 		$(this).next().remove(); //neu-knopf
 		$(this).next().remove(); // pdf einfügen
