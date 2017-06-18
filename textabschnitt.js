@@ -30,11 +30,21 @@ var Textabschnitt = new function() {
             $(selector).val( textBefore+ text +textAfter );
         }
     
+    function umgebeAuswahl(davor,danach,selector){
+        var cursorPosStart = $(selector).prop('selectionStart');
+            var cursorPosEnd = $(selector).prop('selectionEnd');
+            var v = $(selector).val();
+            var textBefore = v.substring(0,  cursorPosStart );
+            var textAfter  = v.substring( cursorPosEnd, v.length );
+            var original=v.substring(cursorPosStart, cursorPosEnd);
+            $(selector).val( textBefore+ davor+original+danach +textAfter );
+    }
+    
     this.init=function(selector,menuSelector,startText=""){
         selectorGlobal = selector;
 		menuGlobal = menuSelector;
-		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td valign='top' style='width:50%; '><div id='htmlResult'></div></td></tr></table>");
-        $(menuGlobal).append("<button id='parseMarkdown'>Markdown erstellen</button><input id='livepreview' type='checkbox'>Live-Preview</input><button id='erstelleTabelle'>Tabelle erstellen</button>");
+		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult'></div></td></tr></table>");
+        $(menuGlobal).append("<button id='parseMarkdown'>Vorschau</button><input id='livepreview' type='checkbox' checked>Live</input>");
         
          parseMarkdown(startText, "#htmlResult"); // Anfangstext darstellen
         
@@ -62,7 +72,7 @@ var Textabschnitt = new function() {
     });
         
         $("#erstelleTabelle").on("click",function(){
-           ersetzeAuswahl("|Hallo|Hi\n|---|---\n|Wert 1|Wert2\n","#aktuellerText"); 
+           umgebeAuswahl("<span style='background-color: #ffff00'>","</span>","#aktuellerText"); 
         });
     }
     

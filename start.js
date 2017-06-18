@@ -6,6 +6,8 @@ var saveAs=saveAs||function(view){"use strict";if(typeof navigator!=="undefined"
 $(function() {
 	top();
 	var druckansicht=false;
+    var sichtbarkeiten=[1,0,1,1,1,1,1,1,1,1];
+    var magicString="JEIF?EJFM?jmEHl§/87h78§FHLhl§F";
 	var breite=998,hoehe=701; //701
 	var breiteStandard=998, hoeheStandard=701;
 	bearbeitungAn=false;
@@ -13,7 +15,39 @@ $(function() {
 	var aktuellerDateiname="";
 	var aktuellesBild="";
 	var zeichenbreite=0,zeichenhoehe=0,hochkant=false;
-    var knopfJS="<button class='loeschen'>Darüber liegende Zeichenfläche löschen</button><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button><button class='markdownEinfuegen'>Neuer Textabschnitt</button><button class='bildEinfuegen'>Neues Bild</button>";
+    var clipboard="";
+    var knoepfe="<select class='sichtbarkeit'>";
+	for (var i = 0; i < 10; i++) {
+		if (i==0) {
+			knoepfe += "<option selected sichtbarkeit='" + i + "'>" + i + "</option> ";
+		} else {
+			knoepfe += "<option sichtbarkeit='" + i + "'>" + i + "</option> ";
+		
+		}
+	}
+	knoepfe+="</select>";
+    
+    $(document).on("change",".sichtbarkeit",function(event) {
+			event.preventDefault();
+			var index=parseInt($(this).prop("selectedIndex"));
+		    $(this).parent().prev().attr("sichtbarkeit",index);
+			updateSichtbarkeit();
+            
+		});
+    
+    function updateSichtbarkeit(){
+        $(".tshareElement").each(function(){
+            var sichtbarkeitsebene=parseInt($(this).attr("sichtbarkeit"));
+            if (sichtbarkeiten[sichtbarkeitsebene]==0){
+                $(this).attr("visibility","hidden");
+            } else {
+                $(this).removeAttr("visibility");
+            }
+        });
+    }
+    knoepfe=""; // sichtbarkeit später einbauen
+    
+    var knopfJS="<span><button class='loeschen'>Darüber liegende Zeichenfläche löschen</button><button class='markieren'>Markieren</button><button class='kopiereAbschnitt'>Kopieren</button><button class='einfuegen'>Einfügen</button><button class='einfuegenClipboard'>Einfügen Clipboard</button>"+knoepfe+"</span><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button><button class='markdownEinfuegen'>Neuer Textabschnitt</button><button class='bildEinfuegen'>Neues Bild</button>";
 	//$("body").html("<button id='druckansicht'>Druckansicht</button><button id='speichern'>Speichern</button><br><button class='neueZeichenflaeche' >Neue Zeichenfläche</button>");
 	//QreatorBezier.init("#zeichnen");
 	
@@ -69,6 +103,38 @@ $(function() {
 		$(".auswahl").removeClass("selectMenu");
 		
 	}
+    
+    $(document).ready(function(){
+        new Clipboard('#kopieren',{
+    text: function(trigger) {
+        return holeMarkierteAbschnitteAlsString();
+    }})
+
+    });
+    
+    $(document).ready(function(){
+        new Clipboard('.kopiereAbschnitt',{
+    text: function(trigger) {
+        
+         raeumeAuf();
+        var clipboardIntern="";
+        var klasse="";
+       var tshareElement=$(trigger).parent().prev();
+        if (tshareElement.hasClass("markdown")){
+                   klasse="markdown";
+               } else if (tshareElement.hasClass("zeichnung")){
+                   klasse="zeichnung";
+               } else if (tshareElement.hasClass("datei")){
+                   klasse="datei";
+               }
+              clipboardIntern="<div class='tshareElement "+klasse+"'>"+$(trigger).parent().prev().html()+"</div>"+knopfJS;
+            clipboard=clipboardIntern;
+           return magicString+clipboardIntern;
+       }
+        } 
+    )});
+
+   
 	
 	window.addEventListener("beforeunload", function (e) {
 		  var confirmationMessage = "Eventuelle Änderungen am Dokument könnten verloren gehen!";
@@ -250,17 +316,57 @@ $(function() {
 			saveAs(blob,dateiname+"_Editor_"+anhang+".html");
 	    	} else {
 			var code="";
+                var textElementZaehler=0;
 			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
                 if ($(this).hasClass("zeichenflaeche")){
                 code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
                     code+="<div class='markdown tshareElement'>"+$(this).html()+"</div>\n";
+                    textElementZaehler++;
                 } else if ($(this).hasClass("datei")){
                     code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
                 }
 			});
-			var blob = new Blob(["<!DOCTYPE html><head>"+window.atob(js)+"<style>"+$("#katexStyle").text()+"</style><html>"+code+"</html>"], {type: "text/html;charset=utf-8"});
+                var gesamtText="";
+            if (textElementZaehler>0){ // jetzt noch überprüfen, welche Schriften verwendet wurden und nur diese speichern
+                var tags=[".katex .delimsizing.size1",".katex .delimsizing.size2",".katex .delimsizing.size3",".katex .delimsizing.size4",".katex .delimsizing.mult .delim-size1 > span",".katex .delimsizing.mult .delim-size4 > span",".katex .op-symbol.small-op",".katex .op-symbol.large-op",".katex .mathit",".katex .mathbf",".katex .amsrm",".katex .mathbb",".katex .mathcal",".katex .mathfrak",".katex .mathtt",".katex .mathscr",".katex .mathsf",".katex .mainit"];
+                var schriften=["KaTeX_Size1","KaTeX_Size2","KaTeX_Size3","KaTeX_Size4","KaTeX_Size1","KaTeX_Size4","KaTeX_Size1","KaTeX_Size2","KaTeX_Main","KaTeX_Main","KaTeX_Math","KaTeX_Main","KaTeX_AMS","KaTeX_AMS","KaTeX_Caligraphic","KaTeX_Fraktur","KaTeX_Typewriter","KaTeX_Script","KaTeX_SansSerif","KaTeX_Main"]
+                          
+
+                for (var i=0;i<tags.length;i++){
+                    var tagzaehler=0;
+                    $(tags[i]).each(function(){
+                        tagzaehler++;
+                    });
+                    console.log("Tag "+tags[i]+": "+tagzaehler+", Font: "+schriften[i]);
+                    tags[i]=tagzaehler;
+                }
+                var schriftenMenge=new Set();
+                for (var i=0;i<tags.length;i++){
+                    if (tags[i]>0){
+                        schriftenMenge.add(schriften[i]);
+                    }
+                }
+                console.log("Schriften: ");
+                var schriftenText="";
+                var cssKatex=$("#katexStyle").text().split("/* KateX_Fonts END */");
+                var schriften=cssKatex[0].split("/**/");
+                for (let item of schriftenMenge) {
+                    console.log(item);
+                    for (var i=0;i<schriften.length;i++){
+                        if (schriften[i].indexOf(item)!=-1){
+                            schriftenText+=schriften[i].trim();
+                        }
+                    }
+                }
+                gesamtText=schriftenText+cssKatex[1];
+                
+
+
+                
+            }
+			var blob = new Blob(["<!DOCTYPE html><head><meta name='viewport' charset='utf-8' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />"+window.atob(js)+"<style>"+gesamtText+"</style><html>"+code+"</html>"], {type: "text/html;charset=utf-8"});
 			saveAs(blob, dateiname+"_"+anhang+".html");
 	    	}
 		
@@ -335,6 +441,132 @@ $(function() {
 		
 	
 	});
+    
+    $(document).on("click",".markieren",function(){
+        raeumeAuf();
+        $(this).toggleClass("aktiv");
+    });
+    
+    $("#markiereAlle").click(function(){
+        raeumeAuf();
+        // elemente zaehlen
+        var zaehlerElemente=0;
+        $(".tshareElement").each(function(){
+           zaehlerElemente++; 
+        });
+        var zaehlerMarkiert=0;
+        $(".markieren").each(function(){
+           if ($(this).hasClass("aktiv")){
+               zaehlerMarkiert++;
+           }
+        });
+        if (zaehlerMarkiert<zaehlerElemente){
+            $(".markieren").each(function(){
+                $(this).removeClass("aktiv").addClass("aktiv");
+            })
+        } else {
+            $(".markieren").each(function(){
+               $(this).removeClass("aktiv");
+            });
+        }
+    });
+    
+    $("#auswahlLoeschen").click(function(){
+        var nachfrage=confirm("Sind Sie sicher, dass die gewählten Abschnitte inklusive aller Inhalte entfernt werden soll? Dieser Schritt kann nicht rückgängig gemacht werden!");
+		if (nachfrage==true){
+            raeumeAuf();
+        $(".markieren").each(function(){
+            if ($(this).hasClass("aktiv")){
+            
+		$(this).parent().prev().remove(); //zeichenflaeche
+		$(this).parent().next().remove(); //neu-knopf
+		$(this).parent().next().remove(); // pdf einfügen
+            
+            $(this).parent().next().remove(); // Textabschnitt einfügen
+            $(this).parent().next().remove(); // Bild einfügen
+		$(this).parent().remove(); // knopf selber
+            }
+            });
+		}
+                             
+    });
+    
+    $(document).on("click",".einfuegenClipboard",function(){
+        $(this).parent().next().next().next().next().after("<div id='einsetzen'></div>");
+        $("body").append("<div class='transparent'></div>");
+		$(".transparent").append("<div class='fenster'><p>Bitte fügen Sie den Inhalt des Clipboards in das Textfeld ein (z. B. per Strg+V) und drücken Sie dann den Knopf \"Einfügen\"</p><textarea id='clipboardExtern' required='required' ></textArea><button id='clipboardExternEinfuegen'>Einfügen in Dokument</button><button id='abbrechen'>Abbrechen</button></div>");
+    });
+    
+    $(document).on("click","#clipboardExternEinfuegen", function(){
+        var inhalt=$("#clipboardExtern").val();
+        if (inhalt.startsWith(magicString)){
+              var nachfrage=confirm("Sind Sie sicher, dass dieser Abschnitt eingefügt werden soll? Dieser Schritt kann nicht mehr rückgängig gemacht werden!");
+		if (nachfrage==true){
+            raeumeAuf();
+            
+            $("#einsetzen").after(inhalt.substring(magicString.length,inhalt.length));
+            $(".transparent").remove();
+            $("#einsetzen").remove();
+        }
+        } else {
+            window.alert("Der Inhalt hat das falsche Format. Es können nur Inhalte aus Tshare eingefügt werden.")
+        }
+        
+    });
+    
+    $(document).on("click",".einfuegen",function(){
+       
+            raeumeAuf();
+            $(this).parent().next().next().next().next().after(clipboard);
+        
+        
+    });
+    
+  
+    
+    function holeMarkierteAbschnitteAlsString(){
+        var clipboardIntern="";
+        raeumeAuf();
+       $(".markieren").each(function(){
+           if ($(this).hasClass("aktiv")){
+               var tshareElement=$(this).parent().prev();
+               var klasse="";
+               if (tshareElement.hasClass("markdown")){
+                   klasse="markdown";
+               } else if (tshareElement.hasClass("zeichnung")){
+                   klasse="zeichnung";
+               } else if (tshareElement.hasClass("datei")){
+                   klasse="datei";
+               }
+               clipboardIntern+="<div class='tshareElement "+klasse+"'>"+$(this).parent().prev().html()+"</div>"+knopfJS;
+           }
+       }) ;
+        clipboard=clipboardIntern;
+        clipboardIntern=magicString+clipboardIntern;
+    
+        return clipboardIntern;
+    }
+    
+   /* $("#kopieren").click(function(){
+    clipboard="";
+        raeumeAuf();
+       $(".markieren").each(function(){
+           if ($(this).hasClass("aktiv")){
+               var tshareElement=$(this).parent().prev();
+               var klasse="";
+               if (tshareElement.hasClass("markdown")){
+                   klasse="markdown";
+               } else if (tshareElement.hasClass("zeichnung")){
+                   klasse="zeichnung";
+               } else if (tshareElement.hasClass("datei")){
+                   klasse="datei";
+               }
+               clipboard+="<div class='tshareElement "+klasse+"'>"+$(this).parent().prev().html()+"</div>"+knopfJS;
+           }
+       }) ;
+        clipboard=magicString+clipboard;
+    });*/
+    
     
     $(document).on("click",".markdownEinfuegen",function(){
 		raeumeAuf();
@@ -688,6 +920,7 @@ $(function() {
 	
 	$(document).on("click","#abbrechen",function(){
 		$(".transparent").remove();
+        $("#einsetzen").remove();
 	});
 	
 	$(document).on("click","#abbrechenBild",function(){
@@ -994,13 +1227,13 @@ $(document).on("change",".fenster .parameter",function(){
 		var nachfrage=confirm("Sind Sie sicher, dass die gewählte Zeichenfläche inklusive Inhalt entfernt werden soll? Dieser Schritt kann nicht rückgängig gemacht werden!");
 		if (nachfrage==true){
             raeumeAuf();
-		$(this).prev().remove(); //zeichenflaeche
-		$(this).next().remove(); //neu-knopf
-		$(this).next().remove(); // pdf einfügen
+		$(this).parent().prev().remove(); //zeichenflaeche
+		$(this).parent().next().remove(); //neu-knopf
+		$(this).parent().next().remove(); // pdf einfügen
             
-            $(this).next().remove(); // Textabschnitt einfügen
-            $(this).next().remove(); // Bild einfügen
-		$(this).remove(); // knopf selber
+            $(this).parent().next().remove(); // Textabschnitt einfügen
+            $(this).parent().next().remove(); // Bild einfügen
+		$(this).parent().remove(); // knopf selber
 		}
 	});
 	
