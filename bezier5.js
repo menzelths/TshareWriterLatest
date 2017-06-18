@@ -836,7 +836,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 			
 			
 			$("#"+einsetzenId).before(
-					"<div class='zeichenflaeche tshareElement' >" + $("#qreator_svgbild").html()
+					"<div class='zeichenflaeche tshareElement zeichenflaecheKlick' >" + $("#qreator_svgbild").html()
 							+ "</div>"+folgeText);
 			$("#qreator_svgbild2").removeAttr("id");
 			$("#qreator_svgbild").html("");
