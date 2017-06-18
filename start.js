@@ -122,8 +122,8 @@ $(function() {
        var tshareElement=$(trigger).parent().prev();
         if (tshareElement.hasClass("markdown")){
                    klasse="markdown";
-               } else if (tshareElement.hasClass("zeichnung")){
-                   klasse="zeichnung";
+               } else if (tshareElement.hasClass("zeichenflaeche")){
+                   klasse="zeichenflaeche zeichenflaecheKlick";
                } else if (tshareElement.hasClass("datei")){
                    klasse="datei";
                }
@@ -292,9 +292,48 @@ $(function() {
 	$("#menuansicht").click(function(){
 		$("body").append("<div class='transparent'></div>");
 		$(".transparent").append("<div class='fenster'>Position des Menüs wählen:<br><button class='menu-position' position='left'>Menü links</button><button class='menu-position' position='top'>Menü oben</button><button class='menu-position' position='bottom'>Menü unten</button><button class='menu-position' position='right'>Menü rechts</button><br><button id='abbrechen'>Abbrechen</button></div>");
-		$(".fenster").append('<p>Info:<br><div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a>, <a href="http://www.flaticon.com/authors/yannick" title="Yannick">Yannick</a>, <a href="http://www.flaticon.com/authors/picol" title="Picol">Picol</a>, <a href="http://www.flaticon.com/authors/situ-herrera" title="Situ Herrera">Situ Herrera</a>, <a href="http://www.flaticon.com/authors/egor-rumyantsev" title="Egor Rumyantsev">Egor Rumyantsev</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>');
+		$(".fenster").append('<p>Info:<br><div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a>, <a href="http://www.flaticon.com/authors/yannick" title="Yannick">Yannick</a>, <a href="http://www.flaticon.com/authors/picol" title="Picol">Picol</a>, <a href="http://www.flaticon.com/authors/situ-herrera" title="Situ Herrera">Situ Herrera</a>, <a href="http://www.flaticon.com/authors/freepik">freepik</a>, <a href="http://www.flaticon.com/authors/egor-rumyantsev" title="Egor Rumyantsev">Egor Rumyantsev</a>, <a href="http://fontawesome.io/" title="Dave Gandy">Dave Gandy</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>');
+        
+        
 	});
 		
+    function sammelSchriften(){
+        var gesamtText="";
+        var tags=[".katex .delimsizing.size1",".katex .delimsizing.size2",".katex .delimsizing.size3",".katex .delimsizing.size4",".katex .delimsizing.mult .delim-size1 > span",".katex .delimsizing.mult .delim-size4 > span",".katex .op-symbol.small-op",".katex .op-symbol.large-op",".katex .mathit",".katex .mathbf",".katex .amsrm",".katex .mathbb",".katex .mathcal",".katex .mathfrak",".katex .mathtt",".katex .mathscr",".katex .mathsf",".katex .mainit"];
+                var schriften=["KaTeX_Size1","KaTeX_Size2","KaTeX_Size3","KaTeX_Size4","KaTeX_Size1","KaTeX_Size4","KaTeX_Size1","KaTeX_Size2","KaTeX_Main","KaTeX_Main","KaTeX_Math","KaTeX_Main","KaTeX_AMS","KaTeX_AMS","KaTeX_Caligraphic","KaTeX_Fraktur","KaTeX_Typewriter","KaTeX_Script","KaTeX_SansSerif","KaTeX_Main"]
+                          
+
+                for (var i=0;i<tags.length;i++){
+                    var tagzaehler=0;
+                    $(tags[i]).each(function(){
+                        tagzaehler++;
+                    });
+                    //console.log("Tag "+tags[i]+": "+tagzaehler+", Font: "+schriften[i]);
+                    tags[i]=tagzaehler;
+                }
+                var schriftenMenge=new Set();
+                for (var i=0;i<tags.length;i++){
+                    if (tags[i]>0){
+                        schriftenMenge.add(schriften[i]);
+                    }
+                }
+                console.log("Schriften: ");
+                var schriftenText="";
+                var cssKatex=$("#katexStyle").text().split("/* KateX_Fonts END */");
+                var schriften=cssKatex[0].split("/**/");
+                for (let item of schriftenMenge) {
+                    console.log(item);
+                    for (var i=0;i<schriften.length;i++){
+                        if (schriften[i].indexOf(item)!=-1){
+                            schriftenText+=schriften[i].trim();
+                        }
+                    }
+                }
+                
+                gesamtText=schriftenText+cssKatex[1];
+                return gesamtText;
+    }
+    
 	$(document).on("click","#speichereDatei",function(){
 		var dateiname=$("#dateiname").val();
 		var editorSpeichern=$("#checkEditor").prop("checked");
@@ -329,40 +368,9 @@ $(function() {
                 }
 			});
                 var gesamtText="";
-            if (textElementZaehler>0){ // jetzt noch überprüfen, welche Schriften verwendet wurden und nur diese speichern
-                var tags=[".katex .delimsizing.size1",".katex .delimsizing.size2",".katex .delimsizing.size3",".katex .delimsizing.size4",".katex .delimsizing.mult .delim-size1 > span",".katex .delimsizing.mult .delim-size4 > span",".katex .op-symbol.small-op",".katex .op-symbol.large-op",".katex .mathit",".katex .mathbf",".katex .amsrm",".katex .mathbb",".katex .mathcal",".katex .mathfrak",".katex .mathtt",".katex .mathscr",".katex .mathsf",".katex .mainit"];
-                var schriften=["KaTeX_Size1","KaTeX_Size2","KaTeX_Size3","KaTeX_Size4","KaTeX_Size1","KaTeX_Size4","KaTeX_Size1","KaTeX_Size2","KaTeX_Main","KaTeX_Main","KaTeX_Math","KaTeX_Main","KaTeX_AMS","KaTeX_AMS","KaTeX_Caligraphic","KaTeX_Fraktur","KaTeX_Typewriter","KaTeX_Script","KaTeX_SansSerif","KaTeX_Main"]
-                          
-
-                for (var i=0;i<tags.length;i++){
-                    var tagzaehler=0;
-                    $(tags[i]).each(function(){
-                        tagzaehler++;
-                    });
-                    console.log("Tag "+tags[i]+": "+tagzaehler+", Font: "+schriften[i]);
-                    tags[i]=tagzaehler;
-                }
-                var schriftenMenge=new Set();
-                for (var i=0;i<tags.length;i++){
-                    if (tags[i]>0){
-                        schriftenMenge.add(schriften[i]);
-                    }
-                }
-                console.log("Schriften: ");
-                var schriftenText="";
-                var cssKatex=$("#katexStyle").text().split("/* KateX_Fonts END */");
-                var schriften=cssKatex[0].split("/**/");
-                for (let item of schriftenMenge) {
-                    console.log(item);
-                    for (var i=0;i<schriften.length;i++){
-                        if (schriften[i].indexOf(item)!=-1){
-                            schriftenText+=schriften[i].trim();
-                        }
-                    }
-                }
-                gesamtText=schriftenText+cssKatex[1];
-                
-
+            if (textElementZaehler>0){ 
+                gesamtText=sammelSchriften();
+               
 
                 
             }
@@ -386,7 +394,7 @@ $(function() {
 			// neu: alle svg-teile sammeln und dann in neuem fenster darstellen
 		
              var js="PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZlbnQudGFyZ2V0O3ZhciB6YWVobGVyPTA7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCd2aXNpYmxlJyk7ICBicmVhazt9emFlaGxlcisrO31pZiAoemFlaGxlcj09MTApe2ZvciAodmFyIGk9MDtpPDEwO2krKyl7dmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCkge2VsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywnaGlkZGVuJyk7ICB9IH0gZm9yICh2YXIgaT0wO2k8MTA7aSsrKXsgdmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCYmZWxlbWVudC5nZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknKT09J2hpZGRlbicpeyBlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTticmVhazsgfX19fTwvc2NyaXB0Pg==";
-        
+            var textElementZaehler=0;
 			var code="";
 			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
@@ -394,13 +402,21 @@ $(function() {
                 code+="<div class='zeichenflaeche' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
                     code+="<div class='markdown'>"+$(this).html()+"</div>\n";
+                    textElementZaehler++;
                 } else if ($(this).hasClass("datei")){
                     code+="<div class='datei'>"+$(this).html()+"</div>\n";
                 }
 			});
+        var gesamtText="";
+            if (textElementZaehler>0){ 
+                gesamtText=sammelSchriften();
+               
+
+                
+            }
 			var w=window.open();
 			w.document.open();
-			w.document.write("<!DOCTYPE html><head>"+window.atob(js)+"<style>"+$("#katexStyle").text()+"</style></head><html>"+code+"</html>");
+			w.document.write("<!DOCTYPE html><head>"+window.atob(js)+"<style>"+gesamtText+"</style></head><html>"+code+"</html>");
 			w.document.close();
 			//window.open("data:text/html,<!DOCTYPE html><html>"+code+"</html>");
 			
@@ -432,7 +448,7 @@ $(function() {
 	
 	$(document).on("click",".neueZeichenflaeche",function(){
 		raeumeAuf();
-		$(this).next().next().next().after("<div class='zeichnung tshareElement' id='zeichnung'></div>"+knopfJS); // wo erscheint der neue Abschnitt
+		$(this).next().next().next().after("<div class='zeichenflaeche' id='zeichnung'></div>"+knopfJS); // wo erscheint der neue Abschnitt
 		bearbeitungAn=true;
         bearbeitungsTyp="zeichenflaeche";
 		breite=breiteStandard;
@@ -533,8 +549,8 @@ $(function() {
                var klasse="";
                if (tshareElement.hasClass("markdown")){
                    klasse="markdown";
-               } else if (tshareElement.hasClass("zeichnung")){
-                   klasse="zeichnung";
+               } else if (tshareElement.hasClass("zeichenflaeche")){
+                   klasse="zeichenflaeche zeichenflaecheKlick";
                } else if (tshareElement.hasClass("datei")){
                    klasse="datei";
                }
@@ -809,9 +825,12 @@ $(function() {
     function raeumeAuf(){
         if (bearbeitungAn==true){
             if (bearbeitungsTyp=="zeichenflaeche"){
-			 QreatorBezier.showSVG("zeichenflaeche tshareElement");
+			 QreatorBezier.showSVG("zeichenflaeche");
 			 bearbeitungAn=false;
-			 $("#zeichnung").removeAttr("id");
+          /*      var element=$("#zeichnung").html();
+                $("#zeichnung").after(element);
+			 $("#zeichnung").remove();*/
+            
             } else if (bearbeitungsTyp=="markdown"){
                 Textabschnitt.zeigeMarkdown("#markdownTable");
                 bearbeitungAn=false;
@@ -822,11 +841,13 @@ $(function() {
     }
 	
 	//QreatorBezier.loadSVG('<svg width="800" height="600" id="svgbild"><g fill="none" stroke-linecap="round" id="global"><g id="layer_0"><path d=" M250,492 c15.8,0 29.2,-14.8 40,-24 c9.3,-7.9 18.2,-16.4 28,-24 c24.3,-18.7 68.3,-47.4 92,-65 c17.7,-13.1 34.4,-27.6 52,-41 c35.3,-26.8 65.7,-45.2 97,-76 c15.5,-15.2 19.9,-21.2 25,-39 c1.6,-5.7 1.6,-10.1 -4,-12 M346,143 c15.1,0 32.2,-1.8 47,1 c14.2,2.7 62.7,19.5 74,24 c30.4,12 61.9,21.5 74,55 c1.6,4.6 16.6,68.6 17,70 c2.1,9.6 2.8,19.6 6,29 c2.5,7.3 15.9,32 22,40 c13.5,17.6 21.7,21.2 46,29 c14.4,4.6 27.9,5.6 40,-5 c8.8,-7.8 8.5,-17.7 10,-28 M570,145 c-8.6,0 -18,0 -26,4 c-27.4,13.7 -34.4,52.9 -40,80 c-5.7,28.2 -2.9,15.9 -6,45 c-0.5,5 -2.3,9.9 -2,15 c0.3,5.1 4.7,9.8 4,15 c-0.4,3 -4.1,4.8 -7,6 c-7.1,2.9 -15.3,1.7 -23,2 c-11.9,0.3 -24,0 -36,0 c-2.3,0 -4.9,1 -7,0 c-2.9,-1.4 -4.7,-4.5 -7,-7 c-4.7,-5.2 -9.2,-10.7 -14,-16 c-13.6,-15.2 -27.5,-30.5 -42,-45" stroke="#000000" stroke-width="2"></path></g></g></svg>');
-	$(document).on("click",".zeichenflaeche",function(){
+	$(document).on("click",".zeichenflaecheKlick",function(){
 	
 		 raeumeAuf();
 		 var text=$(this).html();
-		 $(this).removeClass("zeichenflaeche"); // sonst immer auf klick reagieren
+         $(this).removeClass("zeichenflaecheKlick");
+       
+		// $(this).removeClass("zeichenflaeche"); // sonst immer auf klick reagieren
 		 bearbeitungAn=true;
          bearbeitungsTyp="zeichenflaeche";
 		 breite=parseInt($(this).find("svg").attr("width"));
@@ -836,6 +857,9 @@ $(function() {
 
 		// $(this).after("<button class='neueZeichenflaeche' >Neue Zeichenfläche</button>");
 		 QreatorBezier.loadSVG(text);
+        
+        
+	
 
 	});
     
@@ -862,11 +886,11 @@ $(function() {
 	        var container = document.createElement('div');
 	        container.id = 'container';
 	        container.innerHTML=text;
-	        $("#content").html("<button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button><button class='markdownEinfuegen'>Neuer Textabschnitt</button><button class='bildEinfuegen'>Neues Bild</button>");
+	        $("#content").html("<span><button class='einfuegen'>Einfügen</button><button class='einfuegenClipboard'>Einfügen Clipboard</button></span><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button><button class='markdownEinfuegen'>Neuer Textabschnitt</button><button class='bildEinfuegen'>Neues Bild</button>");
 	        //console.log($(container).html());
 	        $(container).find(".tshareElement").each(function(){
                 if ($(this).hasClass("zeichenflaeche")){
-	        	$("#content").append("<div class='zeichenflaeche tshareElement'>"+$(this).html()+"</div>");
+	        	$("#content").append("<div class='zeichenflaeche tshareElement zeichenflaecheKlick'>"+$(this).html()+"</div>");
 	        	$("#content").append(knopfJS);
                 } else if ($(this).hasClass("markdown")){
                     $("#content").append("<div class='markdown tshareElement'>"+$(this).html()+"</div>");
