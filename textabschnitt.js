@@ -40,11 +40,14 @@ var Textabschnitt = new function() {
             $(selector).val( textBefore+ davor+original+danach +textAfter );
     }
     
-    this.init=function(selector,menuSelector,startText=""){
+    this.init=function(selector,menuSelector,startText){
+        if (startText==null){
+            startText="";
+        }
         selectorGlobal = selector;
 		menuGlobal = menuSelector;
 		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult'></div></td></tr></table>");
-        $(menuGlobal).append("<button id='parseMarkdown'>Vorschau</button><input id='livepreview' type='checkbox' checked>Live</input>");
+        $(menuGlobal).append("<button id='parseMarkdown' class='imagePreview'></button><input id='livepreview' type='checkbox' checked>Live</input>");
         
          parseMarkdown(startText, "#htmlResult"); // Anfangstext darstellen
         
