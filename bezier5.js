@@ -836,7 +836,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 			
 			
 			$("#"+einsetzenId).before(
-					"<div class='zeichenflaeche' >" + $("#qreator_svgbild").html()
+					"<div class='zeichenflaeche tshareElement' >" + $("#qreator_svgbild").html()
 							+ "</div>"+folgeText);
 			$("#qreator_svgbild2").removeAttr("id");
 			$("#qreator_svgbild").html("");
@@ -1014,7 +1014,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 		$("#qreator_svgbild #qreator_svgbild2").removeAttr("id");
 		var test=$("#qreator_svgbild").html();
 		$(selectorGlobal).html(
-				"<div class='" + zf + "' >" + $("#qreator_svgbild").html()
+				"<div class='" + zf + " tshareElement zeichenflaecheKlick' >" + $("#qreator_svgbild").html()
 						+ "</div>");
 		$(selectorGlobal).find("."+zf).unwrap();
 		$(menuGlobal).html("");
