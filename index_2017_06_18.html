@@ -1382,6 +1382,7 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 	margin-bottom: 10px;
 }
 
+
 #menu{
 	margin-left: 0px;
 }
@@ -1406,9 +1407,26 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
     border-style: none;
     /*background-color: #ffdddd;*/
 }
+
 #menu input {
     border-style: none;
-    /*background-color: #ffdddd;*/
+}
+
+
+
+
+
+
+
+button:hover{
+    background-color: #ffdddd;
+}
+button:active{
+    background-color: #ffffff;
+}
+
+.tshareElement {
+    cursor: pointer;
 }
 
 
@@ -1428,6 +1446,8 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 	font-weight: bold;
 	
 }
+
+
 
 
 
@@ -1564,7 +1584,7 @@ for(var be=0;be<M.length;be++)w+=1==be?"<option selected dicke='"+M[be]+"'>"+M[b
 w+="</select>"
 for(var xe=0,me=[0,1,2,3,4,5,6,7,8,9],z=[1,1,1,1,1,1,1,1,1,1],I=[0,1,2,3,4,5,6,7,8,9],be=0;be<me.length;be++)w+="<button class='layer' layer='"+me[be]+"' >"+me[be]+"</button>"
 var ke=this
-this.init=function(r,i,a,l,h,s){z=[1,1,1,1,1,1,1,1,1,1],C=i,F=a,oe=r,de=l,$(r).html("<div id='rahmen' style='position: relative;'> <canvas id='layer1' width='"+C+"' height='"+F+"' style='z-index: 0;'></canvas> <canvas id='layer2'  width='"+C+"' height='"+F+"' style='position: absolute; left: 0; top: 0; z-index: 1;'></canvas><canvas id='layer3' width='"+C+"' height='"+F+"' style='position: absolute; left: 0; top: 0; z-index: 2;'></canvas> </div>"),$(l).html(" <input type='button' class='imageUndo holen knopf'  id='zurueck'  /><input type='button' class='imageRedo holen knopf'  id='vor'  /><input type='button' class='imageRaster holen knopf' b='Raster ändern' id='raster'  /><input type='button'  class='bild imageDelete holen knopf' b='Aktive Ebene löschen' id='loeschenAktiv' alt='aktive Ebene leeren' /><button id='bild' class='imageFotoNeu' alt='neuesFoto'></button><input type='button' class='imageFotoLoeschen holen knopf' b='Aktive Ebene löschen' id='loescheBilder'  /><input type='button' class='imagePen holen knopf' b='Stift' id='stift' /><input type='button' class='imageRubber holen knopf' b='Radierer' id='radierer' /><button id='ebenenBunt' class='imageLayer'></button><button id='ebenenAnAus' class='imageLayerOnOff'></button>"+w+"<div id='ausgabe'></div><div id='info' >"),$(r).append("<div id='qreator_svgbild'></div>"),Q=$("#layer2")[0].getContext("2d"),Q.strokeStyle="#ff0000",D=$("#layer3")[0],ce=0,pe=[],_=.03,q=5,T=5,E=[[[],[],""],[[25],[25],"#aaaaff"],[[],[50],"#aaaaff"],[[],[60,74,88,102,116],"#000000"]],R=0,B=2,A="#000000",L=2,P=[],rechtecke2=[],H=[],ue=10,B=1,N=2,fe=0,U=0,S=2,xe=0,K=1,G=1,W=[],V=0,O=0,X=$("#layer1")[0].getContext("2d"),Y=$("#layer3")[0].getContext("2d"),Z=[],bilder=[],ve=[],ge=[]
+this.init=function(r,i,a,l,h,s){z=[1,1,1,1,1,1,1,1,1,1],C=i,F=a,oe=r,de=l,$(r).html("<div id='rahmen' style='position: relative;'> <canvas id='layer1' width='"+C+"' height='"+F+"' style='z-index: 0;'></canvas> <canvas id='layer2'  width='"+C+"' height='"+F+"' style='position: absolute; left: 0; top: 0; z-index: 1;'></canvas><canvas id='layer3' width='"+C+"' height='"+F+"' style='position: absolute; left: 0; top: 0; z-index: 2;'></canvas> </div>"),$(l).html(" <button class='imageUndo holen knopf'  id='zurueck'  /><button class='imageRedo holen knopf'  id='vor'  /><button class='imageRaster holen knopf' b='Raster ändern' id='raster'  /><button  class='bild imageDelete holen knopf' b='Aktive Ebene löschen' id='loeschenAktiv' alt='aktive Ebene leeren' /><button id='bild' class='imageFotoNeu' alt='neuesFoto'></button><button class='imageFotoLoeschen holen knopf' b='Aktive Ebene löschen' id='loescheBilder'  /><button class='imagePen holen knopf' b='Stift' id='stift' /><button class='imageRubber holen knopf' b='Radierer' id='radierer' /><button id='ebenenBunt' class='imageLayer'></button><button id='ebenenAnAus' class='imageLayerOnOff'></button>"+w+"<div id='ausgabe'></div><div id='info' >"),$(r).append("<div id='qreator_svgbild'></div>"),Q=$("#layer2")[0].getContext("2d"),Q.strokeStyle="#ff0000",D=$("#layer3")[0],ce=0,pe=[],_=.03,q=5,T=5,E=[[[],[],""],[[25],[25],"#aaaaff"],[[],[50],"#aaaaff"],[[],[60,74,88,102,116],"#000000"]],R=0,B=2,A="#000000",L=2,P=[],rechtecke2=[],H=[],ue=10,B=1,N=2,fe=0,U=0,S=2,xe=0,K=1,G=1,W=[],V=0,O=0,X=$("#layer1")[0].getContext("2d"),Y=$("#layer3")[0].getContext("2d"),Z=[],bilder=[],ve=[],ge=[]
 for(var o=0;o<I.length;o++)Z[o]=[],bilder[o]=[],ve[o]=[],pe[o]=0
 j=!1,ye=!0,J=!1,ee=!1,te=0,re=!1,ie=!1,ae=[],ne=[],le=[],he=0,se=0,D.ontouchstart=function(e){e.preventDefault(),le=[],re=!0,ie=!1,ee=!0,J=!1,n(e)},D.ontouchmove=function(e){e.preventDefault(),ee===!0&&1==re&&n(e)},D.ontouchend=function(e){e.preventDefault(),ee===!0&&(ie=!0,re=!1,ee=!1,n(e))},D.onmousedown=function(e){e.preventDefault(),le=[],re=!0,ie=!1,J=!0,ee=!1,u(e)},D.onmousemove=function(e){e.preventDefault(),J===!0&&u(e)},D.onmouseup=function(e){e.preventDefault(),J===!0&&(ie=!0,re=!1,J=!1,u(e))},$("#ebenenBunt").click(function(){xe=(xe+1)%2,$(".layer").each(function(e){1==xe&&1==z[e]?($(this).attr("style","background-color: "+k[e]+";"),$("#ebenenBunt").addClass("aktiv")):($(this).removeAttr("style"),$("#ebenenBunt").removeClass("aktiv"))}),p(S,0,I.length-1,!0),e()}),$("#ebenenAnAus").click(function(){for(var t=0,r=0;r<I.length;r++)1==z[r]&&t++
 if(t>=0&&10>t)for(var r=0;r<I.length;r++)z[r]=1

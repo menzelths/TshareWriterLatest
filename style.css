@@ -402,9 +402,26 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
     border-style: none;
     /*background-color: #ffdddd;*/
 }
+
 #menu input {
     border-style: none;
-    /*background-color: #ffdddd;*/
+}
+
+
+
+
+
+
+
+button:hover{
+    background-color: #ffdddd;
+}
+button:active{
+    background-color: #ffffff;
+}
+
+.tshareElement {
+    cursor: pointer;
 }
 
 
