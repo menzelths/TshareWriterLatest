@@ -55,7 +55,7 @@ $(function() {
 	
 	function left(){
 		$("#header").removeClass("menuLeft").removeClass("menuRight").removeClass("menuTop").removeClass("menuBottom");
-		$("#header").addClass("left");
+		$("#header").addClass("menuLeft");
 		$("#content").removeClass("moveLeft").removeClass("moveDown").removeClass("moveUp");
 		$("#content").addClass("moveLeft");
 		$("[position='left']").hide();
@@ -344,9 +344,9 @@ $(function() {
 	    		dateiname="Notiz";
 	    	}
             
-           // var js="<script>function nextLayer(evt){var a =event.target;var zaehler=0;for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){element.setAttribute('visibility','visible');  break;}zaehler++;}if (zaehler==10){for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null) {element.setAttribute('visibility','hidden');  } } for (var i=0;i<10;i++){ var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){ element.setAttribute('visibility','visible');break; }}}}</script>";
+           // var js="<script>function nextLayer(evt){var a =evt.firstChild;var zaehler=0;for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){element.setAttribute('visibility','visible');  break;}zaehler++;}if (zaehler==10){for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null) {element.setAttribute('visibility','hidden');  } } for (var i=0;i<10;i++){ var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){ element.setAttribute('visibility','visible');break; }}}}</script>";
             
-            var js="PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZlbnQudGFyZ2V0O3ZhciB6YWVobGVyPTA7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCd2aXNpYmxlJyk7ICBicmVhazt9emFlaGxlcisrO31pZiAoemFlaGxlcj09MTApe2ZvciAodmFyIGk9MDtpPDEwO2krKyl7dmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCkge2VsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywnaGlkZGVuJyk7ICB9IH0gZm9yICh2YXIgaT0wO2k8MTA7aSsrKXsgdmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCYmZWxlbWVudC5nZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknKT09J2hpZGRlbicpeyBlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTticmVhazsgfX19fTwvc2NyaXB0Pg==";
+            var js="PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZ0LmZpcnN0Q2hpbGQ7dmFyIHphZWhsZXI9MDtmb3IgKHZhciBpPTA7aTwxMDtpKyspe3ZhciBlbGVtZW50PWEuZ2V0RWxlbWVudEJ5SWQoJ2xheWVyXycraSk7aWYgKGVsZW1lbnQhPW51bGwmJmVsZW1lbnQuZ2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5Jyk9PSdoaWRkZW4nKXtlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTsgIGJyZWFrO316YWVobGVyKys7fWlmICh6YWVobGVyPT0xMCl7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsKSB7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCdoaWRkZW4nKTsgIH0gfSBmb3IgKHZhciBpPTA7aTwxMDtpKyspeyB2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7IGVsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywndmlzaWJsZScpO2JyZWFrOyB9fX19PC9zY3JpcHQ+";
             
         
 	    	aktuellerDateiname=dateiname;
@@ -395,7 +395,7 @@ $(function() {
 			
 			// neu: alle svg-teile sammeln und dann in neuem fenster darstellen
 		
-             var js="PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZlbnQudGFyZ2V0O3ZhciB6YWVobGVyPTA7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCd2aXNpYmxlJyk7ICBicmVhazt9emFlaGxlcisrO31pZiAoemFlaGxlcj09MTApe2ZvciAodmFyIGk9MDtpPDEwO2krKyl7dmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCkge2VsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywnaGlkZGVuJyk7ICB9IH0gZm9yICh2YXIgaT0wO2k8MTA7aSsrKXsgdmFyIGVsZW1lbnQ9YS5nZXRFbGVtZW50QnlJZCgnbGF5ZXJfJytpKTtpZiAoZWxlbWVudCE9bnVsbCYmZWxlbWVudC5nZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknKT09J2hpZGRlbicpeyBlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTticmVhazsgfX19fTwvc2NyaXB0Pg==";
+             var js="PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZ0LmZpcnN0Q2hpbGQ7dmFyIHphZWhsZXI9MDtmb3IgKHZhciBpPTA7aTwxMDtpKyspe3ZhciBlbGVtZW50PWEuZ2V0RWxlbWVudEJ5SWQoJ2xheWVyXycraSk7aWYgKGVsZW1lbnQhPW51bGwmJmVsZW1lbnQuZ2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5Jyk9PSdoaWRkZW4nKXtlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTsgIGJyZWFrO316YWVobGVyKys7fWlmICh6YWVobGVyPT0xMCl7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsKSB7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCdoaWRkZW4nKTsgIH0gfSBmb3IgKHZhciBpPTA7aTwxMDtpKyspeyB2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7IGVsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywndmlzaWJsZScpO2JyZWFrOyB9fX19PC9zY3JpcHQ+";
             var textElementZaehler=0;
 			var code="";
 			$(".tshareElement").each(function(){
@@ -889,7 +889,7 @@ $(function() {
 	        var container = document.createElement('div');
 	        container.id = 'container';
 	        container.innerHTML=text;
-	        $("#content").html("<span><button class='einfuegen'>Einfügen</button><button class='einfuegenClipboard'>Einfügen Clipboard</button></span><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button><button class='markdownEinfuegen'>Neuer Textabschnitt</button><button class='bildEinfuegen'>Neues Bild</button>");
+	        $("#content").html("<span><button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button></span><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageFotoNeu unten'></button>");
 	        //console.log($(container).html());
 	        $(container).find(".tshareElement").each(function(){
                 if ($(this).hasClass("zeichenflaeche")){
