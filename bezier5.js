@@ -274,7 +274,7 @@ var QreatorBezier = new function() {
 		datenx = [], dateny = [], daten = [];
 		zmaxgesamt = 0, zmingesamt = 0;
 		// erst touch events, dann mouse events
-		c.ontouchstart = function(event) {
+		/*c.ontouchstart = function(event) {
 			event.preventDefault();
 			daten = [];
 			gedrueckt = true;
@@ -327,6 +327,54 @@ var QreatorBezier = new function() {
 				maus = false;
 				mausBewegt(event);
 			}
+		};*/
+        
+        if (window.PointerEvent) {
+        c.addEventListener("pointerdown", startZeichnung);
+        c.addEventListener("pointermove", bewegeZeichnung);
+        c.addEventListener("pointerup", endeZeichnung);
+       
+    } else {
+        // provide fallback for user agents that do not support Pointer Events
+        c.addEventListener("mousedown", startZeichnung);
+        c.addEventListener("mousemove", bewegeZeichnung);
+        c.addEventListener("mouseup", endeZeichnung);
+    }
+        
+        function startZeichnung(event) {
+            //if (event.pointerType=="pen"||event.pointerType=="mouse"){
+			event.preventDefault();
+            
+			daten = [];
+			gedrueckt = true;
+            berechnung=false;
+			maus = true;
+			touch = false;
+			// $("#info").html("onmousedown");
+			mausBewegt(event);
+          //  }
+		};
+		function bewegeZeichnung (event) {
+            //if (event.pointerType=="pen"){
+			event.preventDefault();
+			if (maus === true) {
+				// $("#info").html("onmousemove mit maus=true");
+				mausBewegt(event);
+			}
+           // }
+		};
+		function endeZeichnung(event) {
+          //  if (event.pointerType=="pen"){
+			event.preventDefault();
+			if (maus === true) {
+				berechnung = true;
+				gedrueckt = false;
+
+				// $("#info").html("onmouseup mit maus=true");
+				maus = false;
+				mausBewegt(event);
+			}
+           // }
 		};
 		
 		$("#ebenenBunt").click(function(){
@@ -832,7 +880,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 				
 			// wichtig für den richtigen namespace (sonst nur img statt image)
 			$("#qreator_svgbild2 #global #layer_2").append(document.createElementNS("http://www.w3.org/2000/svg", "image"));
-			$("#qreator_svgbild2 #global #layer_2 image").last().attr("bildnr","0").attr("x","0").attr("y","0").attr("width",""+breite).attr("height",""+(breite/bild.width*bild.height)).attr("xlink:href",""+bild.src);
+			$("#qreator_svgbild2 #global #layer_2 image").last().attr("bildnr","0").attr("x","0").attr("y","0").attr("width",""+breite).attr("height",""+(breite/bild.width*bild.height)).attr("xlink:href",""+bild.src).attr("hoeheoriginal",""+(breite/bild.width*bild.height));
 			
 			
 			$("#"+einsetzenId).before(
@@ -853,6 +901,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 		var svgString = "";
 		var svgtext = "";
 		var zaehler = 0;
+        var maxhoehe=0;
 
 		$("#qreator_svgbild")
 				.html(
@@ -885,6 +934,9 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 					// wichtig für den richtigen namespace (sonst nur img statt image)
 					$("#qreator_svgbild2 #global #layer_" + k).append(document.createElementNS("http://www.w3.org/2000/svg", "image"));
 					$("#qreator_svgbild2 #global #layer_" + k+" image").last().attr("bildnr",j).attr("x",""+bild.x).attr("y",""+bild.y).attr("width",""+bild.breite).attr("height",""+bild.hoehe).attr("xlink:href",""+bild.data);
+                        if (bild.y+bild.hoehe>maxhoehe) {
+                            maxhoehe=bild.y+bild.hoehe;
+                        }
 					}
 				}
 				if (kurven[k] != null && kurven[k].length > 0){
@@ -903,6 +955,10 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 						var tmp = kurven[k][i][0];
 						var neueFarbe = kurven[k][i][4];
 						var neueBreite = kurven[k][i][3];
+                        var kurvenHoehe=kurven[k][i][1][3];
+                        if (kurvenHoehe>maxhoehe&&k>0){
+                            maxhoehe=kurvenHoehe;
+                        }
 
 						if (neueFarbe != aktuelleFarbe
 								|| neueBreite != aktuelleBreite) {
@@ -988,10 +1044,11 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 								svgtext = "";
 							}
 							aktuelleFarbe = '';
-							aktuelleBreite = '';
+							aktuelleBreite = ''; 
 						}
 					}
 				}
+                
 
 				if (text.length > 0) {
 					svgtext += "<path d='" + text + "' " + einsetzStringAktuell
@@ -1007,6 +1064,8 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 				}
 			}
 		}
+        
+        $("#qreator_svgbild svg").attr("height",maxhoehe).attr("heightoriginal",hoehe);
 		// $("#info").html("Anzahl der Zeichen: " + zaehler);
 		// var w = window.open("", "MsgWindow", "width=" + breite
 		// + ",height=" + hoehe);
@@ -1125,7 +1184,12 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 		for (var i = 0; i < visibleLayers.length; i++) {
 			visibleLayers[i] = 1;
 		}
-		console.log("Breite: "+$(svg).attr("width")+", Höhe: "+$(svg).attr("height"));
+		console.log("Breite: "+$(svg).attr("width")+", Höhe: "+$(svg).attr("height")+", Originalhöhe: "+$(svg).attr("heightoriginal"));
+        var originalHoehe=$(svg).attr("heightoriginal");
+        if (originalHoehe!=undefined){
+            $("#rahmen canvas").attr("height",parseInt(originalHoehe)); // Höhe an alte Originalhöhe anpassen
+            hoehe=parseInt(originalHoehe);
+        }
 		$(svg)
 				.find("#global")
 				.find("g")
@@ -1283,6 +1347,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 		}
 		zeichneEbenen(layerfolge[layer], 0, anzahlLayer - 1,true);
 		updateAuswahl();
+        
 	}
 
 	function runde(zahl, dezimalen) {
