@@ -330,9 +330,9 @@ var QreatorBezier = new function() {
 		};*/
         
         if (window.PointerEvent) {
-        c.addEventListener("pointerdown", startZeichnung);
-        c.addEventListener("pointermove", bewegeZeichnung);
-        c.addEventListener("pointerup", endeZeichnung);
+        c.addEventListener("pointerdown", function(event){if (event.pointerType=="pen"||event.pointerType=="mouse") startZeichnung(event);});
+        c.addEventListener("pointermove", function(event){if (event.pointerType=="pen"||event.pointerType=="mouse") bewegeZeichnung(event);});
+        c.addEventListener("pointerup", function(event){if (event.pointerType=="pen"||event.pointerType=="mouse") endeZeichnung(event);});
        
     } else {
         // provide fallback for user agents that do not support Pointer Events
