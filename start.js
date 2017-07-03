@@ -318,6 +318,7 @@ $(function() {
                         schriftenMenge.add(schriften[i]);
                     }
                 }
+                if (schriftenMenge.size>0) schriftenMenge.add(schriften[8]);
                 var arraySchriften = Array.from(schriftenMenge);
                 console.log("Schriften: ");
                 var schriftenText="";
@@ -363,7 +364,7 @@ $(function() {
                 if ($(this).hasClass("zeichenflaeche")){
                 code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
-                    code+="<div class='markdown tshareElement'>"+$(this).html()+"</div>\n";
+                    code+="<div class='markdown tshareElement adoccss'>"+$(this).html()+"</div>\n";
                     textElementZaehler++;
                 } else if ($(this).hasClass("datei")){
                     code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
@@ -403,7 +404,7 @@ $(function() {
                 if ($(this).hasClass("zeichenflaeche")){
                 code+="<div class='zeichenflaeche' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
-                    code+="<div class='markdown'>"+$(this).html()+"</div>\n";
+                    code+="<div class='markdown adoccss'>"+$(this).html()+"</div>\n";
                     textElementZaehler++;
                 } else if ($(this).hasClass("datei")){
                     code+="<div class='datei'>"+$(this).html()+"</div>\n";
@@ -836,6 +837,7 @@ $(function() {
             } else if (bearbeitungsTyp=="markdown"){
                 Textabschnitt.zeigeMarkdown("#markdownTable");
                 bearbeitungAn=false;
+                $("#markdown").addClass("adoccss");
                 $("#markdown").removeAttr("id");
                 
             }
@@ -871,6 +873,7 @@ $(function() {
        var originalText=$(this).find(".originaltext").text();
        // "<div class='markdown' id='markdown'></div>"
        $(this).parent().attr("id","markdown");
+        $(this).parent().removeClass("adoccss");
         bearbeitungAn=true;
         bearbeitungsTyp="markdown";
        Textabschnitt.init("#markdown","#menu",originalText);
@@ -896,7 +899,7 @@ $(function() {
 	        	$("#content").append("<div class='zeichenflaeche tshareElement zeichenflaecheKlick'>"+$(this).html()+"</div>");
 	        	$("#content").append(knopfJS);
                 } else if ($(this).hasClass("markdown")){
-                    $("#content").append("<div class='markdown tshareElement'>"+$(this).html()+"</div>");
+                    $("#content").append("<div class='markdown tshareElement adoccss'>"+$(this).html()+"</div>");
 	        	$("#content").append(knopfJS);
                 }
                 else if ($(this).hasClass("datei")){

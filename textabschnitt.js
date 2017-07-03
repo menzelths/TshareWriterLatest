@@ -46,7 +46,7 @@ var Textabschnitt = new function() {
         }
         selectorGlobal = selector;
 		menuGlobal = menuSelector;
-		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult'></div></td></tr></table>");
+		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult' class='adoccss'></div></td></tr></table>");
         $(menuGlobal).append("<button id='parseMarkdown' class='imagePreview'></button><input id='livepreview' type='checkbox' checked>Live</input>");
         
          parseMarkdown(startText, "#htmlResult"); // Anfangstext darstellen
@@ -95,8 +95,25 @@ var Textabschnitt = new function() {
                 return "\\( "+x.substring(2,x.length-2)+" \\)";
             }
         });
+         
+         
        
-        $(selector).html(micromarkdown.parse(res));
+        //$(selector).html(micromarkdown.parse(res));
+         res=Opal.Asciidoctor.$convert(res);
+         
+         
+         res=res.replace(/\\\$(.|\n)*?\\\$/g, function myFunction(x){ // für stem:
+            if (x.substring(2,x.length-2).indexOf('\n')!=-1){
+            return "\\[ "+AMTparseAMtoTeX(x.substring(2,x.length-2))+" \\]";
+            } else {
+                return "\\( "+AMTparseAMtoTeX(x.substring(2,x.length-2))+" \\)";
+            }
+        });
+         
+         
+         $(selector).html(res);
+         
+         
         
         //AMTparseAMtoTeX(formel)
         renderMathInElement($(selector)[0],{delimiters:[
