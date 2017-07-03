@@ -122,7 +122,7 @@ $(function() {
         var klasse="";
        var tshareElement=$(trigger).parent().prev();
         if (tshareElement.hasClass("markdown")){
-                   klasse="markdown";
+                   klasse="markdown adoccss";
                } else if (tshareElement.hasClass("zeichenflaeche")){
                    klasse="zeichenflaeche zeichenflaecheKlick";
                } else if (tshareElement.hasClass("datei")){
@@ -551,7 +551,7 @@ $(function() {
                var tshareElement=$(this).parent().prev();
                var klasse="";
                if (tshareElement.hasClass("markdown")){
-                   klasse="markdown";
+                   klasse="markdown adoccss";
                } else if (tshareElement.hasClass("zeichenflaeche")){
                    klasse="zeichenflaeche zeichenflaecheKlick";
                } else if (tshareElement.hasClass("datei")){
