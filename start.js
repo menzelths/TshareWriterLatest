@@ -318,7 +318,7 @@ $(function() {
                         schriftenMenge.add(schriften[i]);
                     }
                 }
-                if (schriftenMenge.size>0) schriftenMenge.add(schriften[8]);
+                if (schriftenMenge.size>0) schriftenMenge.add("KaTeX_Main");
                 var arraySchriften = Array.from(schriftenMenge);
                 console.log("Schriften: ");
                 var schriftenText="";
@@ -378,7 +378,7 @@ $(function() {
                 
             }
                 var header="<meta name='description' content='Journal for HTML' ><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
-			var blob = new Blob([header+window.atob(js)+"<style>"+gesamtText+"</style><html>"+code+"</html>"], {type: "text/html;charset=utf-8"});
+			var blob = new Blob(["<!DOCTYPE html><head>"+header+window.atob(js)+"<style>"+gesamtText+"</style></head><html>"+code+"</html>"], {type: "text/html;charset=utf-8"});
 			saveAs(blob, dateiname+"_"+anhang+".html");
 	    	}
 		
