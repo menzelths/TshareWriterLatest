@@ -46,7 +46,7 @@ var Textabschnitt = new function() {
         }
         selectorGlobal = selector;
 		menuGlobal = menuSelector;
-		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult' class='adoccss'></div></td></tr></table>");
+		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea wrap='soft' style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult' class='adoccss'></div></td></tr></table>");
         $(menuGlobal).append("<button id='parseMarkdown' class='imagePreview'></button><input id='livepreview' type='checkbox' checked>Live</input>");
         
          parseMarkdown(startText, "#htmlResult"); // Anfangstext darstellen
@@ -79,20 +79,37 @@ var Textabschnitt = new function() {
         });
     }
     
+    function stringToHex(text){
+        var ergebnis="";
+        for (var i=0;i<text.length;i++){
+            var c = text.charCodeAt(i);
+            var d = "00"+c.toString(16);
+            ergebnis+=d.substr(d.length-2)
+        }
+        return ergebnis;
+    }
+    
+    function hexToString(hex){
+        var ergebnis = "";
+    for (var i = 0; i < hex.length; i += 2)
+        ergebnis += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return ergebnis;
+    }
+    
      function parseMarkdown(text,selector){
             var res = text.replace(/\$\$\$(.|\n)*?\$\$\$/g, function myFunction(x){
             if (x.substring(3,x.length-3).indexOf('\n')!=-1){
-            return "\\[ "+AMTparseAMtoTeX(x.substring(3,x.length-3))+" \\]";
+            return "Hex11 "+stringToHex(AMTparseAMtoTeX(x.substring(3,x.length-3)))+"Hex12";
             } else {
-                return "\\( "+AMTparseAMtoTeX(x.substring(3,x.length-3))+" \\)";
+                return "Hex22 "+stringToHex(AMTparseAMtoTeX(x.substring(3,x.length-3)))+" Hex23";
             }
         });
         
         res = res.replace(/\$\$(.|\n)*?\$\$/g, function myFunction(x){
             if (x.substring(2,x.length-2).indexOf('\n')!=-1){
-            return "\\[ "+x.substring(2,x.length-2)+" \\]";
+            return "Hex11 "+stringToHex(x.substring(2,x.length-2))+" Hex12";
             } else {
-                return "\\( "+x.substring(2,x.length-2)+" \\)";
+                return "Hex22 "+stringToHex(x.substring(2,x.length-2))+" Hex23";
             }
         });
          
@@ -101,6 +118,13 @@ var Textabschnitt = new function() {
         //$(selector).html(micromarkdown.parse(res));
          res=Opal.Asciidoctor.$convert(res);
          
+         res=res.replace(/Hex11(.)*?Hex12/g, function myFunction(x){
+             return "\\["+hexToString(x.substring(5,x.length-5).trim())+"\\]";
+         });
+         
+         res=res.replace(/Hex22(.)*?Hex23/g, function myFunction(x){
+             return "\\("+hexToString(x.substring(5,x.length-5).trim())+"\\)";
+         });
          
          res=res.replace(/\\\$(.|\n)*?\\\$/g, function myFunction(x){ // für stem:
             if (x.substring(2,x.length-2).indexOf('\n')!=-1){
