@@ -417,9 +417,10 @@ $(function() {
 
                 
             }
+            var header="<meta name='description' content='Journal for HTML' ><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
 			var w=window.open();
 			w.document.open();
-			w.document.write("<!DOCTYPE html><head>"+window.atob(js)+"<style>"+gesamtText+"</style></head><html>"+code+"</html>");
+			w.document.write("<!DOCTYPE html><head>"+header+window.atob(js)+"<style>"+gesamtText+"</style></head><html>"+code+"</html>");
 			w.document.close();
 			//window.open("data:text/html,<!DOCTYPE html><html>"+code+"</html>");
 			
