@@ -1066,6 +1066,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 		}
         
         $("#qreator_svgbild svg").attr("height",maxhoehe).attr("heightoriginal",hoehe);
+       
 		// $("#info").html("Anzahl der Zeichen: " + zaehler);
 		// var w = window.open("", "MsgWindow", "width=" + breite
 		// + ",height=" + hoehe);

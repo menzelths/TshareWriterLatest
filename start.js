@@ -377,7 +377,8 @@ $(function() {
 
                 
             }
-			var blob = new Blob(["<!DOCTYPE html><head><meta name='viewport' charset='utf-8' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />"+window.atob(js)+"<style>"+gesamtText+"</style><html>"+code+"</html>"], {type: "text/html;charset=utf-8"});
+                var header="<meta name='description' content='Journal for HTML' ><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+			var blob = new Blob([header+window.atob(js)+"<style>"+gesamtText+"</style><html>"+code+"</html>"], {type: "text/html;charset=utf-8"});
 			saveAs(blob, dateiname+"_"+anhang+".html");
 	    	}
 		
