@@ -116,7 +116,11 @@ var Textabschnitt = new function() {
          
        
         //$(selector).html(micromarkdown.parse(res));
-         res=Opal.Asciidoctor.$convert(res);
+         //res=Opal.Asciidoctor.$convert(res);
+         
+         
+         var options = Opal.hash2(['header_footer', 'attributes'], { 'header_footer': false, 'attributes': ['icons=font'] }); 
+res = Opal.Asciidoctor.$convert(res, options);
          
          res=res.replace(/Hex11(.)*?Hex12/g, function myFunction(x){
              return "\\["+hexToString(x.substring(5,x.length-5).trim())+"\\]";
@@ -134,9 +138,11 @@ var Textabschnitt = new function() {
             }
         });
          
-         
+          
          $(selector).html(res);
-         
+         $(selector).find("pre code").each(function(){
+             Prism.highlightElement($(this)[0]);
+         });
          
         
         //AMTparseAMtoTeX(formel)
