@@ -361,6 +361,11 @@ $(function() {
                 var textElementZaehler=0;
 			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
+                var speichern=false;
+                $(this).next().find(".markieren").each(function(){
+                    speichern=$(this).hasClass("aktiv");
+                });
+                //if (speichern==true){ 
                 if ($(this).hasClass("zeichenflaeche")){
                 code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
@@ -369,6 +374,8 @@ $(function() {
                 } else if ($(this).hasClass("datei")){
                     code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
                 }
+                //}
+                
 			});
                 var gesamtText="";
             if (textElementZaehler>0){ 
@@ -398,20 +405,28 @@ $(function() {
 			// neu: alle svg-teile sammeln und dann in neuem fenster darstellen
 		
              var js="PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZ0LmZpcnN0Q2hpbGQ7dmFyIHphZWhsZXI9MDtmb3IgKHZhciBpPTA7aTwxMDtpKyspe3ZhciBlbGVtZW50PWEuZ2V0RWxlbWVudEJ5SWQoJ2xheWVyXycraSk7aWYgKGVsZW1lbnQhPW51bGwmJmVsZW1lbnQuZ2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5Jyk9PSdoaWRkZW4nKXtlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTsgIGJyZWFrO316YWVobGVyKys7fWlmICh6YWVobGVyPT0xMCl7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsKSB7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCdoaWRkZW4nKTsgIH0gfSBmb3IgKHZhciBpPTA7aTwxMDtpKyspeyB2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7IGVsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywndmlzaWJsZScpO2JyZWFrOyB9fX19PC9zY3JpcHQ+";
-            var textElementZaehler=0;
+            
 			var code="";
+                var textElementZaehler=0;
 			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
+                var speichern=false;
+                $(this).next().find(".markieren").each(function(){
+                    speichern=$(this).hasClass("aktiv");
+                });
+               // if (speichern==true){ 
                 if ($(this).hasClass("zeichenflaeche")){
-                code+="<div class='zeichenflaeche' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
+                code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
-                    code+="<div class='markdown adoccss'>"+$(this).html()+"</div>\n";
+                    code+="<div class='markdown tshareElement adoccss'>"+$(this).html()+"</div>\n";
                     textElementZaehler++;
                 } else if ($(this).hasClass("datei")){
-                    code+="<div class='datei'>"+$(this).html()+"</div>\n";
+                    code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
                 }
+              //  }
+                
 			});
-        var gesamtText="";
+                var gesamtText="";
             if (textElementZaehler>0){ 
                 gesamtText=sammelSchriften();
                
