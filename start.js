@@ -326,9 +326,9 @@ $(function() {
                 var schriften=cssKatex[0].split("/**/");
                 for (var i=0;i<arraySchriften.length;i++) {
                   var item=arraySchriften[i];
-                    for (var i=0;i<schriften.length;i++){
-                        if (schriften[i].indexOf(item)!=-1){
-                            schriftenText+=schriften[i].trim();
+                    for (var j=0;j<schriften.length;j++){
+                        if (schriften[j].indexOf(item)!=-1){
+                            schriftenText+=schriften[j].trim();
                         }
                     }
                 }
