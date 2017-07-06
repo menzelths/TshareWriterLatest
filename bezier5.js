@@ -866,13 +866,11 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 		$("#content").append("<div id='qreator_svgbild'></div>");
 		$("#qreator_svgbild")
 		.html(
-				"<svg  width='"
-						+  breite// anpassen an aktuelle breite
-						+ "' height='"
-						+ breite/bild.width*bild.height // anpassen an aktuelle hoehe
-					+ "' id='qreator_svgbild2' class='qreator_svg'><g fill='none' stroke-linecap='round' id='global'></g>"); // altes
+				"<svg  width='100%' height='100%' viewBox='0 0 "+breite+" "+ (breite/bild.width*bild.height)+"' hoehegesetzt='"+(breite/bild.width*bild.height)+"' breitegesetzt='"+breite+"' heightoriginal='"+(breite/bild.width*bild.height)+"' id='qreator_svgbild2' class='qreator_svg'><g fill='none' stroke-linecap='round' id='global'></g>"); // altes
 		
 
+        
+        
 	
 		$("#qreator_svgbild2 #global").append(
 				"<g id='layer_2'></g>");
@@ -880,8 +878,10 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 				
 			// wichtig für den richtigen namespace (sonst nur img statt image)
 			$("#qreator_svgbild2 #global #layer_2").append(document.createElementNS("http://www.w3.org/2000/svg", "image"));
-			$("#qreator_svgbild2 #global #layer_2 image").last().attr("bildnr","0").attr("x","0").attr("y","0").attr("width",""+breite).attr("height",""+(breite/bild.width*bild.height)).attr("xlink:href",""+bild.src).attr("hoeheoriginal",""+(breite/bild.width*bild.height));
 			
+        $("#qreator_svgbild2 #global #layer_2 image").last().attr("bildnr","0").attr("x","0").attr("y","0").attr("width",""+breite).attr("height",""+(breite/bild.width*bild.height)).attr("xlink:href",""+bild.src).attr("hoeheoriginal",""+(breite/bild.width*bild.height));
+			
+        
 			
 			$("#"+einsetzenId).before(
 					"<div class='zeichenflaeche tshareElement zeichenflaecheKlick' >" + $("#qreator_svgbild").html()
@@ -1065,7 +1065,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
 			}
 		}
         
-        $("#qreator_svgbild svg").attr("height",maxhoehe).attr("heightoriginal",hoehe);
+        $("#qreator_svgbild svg").attr("height","100%").attr("width","100%").attr("heightoriginal",hoehe).attr("hoehegesetzt",maxhoehe).attr("breitegesetzt",breite).attr("viewBox","0 0 "+breite+"  "+maxhoehe);
        
 		// $("#info").html("Anzahl der Zeichen: " + zaehler);
 		// var w = window.open("", "MsgWindow", "width=" + breite
@@ -1190,6 +1190,11 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
         if (originalHoehe!=undefined){
             $("#rahmen canvas").attr("height",parseInt(originalHoehe)); // Höhe an alte Originalhöhe anpassen
             hoehe=parseInt(originalHoehe);
+        }
+        var breiteGesetzt=$(svg).attr("breitegesetzt");
+        if (breiteGesetzt!=undefined){
+            $("#rahmen canvas").attr("width",parseInt(breiteGesetzt)); // Höhe an alte Originalhöhe anpassen
+            breite=parseInt(breiteGesetzt);
         }
 		$(svg)
 				.find("#global")

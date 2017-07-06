@@ -298,7 +298,7 @@ $(function() {
         
 	});
 		
-    function sammelSchriften(){
+    function sammelSchriften(speicherAlles){
         var gesamtText="";
         var tags=[".katex .delimsizing.size1",".katex .delimsizing.size2",".katex .delimsizing.size3",".katex .delimsizing.size4",".katex .delimsizing.mult .delim-size1 > span",".katex .delimsizing.mult .delim-size4 > span",".katex .op-symbol.small-op",".katex .op-symbol.large-op",".katex .mathit",".katex .mathbf",".katex .amsrm",".katex .mathbb",".katex .mathcal",".katex .mathfrak",".katex .mathtt",".katex .mathscr",".katex .mathsf",".katex .mainit"];
                 var schriften=["KaTeX_Size1","KaTeX_Size2","KaTeX_Size3","KaTeX_Size4","KaTeX_Size1","KaTeX_Size4","KaTeX_Size1","KaTeX_Size2","KaTeX_Main","KaTeX_Main","KaTeX_Math","KaTeX_Main","KaTeX_AMS","KaTeX_AMS","KaTeX_Caligraphic","KaTeX_Fraktur","KaTeX_Typewriter","KaTeX_Script","KaTeX_SansSerif","KaTeX_Main"]
@@ -307,7 +307,12 @@ $(function() {
                 for (var i=0;i<tags.length;i++){
                     var tagzaehler=0;
                     $(tags[i]).each(function(){
-                        tagzaehler++;
+                       var speichern=false; $(this).parents(".tshareElement").next().find(".markieren").each(function(){
+                            speichern=$(this).hasClass("aktiv");
+                       });
+                        if (speichern==true||speicherAlles==true){
+                            tagzaehler++;
+                        }
                     });
                     //console.log("Tag "+tags[i]+": "+tagzaehler+", Font: "+schriften[i]);
                     tags[i]=tagzaehler;
@@ -359,13 +364,35 @@ $(function() {
 	    	} else {
 			var code="";
                 var textElementZaehler=0;
+                
+                
+			// zähle markierte Elemente
+        
+            var elementZaehler=0;
+            var markiertZaehler=0;
+            var speicherAlles=false;
+            $(".tshareElement").each(function(){
+                elementZaehler++;
+                $(this).next().find(".markieren").each(function(){
+                    if($(this).hasClass("aktiv")){
+                        markiertZaehler++;
+                    }
+                });
+            });
+            if (elementZaehler>0&&markiertZaehler==0){
+                speicherAlles=true;
+            }
+        
 			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
                 var speichern=false;
                 $(this).next().find(".markieren").each(function(){
                     speichern=$(this).hasClass("aktiv");
                 });
-                //if (speichern==true){ 
+                if (speicherAlles==true){
+                    speichern=true; // falls alles gespeichert wird, entsprechend markieren
+                }
+                if (speichern==true){ 
                 if ($(this).hasClass("zeichenflaeche")){
                 code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
@@ -374,12 +401,12 @@ $(function() {
                 } else if ($(this).hasClass("datei")){
                     code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
                 }
-                //}
+                }
                 
 			});
                 var gesamtText="";
             if (textElementZaehler>0){ 
-                gesamtText=sammelSchriften();
+                gesamtText=sammelSchriften(speicherAlles);
                
 
                 
@@ -408,13 +435,34 @@ $(function() {
             
 			var code="";
                 var textElementZaehler=0;
+        
+            // zähle markierte Elemente
+        
+            var elementZaehler=0;
+            var markiertZaehler=0;
+            var speicherAlles=false;
+            $(".tshareElement").each(function(){
+                elementZaehler++;
+                $(this).next().find(".markieren").each(function(){
+                    if($(this).hasClass("aktiv")){
+                        markiertZaehler++;
+                    }
+                });
+            });
+            if (elementZaehler>0&&markiertZaehler==0){
+                speicherAlles=true;
+            }
+        
 			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
                 var speichern=false;
                 $(this).next().find(".markieren").each(function(){
                     speichern=$(this).hasClass("aktiv");
                 });
-               // if (speichern==true){ 
+                if (speicherAlles==true){
+                    speichern=true; // falls alles gespeichert wird, entsprechend markieren
+                }
+                if (speichern==true){ 
                 if ($(this).hasClass("zeichenflaeche")){
                 code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
@@ -423,12 +471,12 @@ $(function() {
                 } else if ($(this).hasClass("datei")){
                     code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
                 }
-              //  }
+                }
                 
 			});
                 var gesamtText="";
             if (textElementZaehler>0){ 
-                gesamtText=sammelSchriften();
+                gesamtText=sammelSchriften(speicherAlles);
                
 
                 
@@ -793,7 +841,7 @@ $(function() {
 		  	            aktuellesBild.onload=function(){
 		  	            	zeichenbreite=canvas.width;
 				            zeichenhoehe=canvas.height;
-				            console.log(this.src);
+				            //console.log(this.src);
 				        	//$(this).next().after("<div class='zeichnung' id='zeichnung'></div><button class='loeschen'>Darüber liegende Zeichenfläche löschen</button><button class='neueZeichenflaeche' >Neue Zeichenfläche</button><button class='pdf'>PDF einfügen</button>");
 				    		//bearbeitungAn=true;
 				    		//QreatorBezier.init("#zeichnung",breite,hoehe,"#menu", true); // menu: id der fläche, wo das menü erscheint, true, dass es horizontal ist
