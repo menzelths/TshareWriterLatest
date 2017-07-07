@@ -339,6 +339,9 @@ $(function() {
                 }
                 
                 gesamtText=schriftenText+cssKatex[1];
+        /*if (schriftenMenge.size>0){
+            gesamtText+=cssKatex[1];
+        }*/
                 return gesamtText;
     }
     
@@ -485,7 +488,7 @@ $(function() {
 			var w=window.open();
 			w.document.open();
 			w.document.write("<!DOCTYPE html><head>"+header+window.atob(js)+"<style>"+gesamtText+"</style></head><html>"+code+"</html>");
-			w.document.close();
+			//w.document.close();
 			//window.open("data:text/html,<!DOCTYPE html><html>"+code+"</html>");
 			
 			

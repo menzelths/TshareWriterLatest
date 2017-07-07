@@ -77,6 +77,7 @@
 .adoccss 	h6{font-size:1em}
 .adoccss 	hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
 .adoccss 	em,.adoccss i{font-style:italic;line-height:inherit}
+
 .adoccss 	strong,.adoccss b{font-weight:bold;line-height:inherit}
 .adoccss 	small{font-size:60%;line-height:inherit}
 .adoccss 	code{font-family:"Droid Sans Mono","DejaVu Sans Mono", monospace;font-weight:400;color:rgba(0, 0, 0, .9)}
@@ -405,4 +406,4 @@
 .adoccss 	.print-only{display:block!important}
 .adoccss 	.hide-for-print{display:none!important}
 .adoccss 	.show-for-print{display:inherit!important}}
-
+.adoccss .icon>i {font-style:normal; line-height:inherit}
