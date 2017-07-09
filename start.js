@@ -771,12 +771,12 @@ $(function() {
             //if (file.type.split("/")[0]=="pdf"){
                 var d=new Date();
                 var zeitpunkt=d.getDate()+"."+(d.getMonth()+1)+"."+d.getFullYear()+", "+d.getHours()+":"+("0"+d.getMinutes()).substr(-2)+":"+("0"+d.getSeconds()).substr(-2);
-                var infoString="|===\n.3+|icon:file-o[5x]|Dateiname|"+file.name+"\n|Größe in Bytes|"+file.size+"|Einfügezeitpunkt|"+zeitpunkt+"\n|===";
+                var infoString="|===\n.3+|icon:file-o[5x]|Dateiname|"+file.name.split(' ').join('_')+"\n|Größe in Bytes|"+file.size+"|Einfügezeitpunkt|"+zeitpunkt+"\n|===";
             
                 var options = Opal.hash2(['header_footer', 'attributes'], { 'header_footer': false, 'attributes': ['icons=font'] }); 
                 var res = Opal.Asciidoctor.$convert(infoString, options);
             
-                $("#einsetzen").before("<div class='datei tshareElement'><div style='background-color: #f8f8f7'><object style='display:none' id='dataNeu' data='' name="+file.name+" type='"+file.type+"'></object><button onclick='saveObject()'>"+file.name+" herunterladen</button><div class='adoccss'>"+res+"</div></div></div>"+knopfJS);
+                $("#einsetzen").before("<div class='datei tshareElement'><div style='background-color: #f8f8f7'><object style='display:none' id='dataNeu' data='' name="+file.name.split(' ').join('_')+" type='"+file.type+"'></object><button onclick='saveObject()'>"+file.name.split(' ').join('_')+" herunterladen</button><div class='adoccss'>"+res+"</div></div></div>"+knopfJS);
                 $("#dataNeu").attr("data",e.target.result);
                 $("#dataNeu").removeAttr("id");
            // } else {
