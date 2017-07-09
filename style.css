@@ -442,6 +442,37 @@ button:active{
 	
 }
 
+hr.style_0{
+	border-top: 8px dashed #ddddff;
+  
+}
+
+
+hr.style_1 {
+	border-top: 8px dashed #ddffdd;
+}
+
+hr.style_2 {
+	border-top: 8px dashed #ffdddd;;
+}
+
+.statusFarbeKnopf_0{
+    background-color: #ddddff;
+    border-style:none;
+}
+.statusFarbeKnopf_1{
+    background-color: #ddffdd;
+    border-style: none;
+}
+
+
+.statusFarbeKnopf_2{
+    background-color: #ffdddd;
+    border-style:none;
+}
+
+
+
 
 
 
