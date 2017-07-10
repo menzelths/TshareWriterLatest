@@ -1196,6 +1196,7 @@ var canvas = document.createElement('canvas'); // unsichtbares canvaselement ers
             $("#rahmen canvas").attr("width",parseInt(breiteGesetzt)); // Höhe an alte Originalhöhe anpassen
             breite=parseInt(breiteGesetzt);
         }
+        console.log(svg);
 		$(svg)
 				.find("#global")
 				.find("g")
