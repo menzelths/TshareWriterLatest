@@ -41,7 +41,7 @@ var Textabschnitt = new function() {
     }
     
     this.init=function(selector,menuSelector,startText){
-        if (startText==null){
+        if (startText==null||startText==undefined){
             startText="";
         }
         selectorGlobal = selector;
@@ -57,6 +57,9 @@ var Textabschnitt = new function() {
             if ($("#livepreview")[0].checked==true){                   
             if (e.keyCode === 13||e.charCode==13||e.keyCode==32||e.charCode==32) {
                                    var text=$("#aktuellerText").val();
+                if (text==null||text==undefined){
+                    text="";
+                }
         parseMarkdown(text, "#htmlResult");
                                }
      
