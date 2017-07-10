@@ -330,9 +330,17 @@ var QreatorBezier = new function() {
 		};*/
         
         if (window.PointerEvent) {
-        c.addEventListener("pointerdown", function(event){if (event.pointerType=="pen"||event.pointerType=="mouse") startZeichnung(event);});
-        c.addEventListener("pointermove", function(event){if (event.pointerType=="pen"||event.pointerType=="mouse") bewegeZeichnung(event);});
-        c.addEventListener("pointerup", function(event){if (event.pointerType=="pen"||event.pointerType=="mouse") endeZeichnung(event);});
+        c.addEventListener("pointerdown", function(event){
+            
+                startZeichnung(event);
+           });
+        c.addEventListener("pointermove", function(event){
+                bewegeZeichnung(event);
+        });
+        c.addEventListener("pointerup", function(event){
+                endeZeichnung(event);
+        });
+           
        
     } else {
         // provide fallback for user agents that do not support Pointer Events
@@ -346,9 +354,44 @@ var QreatorBezier = new function() {
     }
         
         
+    var device="";
+        
+        function mouseStart(event) {
+			event.preventDefault();
+			daten = [];
+            device="mouse";
+			gedrueckt = true;
+            berechnung=false;
+			maus = true;
+			touch = false;
+			// $("#info").html("onmousedown");
+			mausBewegt(event);
+		};
+		function mouseMove(event) {
+			event.preventDefault();
+			if (maus === true&&device=="mouse") {
+				// $("#info").html("onmousemove mit maus=true");
+				mausBewegt(event);
+			}
+		};
+		function mouseEnd(event) {
+			event.preventDefault();
+			if (maus === true&&device=="mouse") {
+				berechnung = true;
+				gedrueckt = false;
+
+				// $("#info").html("onmouseup mit maus=true");
+				maus = false;
+				mausBewegt(event);
+			}
+		};
+        
+        
+        
         function touchStart(event) {
 			event.preventDefault();
 			daten = [];
+            device="touch";
 			gedrueckt = true;
             berechnung=false;
 			touch = true;
@@ -359,13 +402,13 @@ var QreatorBezier = new function() {
 		};
 		function touchMove(event) {
 			event.preventDefault();
-			if (touch === true && gedrueckt == true)
+			if (touch === true && gedrueckt == true&&device=="touch")
 				// $("#info").html("touchmove mit touch==true");
 				touchBewegt(event);
 		};
 		function touchEnd(event) {
 			event.preventDefault();
-			if (touch === true) {
+			if (touch === true&&device=="touch") {
 				berechnung = true;
 				gedrueckt = false;
 				touch = false;
@@ -385,10 +428,14 @@ var QreatorBezier = new function() {
 			maus = false;
 			touch = false;
             pen=false;
+            device=event.pointerType;
+           
             if (event.pointerType=="pen"){
                 pen=true;
             } else if (event.pointerType=="mouse"){
                 maus=true;
+            } else if (event.pointerType=="touch"){
+                touch=true;
             }
 			// $("#info").html("onmousedown");
 			mausBewegt(event);
@@ -397,7 +444,7 @@ var QreatorBezier = new function() {
 		function bewegeZeichnung (event) {
             //if (event.pointerType=="pen"){
 			event.preventDefault();
-			if (maus === true || pen===true) {
+			if (gedrueckt==true&&event.pointerType==device) {
 				// $("#info").html("onmousemove mit maus=true");
 				mausBewegt(event);
 			}
@@ -406,7 +453,7 @@ var QreatorBezier = new function() {
 		function endeZeichnung(event) {
           //  if (event.pointerType=="pen"){
 			event.preventDefault();
-			if (maus === true||pen===true) {
+			if (device==event.pointerType) {
 				berechnung = true;
 				gedrueckt = false;
 
