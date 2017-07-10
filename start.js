@@ -1001,10 +1001,10 @@ $(function() {
 		// $(this).removeClass("zeichenflaeche"); // sonst immer auf klick reagieren
 		 bearbeitungAn=true;
          bearbeitungsTyp="zeichenflaeche";
-		 breite=parseInt($(this).find("svg").attr("width"));
-		 hoehe=parseInt($(this).find("svg").attr("height"));
+		 var zeichenbreite=parseInt($(this).find("svg").attr("width"));
+		 var zeichenhoehe=parseInt($(this).find("svg").attr("height"));
 		// console.log("Breite aus svg: "+$(this).find("svg").attr("width"));
-			QreatorBezier.init(this,breite,hoehe,"#menu", true); // hier auch anpassen
+			QreatorBezier.init(this,zeichenbreite,zeichenhoehe,"#menu", true); // hier auch anpassen
 
 		// $(this).after("<button class='neueZeichenflaeche' >Neue Zeichenfläche</button>");
 		 QreatorBezier.loadSVG(text);

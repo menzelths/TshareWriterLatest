@@ -121,7 +121,7 @@
 })();
 
 var QreatorBezier = new function() {
-	var farben, knoepfe, dicken, layer, visibleLayers, layerfolge, c, breite, hoehe, toleranz_steigung, rx, ry, rasterVorgabe, rasterzaehler, stiftdicke, farbe, grenzeAnzahl, rechtecke, rechtekce2, betroffeneKurven, zeichenbreite, toleranzgrenze, layer, dezimalenSVG, ecken, altx, alty, zeichenmodus, gc, gc2, gc0, gc3, kurven, raster, maus, touch, debugging, gedrueckt, berechnung, datenx, dateny, daten, zmaxgesamt, zmingesamt, selectorGlobal, radierdicke, farbwahl, menuGlobal, order, changes, changesPosition, orderPosition, unchanged;
+	var farben, knoepfe, dicken, layer, visibleLayers, layerfolge, c, breite, hoehe, toleranz_steigung, rx, ry, rasterVorgabe, rasterzaehler, stiftdicke, farbe, grenzeAnzahl, rechtecke, rechtekce2, betroffeneKurven, zeichenbreite, toleranzgrenze, layer, dezimalenSVG, ecken, altx, alty, zeichenmodus, gc, gc2, gc0, gc3, kurven, raster, maus,pen, touch, debugging, gedrueckt, berechnung, datenx, dateny, daten, zmaxgesamt, zmingesamt, selectorGlobal, radierdicke, farbwahl, menuGlobal, order, changes, changesPosition, orderPosition, unchanged;
 
 	var farben = [ "#00ff00", "#FF0000", "#0000FF", "#008000",
 			"#FFA500", "#EB4DFF", "#808000", "#808080",  "#ADD8E6", "#62FFFF", "#00FF00", "#00FFFF",
@@ -339,8 +339,42 @@ var QreatorBezier = new function() {
         c.addEventListener("mousedown", startZeichnung);
         c.addEventListener("mousemove", bewegeZeichnung);
         c.addEventListener("mouseup", endeZeichnung);
+        c.addEventListener("touchstart", touchStart);
+        c.addEventListener("touchmove", touchMove);
+        c.addEventListener("touchend", touchEnd);
+        
     }
         
+        
+        function touchStart(event) {
+			event.preventDefault();
+			daten = [];
+			gedrueckt = true;
+            berechnung=false;
+			touch = true;
+			maus = false;
+            pen=false;
+			// $("#info").html("touchstart");
+			touchBewegt(event);
+		};
+		function touchMove(event) {
+			event.preventDefault();
+			if (touch === true && gedrueckt == true)
+				// $("#info").html("touchmove mit touch==true");
+				touchBewegt(event);
+		};
+		function touchEnd(event) {
+			event.preventDefault();
+			if (touch === true) {
+				berechnung = true;
+				gedrueckt = false;
+				touch = false;
+                pen=false;
+                maus=false;
+				// $("#info").html("touchend mit touch==true");
+				touchBewegt(event);
+			}
+		};
         function startZeichnung(event) {
             //if (event.pointerType=="pen"||event.pointerType=="mouse"){
 			event.preventDefault();
@@ -348,8 +382,14 @@ var QreatorBezier = new function() {
 			daten = [];
 			gedrueckt = true;
             berechnung=false;
-			maus = true;
+			maus = false;
 			touch = false;
+            pen=false;
+            if (event.pointerType=="pen"){
+                pen=true;
+            } else if (event.pointerType=="mouse"){
+                maus=true;
+            }
 			// $("#info").html("onmousedown");
 			mausBewegt(event);
           //  }
@@ -357,7 +397,7 @@ var QreatorBezier = new function() {
 		function bewegeZeichnung (event) {
             //if (event.pointerType=="pen"){
 			event.preventDefault();
-			if (maus === true) {
+			if (maus === true || pen===true) {
 				// $("#info").html("onmousemove mit maus=true");
 				mausBewegt(event);
 			}
@@ -366,12 +406,14 @@ var QreatorBezier = new function() {
 		function endeZeichnung(event) {
           //  if (event.pointerType=="pen"){
 			event.preventDefault();
-			if (maus === true) {
+			if (maus === true||pen===true) {
 				berechnung = true;
 				gedrueckt = false;
 
 				// $("#info").html("onmouseup mit maus=true");
 				maus = false;
+                touch=false;
+                pen=false;
 				mausBewegt(event);
 			}
            // }
