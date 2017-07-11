@@ -53,6 +53,8 @@ var Textabschnitt = new function() {
         
         var exp=new Expanding($("#aktuellerText")[0]); // passt textarea der Größe nach an
         
+        $("#aktuellerText").focus();
+    
         $("#aktuellerText").on("keypress",function(e){
             if ($("#livepreview")[0].checked==true){                   
             if (e.keyCode === 13||e.charCode==13||e.keyCode==32||e.charCode==32) {
@@ -80,8 +82,8 @@ var Textabschnitt = new function() {
         $("#erstelleTabelle").on("click",function(){
            umgebeAuswahl("<span style='background-color: #ffff00'>","</span>","#aktuellerText"); 
         });
-    }
     
+    }
     function stringToHex(text){
         var ergebnis="";
         for (var i=0;i<text.length;i++){
