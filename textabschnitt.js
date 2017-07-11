@@ -102,6 +102,9 @@ var Textabschnitt = new function() {
     }
     
      function parseMarkdown(text,selector){
+         if (text==null||text==undefined){
+             text="";
+         }
             var res = text.replace(/\$\$\$(.|\n)*?\$\$\$/g, function myFunction(x){
             if (x.substring(3,x.length-3).indexOf('\n')!=-1){
             return "Hex11 "+stringToHex(AMTparseAMtoTeX(x.substring(3,x.length-3)))+"Hex12";
