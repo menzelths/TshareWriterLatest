@@ -285,7 +285,7 @@ res = Opal.Asciidoctor.$convert(res, options);
                 //we never checked if this is in proper format for nerdamer so we'll just try and if nerdamer complains we'll let the person know
                 try {
                     nerdamer.setFunction(fnName, params, nerdamer(fnBody).text());
-                    LaTeX = fnName+ //parse the function name with nerdamer so we can get back some nice LaTeX
+                    LaTeX =  fnName+ //parse the function name with nerdamer so we can get back some nice LaTeX
                             '('+ //do the same for the parameters
                                 params.map(function(x) {
                                     return nerdamer(x).toTeX();
