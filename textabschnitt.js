@@ -105,6 +105,8 @@ var Textabschnitt = new function() {
          if (text==null||text==undefined){
              text="";
          }
+         
+            // asciimath überprüfen, dort auch keine nerdamer funktionen
             var res = text.replace(/\$\$\$(.|\n)*?\$\$\$/g, function myFunction(x){
             if (x.substring(3,x.length-3).indexOf('\n')!=-1){
             return "Hex11 "+stringToHex(AMTparseAMtoTeX(x.substring(3,x.length-3)))+"Hex12";
@@ -113,9 +115,27 @@ var Textabschnitt = new function() {
             }
         });
          
-         nerdamer.flush();
-         nerdamer.clearVars();
          
+         //nerdamer.flush();
+         //nerdamer.clearVars();
+         
+         // jetzt alle nerdamer funktionen suchen und entsprechend ersetzen
+         res = res.replace(/\$\$(.|\n)*?\$\$/g, function myFunction(x){
+             x=x.replace(/\!\!(.|\n)*?\!\!/g, function myFunction2(mathString){
+                 mathString=mathString.trim().split(' ').join('');
+                 var replaceValue=["NerdTerm11","NerdTerm2"]; // 1 für intern
+                 var test=mathString.substring(2,mathString.length-2);
+                 return replaceValue[0]+" "+mathString.substring(2,mathString.length-2)+" "+replaceValue[1];
+             });
+                            
+               return x;            
+        });
+         
+         res=res.replace(/\!\!(.|\n)*?\!\!/g, function myFunction(mathString){
+             mathString=mathString.trim().split(' ').join('');
+                 var replaceValue=["NerdTerm10","NerdTerm2"]; // 0 für extern
+                 return replaceValue[0]+" "+mathString.substring(2,mathString.length-2)+" "+replaceValue[1];
+             });
          
           res=res.replace(/\!\!\!(.|\n)*?\!\!\!/g, function myFunction(x){
               var matheString=x.substring(3,x.length-3).trim();
@@ -133,14 +153,20 @@ var Textabschnitt = new function() {
                  return process(matheString,evaluate,decimal);
           });
          
-         res=res.replace(/\!\!(.|\n)*?\!\!/g, function myFunction(x){
-            if (x.substring(2,x.length-2).indexOf('\n')!=-1){
-                var matheString=x.substring(2,x.length-2).trim();
-                //var sammelString=[];
+         res=res.replace(/NerdTerm1(.|\n)*?NerdTerm2/g, function myFunction(x){
+            if (x.substring(9,x.length-9).indexOf('\n')!=-1){
+                
+                var matheString=x.substring(10,x.length-9).trim(); // 10, da auch prefix weg kann
+                
+                
                 var ergebnis= matheString.split('\n').map(function(zeile){
+                    var rueckgabe=true;
                     if (zeile.startsWith("!")){
-                        return "";
-                    } else {
+                        rueckgabe=false;
+                        zeile=zeile.substr(1);
+                        
+                    } 
+                    
                         var evaluate=false;
                         var decimal=false;
                         var matheString=zeile;
@@ -152,28 +178,34 @@ var Textabschnitt = new function() {
                     matheString=matheString.substr(0,matheString.length-1).trim();
                     decimal=true;
                 }
-                      
-                         
-                         return "$$\n"+process(matheString,evaluate,decimal)+"\n$$";
+                        var berechnung=process(matheString,evaluate,decimal); // somit werden auch unsichtbare Ausdrücke evaluiert
+                         if (rueckgabe==true){
+                         return "$$\n"+berechnung+"\n$$";
+                         }
                      
-                     
-                    }
+                    
                 }).join('\n');
                 return ergebnis;
             } else {
-                var matheString=x.substring(2,x.length-2);
+                
+                var matheString=x.substring(9,x.length-9).trim();
+                var prePost=["",""];
+                if (matheString.startsWith("0")){ //
+                    prePost=["$$ "," $$"];
+                }
+                matheString=matheString.substr(1).trim(); // Steuerungszeichen ignorieren
                 var evaluate=false;
                 var decimal=false;
                 if (matheString.startsWith("#")){
-                        matheString=matheString.substring(1).trim();;
+                        matheString=matheString.substr(1).trim();;
                         evaluate=true;
                      } 
                 if (matheString.endsWith("#")){
-                    matheString=matheString.substr(0,matheString.length-1).trim();
+                    matheString=matheString.substring(0,matheString.length-1).trim();
                     decimal=true;
                 }
                          
-                 return "$$ "+process(matheString,evaluate,decimal)+"$$";
+                 return prePost[0]+process(matheString,evaluate,decimal)+prePost[1];
                      
                 
             }

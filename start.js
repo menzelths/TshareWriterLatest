@@ -986,6 +986,9 @@ $(function() {
                 $("#markdown").addClass("adoccss");
                 $("#markdown").removeAttr("id");
                 
+                // alle Texte auf den neuesten Stand bringen (wegen Mathematik)
+                
+                
             }
 		 }
        
@@ -1026,6 +1029,9 @@ $(function() {
        
        
     });
+    
+    
+    
 	$(document).on("change","#fileInput",function(){
 		var fileList = $("#fileInput")[0].files;
 	    var file = fileList[0];
