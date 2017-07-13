@@ -117,7 +117,7 @@ var Textabschnitt = new function() {
          nerdamer.clearVars();
          
          
-          var res=res.replace(/\!\!\!(.|\n)*?\!\!\!/g, function myFunction(x){
+          res=res.replace(/\!\!\!(.|\n)*?\!\!\!/g, function myFunction(x){
               var matheString=x.substring(3,x.length-3).trim();
                 var evaluate=false;
                 var decimal=false;
@@ -133,7 +133,7 @@ var Textabschnitt = new function() {
                  return process(matheString,evaluate,decimal);
           });
          
-         var res=res.replace(/\!\!(.|\n)*?\!\!/g, function myFunction(x){
+         res=res.replace(/\!\!(.|\n)*?\!\!/g, function myFunction(x){
             if (x.substring(2,x.length-2).indexOf('\n')!=-1){
                 var matheString=x.substring(2,x.length-2).trim();
                 //var sammelString=[];
@@ -284,7 +284,7 @@ res = Opal.Asciidoctor.$convert(res, options);
                     fnBody = functionDeclaration[3];
                 //we never checked if this is in proper format for nerdamer so we'll just try and if nerdamer complains we'll let the person know
                 try {
-                    nerdamer.setFunction(fnName, params, fnBody);
+                    nerdamer.setFunction(fnName, params, nerdamer(fnBody).text());
                     LaTeX = fnName+ //parse the function name with nerdamer so we can get back some nice LaTeX
                             '('+ //do the same for the parameters
                                 params.map(function(x) {
@@ -298,7 +298,7 @@ res = Opal.Asciidoctor.$convert(res, options);
                     }
                     //add the LaTeX to the panel
                     //addToPanel(LaTeX, expression);   
-                    return LaTeX;
+                    return LaTeX.split('\n').join('');
                     //clear();
                 }
                 catch(e) { 
@@ -316,7 +316,8 @@ res = Opal.Asciidoctor.$convert(res, options);
                         //generate the LaTeX
                         LaTeX = varName+'='+nerdamer(varValue).toTeX();
                         //addToPanel(LaTeX, expression, undefined, varName); 
-                        return LaTeX;
+                        var test=LaTeX.split('\n').join('');
+                        return LaTeX.split('\n').join('');
                         
                         //clear();
                     }
@@ -344,7 +345,7 @@ res = Opal.Asciidoctor.$convert(res, options);
                         LaTeX = evaluated.toTeX(decimal);
                         //add the LaTeX to the panel
                         //addToPanel(LaTeX, expression, output);  
-                        return LaTeX;
+                        return LaTeX.split('\n').join('');
                         //clear();
                     }
                     catch(e){
