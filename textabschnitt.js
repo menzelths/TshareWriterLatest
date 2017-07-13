@@ -112,6 +112,72 @@ var Textabschnitt = new function() {
                 return "Hex22 "+stringToHex(AMTparseAMtoTeX(x.substring(3,x.length-3)))+" Hex23";
             }
         });
+         
+         nerdamer.flush();
+         nerdamer.clearVars();
+         
+         
+          var res=res.replace(/\!\!\!(.|\n)*?\!\!\!/g, function myFunction(x){
+              var matheString=x.substring(3,x.length-3).trim();
+                var evaluate=false;
+                var decimal=false;
+                if (matheString.startsWith("#")){
+                        matheString=matheString.substring(1).trim();;
+                        evaluate=true;
+                     } 
+                if (matheString.endsWith("#")){
+                    matheString=matheString.substr(0,matheString.length-1).trim();
+                    decimal=true;
+                }
+                 var test=  process(matheString,evaluate,decimal);
+                 return process(matheString,evaluate,decimal);
+          });
+         
+         var res=res.replace(/\!\!(.|\n)*?\!\!/g, function myFunction(x){
+            if (x.substring(2,x.length-2).indexOf('\n')!=-1){
+                var matheString=x.substring(2,x.length-2).trim();
+                //var sammelString=[];
+                var ergebnis= matheString.split('\n').map(function(zeile){
+                    if (zeile.startsWith("!")){
+                        return "";
+                    } else {
+                        var evaluate=false;
+                        var decimal=false;
+                        var matheString=zeile;
+                        if (matheString.startsWith("#")){
+                        matheString=matheString.substring(1).trim();;
+                        evaluate=true;
+                     } 
+                if (matheString.endsWith("#")){
+                    matheString=matheString.substr(0,matheString.length-1).trim();
+                    decimal=true;
+                }
+                      
+                         
+                         return "$$\n"+process(matheString,evaluate,decimal)+"\n$$";
+                     
+                     
+                    }
+                }).join('\n');
+                return ergebnis;
+            } else {
+                var matheString=x.substring(2,x.length-2);
+                var evaluate=false;
+                var decimal=false;
+                if (matheString.startsWith("#")){
+                        matheString=matheString.substring(1).trim();;
+                        evaluate=true;
+                     } 
+                if (matheString.endsWith("#")){
+                    matheString=matheString.substr(0,matheString.length-1).trim();
+                    decimal=true;
+                }
+                         
+                 return "$$ "+process(matheString,evaluate,decimal)+"$$";
+                     
+                
+            }
+        });
         
         res = res.replace(/\$\$(.|\n)*?\$\$/g, function myFunction(x){
             if (x.substring(2,x.length-2).indexOf('\n')!=-1){
@@ -146,6 +212,8 @@ res = Opal.Asciidoctor.$convert(res, options);
             }
         });
          
+         
+         
           
          $(selector).html(res);
          $(selector).find("pre code").each(function(){
@@ -159,6 +227,131 @@ res = Opal.Asciidoctor.$convert(res, options);
   {left: "\\[", right: "\\]", display: true},
   {left: "\\(", right: "\\)", display: false}
 ]});
+        }
+    
+    
+    // nerdamer
+    // von http://nerdamer.com/js/demo.js
+    
+    function extractExpression(str) {
+            var l = str.length,
+                openBrackets = 0;
+            for(var i=0; i<l; i++) {
+                var ch = str.charAt(i);
+                if(ch === '(' || ch === '[') openBrackets++; //record and open brackets
+                if(ch === ')' || ch === ']') openBrackets--; //close the bracket
+                if(ch === ',' && !openBrackets) return [str.substr(0, i), str.substr(i+1, l)];
+            }
+            return [str, ''];
+        };
+    
+    function prepareExpression(str) {
+            //the string will come in the form x+x, x=y, y=z
+            var extracted = extractExpression(str.split(' ').join('')),
+                expression = extracted[0],
+                scope = {};
+            extracted[1].split(',').map(function(x) {
+                var parts = x.split('='),
+                   varname = parts[0],
+                   value = parts[1];
+                if(nerdamer.validVarName(varname) && typeof value !== 'undefined')
+                    scope[varname] = parts[1];
+            });
+            return [expression, scope];
+        }
+    
+    function process(text,evaluate,decimalNumber) {
+            var x=nerdamer('f(x)=x^2');
+            var y=nerdamer('h(x)=diff(f(x),x)');
+            var z=nerdamer('h(2)').toString();
+            var expressionAndScope = prepareExpression(text),
+                expression = expressionAndScope[0],
+                scope = expressionAndScope[1],
+                //alternative regex: ^([a-z_][a-z\d\_]*)\(([a-z_,])\):=([\+\-\*\/a-z\d*_,\^!\(\)]+)
+                functionRegex = /^([a-z_][a-z\d\_]*)\(([a-z_,\s]*)\):=(.+)$/gi, //does not validate the expression
+                functionDeclaration = functionRegex.exec(expression),
+                LaTeX;
+            
+            //it might be a function declaration. If it is the scope object gets ignored
+            if(functionDeclaration) { 
+                //Remember: The match comes back as [str, fnName, params, fnBody]
+                //the function name should be the first group of the match
+                var fnName = functionDeclaration[1],
+                    //the parameters are the second group according to this regex but comes with commas 
+                    //hence the splitting by ,
+                    params = functionDeclaration[2].split(','),
+                    //the third group is just the body and now we have all three parts nerdamer needs to create the function
+                    fnBody = functionDeclaration[3];
+                //we never checked if this is in proper format for nerdamer so we'll just try and if nerdamer complains we'll let the person know
+                try {
+                    nerdamer.setFunction(fnName, params, fnBody);
+                    LaTeX = fnName+ //parse the function name with nerdamer so we can get back some nice LaTeX
+                            '('+ //do the same for the parameters
+                                params.map(function(x) {
+                                    return nerdamer(x).toTeX();
+                                }).join(',')+
+                            ')='+
+                            nerdamer(fnBody).toTeX();
+
+                    if(Object.keys(scope).length > 0) {
+                       // notify('A variable object was provided but is ignored for function declaration.');
+                    }
+                    //add the LaTeX to the panel
+                    //addToPanel(LaTeX, expression);   
+                    return LaTeX;
+                    //clear();
+                }
+                catch(e) { 
+                    return text('Error: Could not set function: '+e.toString());
+                }
+            }
+            else {
+                var variableDeclaration = /^([a-z_][a-z\d\_]*):(.+)$/gi.exec(expression);
+                if(variableDeclaration) {
+                    try {
+                        var varName = variableDeclaration[1],
+                            varValue = variableDeclaration[2];
+                        //set the value
+                        nerdamer.setVar(varName, varValue);
+                        //generate the LaTeX
+                        LaTeX = varName+'='+nerdamer(varValue).toTeX();
+                        //addToPanel(LaTeX, expression, undefined, varName); 
+                        return LaTeX;
+                        
+                        //clear();
+                    }
+                    catch(e){
+                        return text('Something went wrong. Nerdamer could not parse expression: '+e.toString());
+                    } 
+                }
+                else {
+                    try {
+                        //wrap the expression in expand if expand is checked
+                        //var evaluated = nerdamer(expandIsChecked() ? 'expand('+expression+')' : expression, scope),
+                        var evaluated=nerdamer(expression,scope);
+                            //check if the user wants decimals
+                            //decimal = toDecimal() ? 'decimal' : undefined,
+                            //the output is for the reload button
+                            output = evaluated.toString(); 
+                        //call evaluate if the evaluate box is checked
+                        if(evaluate==true) {
+                            evaluated = evaluated.evaluate();
+                        }
+                        decimal=undefined;
+                        if (decimalNumber==true){
+                            decimal='decimal';
+                        }
+                        LaTeX = evaluated.toTeX(decimal);
+                        //add the LaTeX to the panel
+                        //addToPanel(LaTeX, expression, output);  
+                        return LaTeX;
+                        //clear();
+                    }
+                    catch(e){
+                        return text('Something went wrong. Nerdamer could not parse expression: '+e.toString());
+                    } 
+                }  
+            }
         }
     
 }
