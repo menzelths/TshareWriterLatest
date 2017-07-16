@@ -171,6 +171,11 @@ var QreatorBezier = new function() {
 	}
 	//knoepfe += "</span>";
 	var that = this;
+    
+    this.holeBezier=function(d,t){
+        Bezier.initialisiere(d, t);
+		return Bezier.approximiere();
+    }
 
 	this.init = function(selector, b, h, menuSelector, horizontal,stiftReset) {
 		visibleLayers = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]; // alle layer einschalten

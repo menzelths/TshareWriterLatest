@@ -5206,11 +5206,11 @@ var nerdamer = (function(imports) {
             }
 
             if (isVector(symbol)) {
-                var TeX = '\\left[';
+                var TeX = '\\begin{pmatrix}\n';
                 for (var i = 0; i < symbol.elements.length; i++){
-                    TeX += this.latex(symbol.elements[i]) + ' ' + (i!==symbol.elements.length-1 ? ',\\,' : '');
+                    TeX += this.latex(symbol.elements[i]) + ' ' + (i!==symbol.elements.length-1 ? '\\\\' : '');
                 }
-                TeX += '\\right]';
+                TeX += '\\end{pmatrix}';
                 return TeX;
             }
 
