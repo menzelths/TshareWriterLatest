@@ -123,6 +123,17 @@ var Textabschnitt = new function() {
          
          //nerdamer.flush();
          //nerdamer.clearVars();
+         res=res.replace(/\!\!\!(.|\n)*?\!\!\!/g, function myFunction(mathString){ // zeichnen
+            
+                 mathString=mathString.trim().split(' ').join('');
+                 var replaceValue=["NerdTerm12","NerdTerm2"]; // 2 für zeichnen
+                 
+                 return replaceValue[0]+" "+mathString.substring(3,mathString.length-3)+" "+replaceValue[1];
+             
+                            
+                
+             });
+         
          
          res=res.replace(/\!\ppp(.|\n)*?\!\ppp/g, function myFunction(x){ // zeichnen
              x=x.replace(/\!\!(.|\n)*?\!\!/g, function myFunction2(mathString){
@@ -163,9 +174,10 @@ var Textabschnitt = new function() {
                 
                 var ergebnis= matheString.split('\n').map(function(zeile){
                     var rueckgabe=true;
+                    zeile=zeile.trim();
                     if (zeile.startsWith("!")){
                         rueckgabe=false;
-                        zeile=zeile.substr(1);
+                        zeile=zeile.substr(1).trim();
                         
                     } 
                     
@@ -232,6 +244,9 @@ var Textabschnitt = new function() {
              var zeichenbreite=5;
              var achsenzaehler=0;
              var bildbreite=2000;
+             var achsenFarbe="";
+             var achsenDicke="";
+             
              var schriftGroesseStandard=40;
              $("body").append("<canvas id='plotcanvas' style='display:none' width='"+bildbreite+"px' height='"+bildbreite+"px'></canvas>");
              var canvas=$("#plotcanvas")[0];
@@ -372,7 +387,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                         // xrichtung
                         if (deltaX>0){
                         for(var i=deltaX*(parseInt(parseFloat(xaxis[0])/(deltaX)));i<parseFloat(xaxis[1]);i+=deltaX){
-                            if (i!=0||(i==0&&xaxis.length==3&&parseFloat(xaxis[2])<0)){ 
+                            if (i!=0||(i==0&&yaxis.length==3&&parseFloat(yaxis[2])<0)){ 
                             gc2.strokeStyle = farbe;
                        gc2.lineWidth=zeichenbreite;
                         gc2.beginPath();
@@ -386,7 +401,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                         // yrichtung
                         if (deltaY>0){
                         for(var i=deltaY*(parseInt(parseFloat(yaxis[0])/(deltaY)));i<parseFloat(yaxis[1]);i+=deltaY){
-                            if (i!=0||(i==0&&yaxis.length==3&&parseFloat(yaxis[2])<0)){ 
+                            if (i!=0||(i==0&&xaxis.length==3&&parseFloat(xaxis[2])<0)){ 
                              gc2.strokeStyle = farbe;
                        gc2.lineWidth=zeichenbreite;
                         gc2.beginPath();
@@ -396,6 +411,18 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                         }
                         }
                         }
+                    
+                        
+                        // achsen erneut zeichnen
+                        var farbspeicher=farbe;
+                        var dickenspeicher=zeichenbreite;
+                        farbe=achsenFarbe;
+                        zeichenbreite=achsenDicke;
+                        zeichneXAchse();
+                        zeichneYAchse();
+                        // farben zurücksetzen
+                        farbe=farbspeicher;
+                        zeichenbreite=dickenspeicher;
                     }
                     return "";
                 } else if (teil[0].trim()=="fontsize"){
@@ -451,19 +478,33 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                     
                 } else if (teil[0].trim().toLowerCase()=="xaxis"){
                     xaxis=teil[1].split(',');
+                    if (parseFloat(xaxis[1])<parseFloat(xaxis[0])){
+                        var dummy=xaxis[0];
+                        xaxis[0]=xaxis[1];
+                        xaxis[1]=dummy;
+                        }
                     achsenzaehler++;
                     if (achsenzaehler==2){
                         zeichneXAchse();
                         zeichneYAchse();
+                        achsenFarbe=farbe;
+                        achsenDicke=zeichenbreite;
                     }
                     
                     return "";
                 } else if (teil[0].trim().toLowerCase()=="yaxis"){
                     yaxis=teil[1].split(',');
+                    if (parseFloat(yaxis[1])<parseFloat(yaxis[0])){
+                        var dummy=yaxis[0];
+                        yaxis[0]=yaxis[1];
+                        yaxis[1]=dummy;
+                        }
                     achsenzaehler++;
                     if (achsenzaehler==2){
                         zeichneXAchse();
                         zeichneYAchse();
+                        achsenFarbe=farbe;
+                        achsenDicke=zeichenbreite;
                     }
                     
                     
@@ -631,7 +672,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
          var bilddaten=$("#plotcanvas")[0].toDataURL();
          
          $("#plotcanvas").remove();
-             return "\n\n++++\n<img src='"+bilddaten+"' width='600px' ></img>\n++++\n";
+             return "\n\n++++\n<img  style='margin-left:auto; margin-right:auto;display:block' src='"+bilddaten+"' width='600px'  ></img>\n++++\n";
              
          });
          
@@ -771,9 +812,9 @@ res = Opal.Asciidoctor.$convert(res, options);
                 if(variableDeclaration) {
                     try {
                         var varName = variableDeclaration[1],
-                            varValue = nerdamer(variableDeclaration[2]).text();
+                            varValue = variableDeclaration[2];
                         //set the value
-                        nerdamer.setVar(varName, varValue);
+                        nerdamer.setVar(varName, nerdamer(varValue).text());
                         //generate the LaTeX
                         LaTeX = varName+'='+nerdamer(varValue).toTeX();
                         //addToPanel(LaTeX, expression, undefined, varName); 

@@ -2702,6 +2702,11 @@ var nerdamer = (function(imports) {
                 'dot'               : [ dot, 2],
                 'cross'             : [ cross, 2],
                 'vecget'            : [ vecget, 2],
+                'vecgetlength'      : [ vecgetlength,1],
+                'vecreal'           : [ vecreal,1],
+                'isimaginary'       : [ isImaginary,1],
+                'im'                : [ im,1],
+                're'                : [ re,1],
                 'vecset'            : [ vecset, 3],
                 'matget'            : [ matget, 3],
                 'matset'            : [ matset, 4],
@@ -4173,6 +4178,45 @@ var nerdamer = (function(imports) {
         
         function vecget(vector, index) {
             return vector.elements[index];
+        }
+        
+        function vecgetlength(vector){
+            return vector.elements.length;
+        }
+        
+        function re(s){
+            return evaluate(_.subtract(s,_.multiply(_.parse(im(s)),_.parse(Settings.IMAGINARY))));
+        }
+        
+        
+            function im(s){
+            var part=evaluate(_.parse(s));
+            if (part.contains(Settings.IMAGINARY,true)){
+                return part.symbols.i.multiplier;
+            } else {
+                return 0;
+            }
+        
+        }
+        
+        function isImaginary(s){
+            var part=evaluate(_.parse(s));
+            var rg=part.contains(Settings.IMAGINARY,true);
+            return ""+rg;
+            
+        }
+        
+        function vecreal(vector){
+            var v=new Vector();
+            var zaehler=0;
+            for (var i=0;i<vector.elements.length;i++){
+                if (isImaginary(vector.elements[i])=="false"){
+                    v.elements[zaehler+1]=vector.elements[i];
+                    zaehler++;
+                }
+            }
+            v.elements[0]=evaluate(_.parse(zaehler));
+            return v;
         }
         
         function vecset(vector, index, value) {
