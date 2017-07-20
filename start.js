@@ -327,7 +327,10 @@ $(function() {
                         schriftenMenge.add(schriften[i]);
                     }
                 }
-                if (schriftenMenge.size>0) schriftenMenge.add("KaTeX_Main");
+                if (schriftenMenge.size>0) {
+                    schriftenMenge.add("KaTeX_Main");
+                    schriftenMenge.add("KaTeX_Math");
+                }
                 var arraySchriften = Array.from(schriftenMenge);
                 console.log("Schriften: ");
                 var schriftenText="";
