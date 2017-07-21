@@ -21,6 +21,13 @@ var Textabschnitt = new function() {
         
     }
     
+    this.recalculate=function(text){
+        $("body").append("<div id='tempDiv' style='display:hidden'></div>");
+        var ergebnis=parseMarkdown(text,"#tempDiv");
+        $("#tempDiv").remove();
+        return ergebnis;
+    }
+    
     function Punkt(x, y) {
 		this.x = x;
 		this.y = y;
@@ -426,7 +433,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                     }
                     return "";
                 } else if (teil[0].trim()=="fontsize"){
-
+                
                     gc2.font=teil[1].trim()+"px Sans-Serif";
                 
                 } else if (teil[0].trim()=="arrow"){
@@ -438,6 +445,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                     
                 }else if (teil[0].trim()=="polygon"){
                     var rest=teil[1].split(',');
+                    if (rest.length>0){
                     var fuellen=true;
                     var fuellfarbe="";
                     var laenge=rest.length;
@@ -461,7 +469,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                         gc2.lineWidth=zeichenbreite;
                         gc2.stroke();
                     
-                    
+                    }
                 }
                     else if (teil[0].trim().toLowerCase()=="pen"){
                          var rest=teil[1].split(',');
@@ -478,6 +486,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                     
                 } else if (teil[0].trim().toLowerCase()=="xaxis"){
                     xaxis=teil[1].split(',');
+                    if (xaxis.length==3){
                     if (parseFloat(xaxis[1])<parseFloat(xaxis[0])){
                         var dummy=xaxis[0];
                         xaxis[0]=xaxis[1];
@@ -490,10 +499,12 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                         achsenFarbe=farbe;
                         achsenDicke=zeichenbreite;
                     }
+                    }
                     
                     return "";
                 } else if (teil[0].trim().toLowerCase()=="yaxis"){
                     yaxis=teil[1].split(',');
+                    if (yaxis.length==3){
                     if (parseFloat(yaxis[1])<parseFloat(yaxis[0])){
                         var dummy=yaxis[0];
                         yaxis[0]=yaxis[1];
@@ -506,10 +517,12 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                         achsenFarbe=farbe;
                         achsenDicke=zeichenbreite;
                     }
+                    }
                     
                     
                     return "";
                 } else if (teil[0].trim().toLowerCase()=="ratio"){
+                    if (teil.length>1){
                     ratio=teil[1].split(',');
                     canvas.width=bildbreite;
                     canvas.height=bildbreite*parseFloat(ratio[1])/parseFloat(ratio[0]);
@@ -518,6 +531,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                     canvasPixel=[canvas.width,canvas.height];
                      gc2.font=schriftGroesseStandard+"px Sans-Serif";
              gc2.setLineDash([]);
+                    }
                     return "";
                 
                 } else if (teil[0].trim().toLowerCase()=="line"){
@@ -566,6 +580,7 @@ function drawEllipse(ctx, x, y, w, h,fill) {
                 
                 } else if (teil[0].trim().toLowerCase()=="point"){
                     var rest=teil[1].split(',');
+                    
                     var deltaX=0;
                     var deltaY=0;
                     if (rest.length>2){
@@ -727,6 +742,8 @@ res = Opal.Asciidoctor.$convert(res, options);
   {left: "\\[", right: "\\]", display: true},
   {left: "\\(", right: "\\)", display: false}
 ]});
+         var test=$(selector).html();
+         return test;
         }
     
     
