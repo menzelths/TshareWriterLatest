@@ -49,7 +49,7 @@ $(function() {
             }
         });
     }
-    //knoepfe=""; // sichtbarkeit später einbauen
+    knoepfe=""; // sichtbarkeit später einbauen
     
     var knopfJS="<span><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben'></button><button class='kopiereAbschnitt imageCopy oben'></button>"+knoepfe+"<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button></span><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button>";
    
