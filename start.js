@@ -49,9 +49,9 @@ $(function() {
             }
         });
     }
-    knoepfe=""; // sichtbarkeit später einbauen
+    //knoepfe=""; // sichtbarkeit später einbauen
     
-    var knopfJS="<span><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben'></button><button class='kopiereAbschnitt imageCopy oben'></button><button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button>"+knoepfe+"</span><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button>";
+    var knopfJS="<span><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben'></button><button class='kopiereAbschnitt imageCopy oben'></button>"+knoepfe+"<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button></span><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button>";
    
 	//$("body").html("<button id='druckansicht'>Druckansicht</button><button id='speichern'>Speichern</button><br><button class='neueZeichenflaeche' >Neue Zeichenfläche</button>");
 	//QreatorBezier.init("#zeichnen");
@@ -538,9 +538,10 @@ $(function() {
         nerdamer.flush();
         nerdamer.clearVars();
         $(".markdownText").each(function(){ // alle textelemente durchgehen
-            var originaltext=$(this).children(":first").next().html();
-            var bearbeitet=Textabschnitt.recalculate(originaltext);
-            $(this).children(":first").html(bearbeitet);
+            var originaltext=$(this).children(":first").next().text();
+            $(this).children(":first").attr("id","recalculationDiv");
+            var bearbeitet=Textabschnitt.recalculate(originaltext,"#recalculationDiv");
+            $(this).children(":first").removeAttr("id");
         });
     });
 	

@@ -21,11 +21,11 @@ var Textabschnitt = new function() {
         
     }
     
-    this.recalculate=function(text){
-        $("body").append("<div id='tempDiv' style='display:hidden'></div>");
-        var ergebnis=parseMarkdown(text,"#tempDiv");
-        $("#tempDiv").remove();
-        return ergebnis;
+    this.recalculate=function(text,selector){
+        
+        var ergebnis=parseMarkdown(text,selector);
+        console.log(ergebnis);
+       
     }
     
     function Punkt(x, y) {
@@ -59,7 +59,7 @@ var Textabschnitt = new function() {
         selectorGlobal = selector;
 		menuGlobal = menuSelector;
 		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea wrap='soft' style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult' class='adoccss'></div></td></tr></table>");
-        $(menuGlobal).append("<button id='parseMarkdown' class='imagePreview'></button><input id='livepreview' type='checkbox' checked>Live</input>");
+        $(menuGlobal).append("<button id='parseMarkdown' class='imagePreview'><input id='livepreview' type='checkbox' checked>Live</input>");
         
          parseMarkdown(startText, "#htmlResult"); // Anfangstext darstellen
         
@@ -91,8 +91,8 @@ var Textabschnitt = new function() {
       
     });
         
-        $("#erstelleTabelle").on("click",function(){
-           umgebeAuswahl("<span style='background-color: #ffff00'>","</span>","#aktuellerText"); 
+        $("#insertTable").on("click",function(){
+           ersetzeAuswahl("\n|===\n|Kopf Spalte 1|Kopf Spalte 2|Kopf Spalte 3\n\n|Text 1|Text 2|Text 3\n|Text 1|Text 2|Text 3\n|===\n","#aktuellerText"); 
         });
     
     }
@@ -114,12 +114,41 @@ var Textabschnitt = new function() {
     }
     
      function parseMarkdown(text,selector){
+         var ueberschriftensammler=[];
+         
          if (text==null||text==undefined){
              text="";
          }
          
+         // überschriften automatisch referenzieren
+         
+         /*
+         
+         var res=text.replace(/\n={2,6}\s.+\n/g,function myFunction(x){
+             
+             var teile=x.trim().split(" ");
+             var tiefe=teile[0].length;
+             teile.splice(0,1);
+             var zufall="ref"+parseInt(Math.random()*100000000);
+             var rg="\n[["+zufall+","+zufall+"]]\n"+x.substr(1);
+             
+             console.log(tiefe+"_"+zufall+"_"+teile.join(' '));
+             ueberschriftensammler.push([tiefe,zufall,teile.join(' ')]);
+             return rg;
+         });
+         res=res.replace(/^={2,6}\s.+\n/g,function myFunction(x){
+             var teile=x.trim().split(" ");
+             var tiefe=teile[0].length;
+             teile.splice(0,1);
+             var zufall="ref"+parseInt(Math.random()*100000000);
+             var rg="[["+zufall+","+zufall+"]]\n"+x;
+             console.log(tiefe+"_"+zufall+"_"+teile.join(' '));
+             ueberschriftensammler.push([tiefe,zufall,teile.join(' ')]);
+             return rg;
+         });
+         */
             // asciimath überprüfen, dort auch keine nerdamer funktionen
-            var res = text.replace(/\$\$\$(.|\n)*?\$\$\$/g, function myFunction(x){
+             res = text.replace(/\$\$\$(.|\n)*?\$\$\$/g, function myFunction(x){
             if (x.substring(3,x.length-3).indexOf('\n')!=-1){
             return "Hex11 "+stringToHex(AMTparseAMtoTeX(x.substring(3,x.length-3)))+"Hex12";
             } else {
@@ -742,8 +771,8 @@ res = Opal.Asciidoctor.$convert(res, options);
   {left: "\\[", right: "\\]", display: true},
   {left: "\\(", right: "\\)", display: false}
 ]});
-         var test=$(selector).html();
-         return test;
+         
+    return ueberschriftensammler;
         }
     
     
