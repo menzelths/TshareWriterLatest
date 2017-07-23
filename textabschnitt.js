@@ -59,7 +59,7 @@ var Textabschnitt = new function() {
         selectorGlobal = selector;
 		menuGlobal = menuSelector;
 		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea wrap='soft' style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult' class='adoccss'></div></td></tr></table>");
-        $(menuGlobal).append("<button id='parseMarkdown' class='imagePreview'><input id='livepreview' type='checkbox' checked>Live</input>");
+        $(menuGlobal).append("<button id='parseMarkdown' class='imagePreview'></button><input id='livepreview' type='checkbox' checked>Live</input>");
         
          parseMarkdown(startText, "#htmlResult"); // Anfangstext darstellen
         

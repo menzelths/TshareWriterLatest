@@ -267,6 +267,8 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 
 
 
+
+
 .layer {
 	width: 35px;
 	height: 35px;
@@ -276,11 +278,20 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 	
 }
 
-.sichtbar {
+.sichtbarkeit {
 	
 	
 	
 	font-weight: bold;
+    vertical-align:top;
+	width: 35px;
+	height: 35px;
+	background-color: #cccccc;
+	box-sizing: border-box;
+	font-size: 20px;
+	text-align: left;
+     background-color: #ddddff;
+    border-style:none;
 	
 }
 
@@ -436,6 +447,11 @@ button:active{
 
 .aktiv {
 	background-color: #ffff00;
+	
+}
+
+.bereich {
+	background-color: #ff0000;
 	
 }
 

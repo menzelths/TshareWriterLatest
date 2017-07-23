@@ -169,7 +169,7 @@ var QreatorBezier = new function() {
 				//"</input>";
 
 	}
-	//knoepfe += "</span>";
+	knoepfe += "</span>";
 	var that = this;
     
     this.holeBezier=function(d,t){

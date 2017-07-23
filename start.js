@@ -20,6 +20,7 @@ $(function() {
 	var aktuellesBild="";
 	var zeichenbreite=0,zeichenhoehe=0,hochkant=false;
     var clipboard="";
+    var bereich=false; // ob gerade bereich in der Auswahl ist
     var knoepfe="<select class='sichtbarkeit'>";
 	for (var i = 0; i < 10; i++) {
 		if (i==0) {
@@ -49,7 +50,7 @@ $(function() {
             }
         });
     }
-    knoepfe=""; // sichtbarkeit später einbauen
+    //knoepfe=""; // sichtbarkeit später einbauen
     
     var knopfJS="<span><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben'></button><button class='kopiereAbschnitt imageCopy oben'></button>"+knoepfe+"<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button></span><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button>";
    
@@ -559,7 +560,63 @@ $(function() {
     
     $(document).on("click",".markieren",function(){
         raeumeAuf();
-        $(this).toggleClass("aktiv");
+        var d = new Date();
+        var n = d.getTime();
+        var letzterKlick=$(this).attr("lastClick");
+        $(this).attr("lastClick",n);
+        if (letzterKlick==""||letzterKlick==null){
+            letzterKlick=""+n;
+        }    
+        var letzterKlickLong=parseInt(letzterKlick);
+        if (n-letzterKlickLong<1000&&bereich==false){ //weniger als eine Sekunde
+            $(this).removeClass("aktiv");
+            $(this).addClass("bereich");
+            bereich=true;
+        } else if ($(this).hasClass("bereich")&&bereich==true){
+            bereich=false;
+            $(this).removeClass("bereich");
+            $(this).removeClass("aktiv");
+                   } else if (bereich==true && ! $(this).hasClass("bereich")) { // bereich testen
+                       var zaehlerStartBereich=-1;
+                       var zaehlerEndeBereich=-1;
+                       $(this).addClass("endeBereich");
+                       var self=$(this);
+                       var zaehler=0;
+                       $(".markieren").each(function(){
+                           if ($(this).hasClass("endeBereich")){
+                               zaehlerEndeBereich=zaehler;
+                               $(this).removeClass("endeBereich");
+                           } else if ($(this).hasClass("bereich")){
+                               zaehlerStartBereich=zaehler;
+                           }
+                           zaehler++;
+                       });
+                       
+                       zaehler=0;
+                       if (zaehlerStartBereich<zaehlerEndeBereich){ // positiv markieren
+                           
+                           $(".markieren").each(function(){
+                           if (zaehler>=zaehlerStartBereich&&zaehler<=zaehlerEndeBereich){
+                               $(this).removeClass("bereich");
+                               $(this).removeClass("aktiv");
+                               $(this).addClass("aktiv");
+                               bereich=false;
+                           }
+                           zaehler++;
+                       });
+                       } else if (zaehlerStartBereich>zaehlerEndeBereich){
+                        $(".markieren").each(function(){
+                           if (zaehler>=zaehlerEndeBereich&&zaehler<=zaehlerStartBereich){
+                               $(this).removeClass("bereich");
+                               $(this).removeClass("aktiv");
+                               bereich=false;
+                           }
+                           zaehler++;
+                       });
+                       }
+                   } else {
+                       $(this).toggleClass("aktiv");
+        }
     });
     
     $("#markiereAlle").click(function(){
