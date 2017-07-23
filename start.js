@@ -1129,6 +1129,7 @@ $(function() {
 	        $("#content").html("<span><button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button></span><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageFotoNeu unten'></button>");
 	        //console.log($(container).html());
 	        $(container).find(".tshareElement").each(function(){
+                var sb=$(this).attr("sb"); // sichtbarkeit abfragen
                 if ($(this).hasClass("zeichenflaeche")){
 	        	$("#content").append("<div class='zeichenflaeche tshareElement zeichenflaecheKlick'>"+$(this).html()+"</div>");
 	        	$("#content").append(knopfJS);
@@ -1139,7 +1140,9 @@ $(function() {
                 else if ($(this).hasClass("datei")){
                     $("#content").append("<div class='datei tshareElement'>"+$(this).html()+"</div>");
 	        	$("#content").append(knopfJS);
+                    
                 }
+                $(".sichtbarkeit").last().val(sb); // aktive sichtbarkeit setzen
 	        	//console.log($(this).html());
 	        });
 	        /*
