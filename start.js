@@ -397,6 +397,11 @@ $(function() {
 			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
                 var speichern=false;
+                
+                // Beginn Sichtbarkeit speichern
+                var sichtbarkeitsebene="sb='"+$(this).next().find(".sichtbarkeit :selected").text()+"'";
+                // Ende Sichtbarkeit speichern
+                
                 $(this).next().find(".markieren").each(function(){
                     speichern=$(this).hasClass("aktiv");
                 });
@@ -405,13 +410,13 @@ $(function() {
                 }
                 if (speichern==true){ 
                 if ($(this).hasClass("zeichenflaeche")){
-                code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
+                code+="<div "+sichtbarkeitsebene+" class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
-                    code+="<div class='markdown tshareElement adoccss'>"+$(this).html()+"</div>\n";
+                    code+="<div "+sichtbarkeitsebene+" class='markdown tshareElement adoccss'>"+$(this).html()+"</div>\n";
                     textElementZaehler++;
                 } else if ($(this).hasClass("datei")){
                     dateiElementZaehler++;
-                    code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
+                    code+="<div "+sichtbarkeitsebene+" class='datei tshareElement'>"+$(this).html()+"</div>\n";
                 }
                 }
                 
@@ -472,6 +477,11 @@ $(function() {
 			$(".tshareElement").each(function(){
 				//code+=$(this).html()+"\n";
                 var speichern=false;
+                
+                // Beginn Sichtbarkeit speichern
+                var sichtbarkeitsebene="sb='"+$(this).next().find(".sichtbarkeit :selected").text()+"'";
+                // Ende Sichtbarkeit speichern
+                
                 $(this).next().find(".markieren").each(function(){
                     speichern=$(this).hasClass("aktiv");
                 });
@@ -480,13 +490,13 @@ $(function() {
                 }
                 if (speichern==true){ 
                 if ($(this).hasClass("zeichenflaeche")){
-                code+="<div class='zeichenflaeche tshareElement' onClick='nextLayer(this)'>"+$(this).html()+"</div>\n";
+                code+="<div "+sichtbarkeitsebene+" class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >"+$(this).html()+"</div>\n";
                 } else if ($(this).hasClass("markdown")){
-                    code+="<div class='markdown tshareElement adoccss'>"+$(this).html()+"</div>\n";
+                    code+="<div "+sichtbarkeitsebene+" class='markdown tshareElement adoccss'>"+$(this).html()+"</div>\n";
                     textElementZaehler++;
                 } else if ($(this).hasClass("datei")){
                     dateiElementZaehler++;
-                    code+="<div class='datei tshareElement'>"+$(this).html()+"</div>\n";
+                    code+="<div "+sichtbarkeitsebene+" class='datei tshareElement'>"+$(this).html()+"</div>\n";
                 }
                 }
                 
