@@ -242,6 +242,30 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 }
 
 
+.imageGraph{
+    
+background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfhBxcVLBqwnCL+AAAEmElEQVRo3sWZXWgcVRTHf7tJs9Ek1VQN0tSY+tVSWzFao1GpH/gg1GqsPghCkbYPKihKQRRBoQ9+tH0JVaEaEGkEEasIylZo6j7Y1ib9sFIjaC2lIVZtMGpDkmazOz5kc/fcmblzZ3Ym6clDzpz/+fjPvXfu3jkDAI18yAk+4iqiSC1vcIBumkJHZNjOMXq5wQ304+DgsDtC+WpypagTNIaMea0UMcbF0lzHVAlwuD80gS0qxmFXqIg6JlTEAxJoEaleD1l+DUUR5fB0iJgO4b9Oh84qINwktPK3Vt5hjButUc8I/xU6lFXACClrohr6XOUdHI5zkSXufUG3Soc2i0TLrAS6fMo7OLxniSvTPuCGHhJpNlrSZBgzEBinJiCuinHl+U7ZnAbgkHDssBC43TjUtdwSELeUWqUf9sKnFbsBC4EGzhhGYJC6gLgnhedNXniXAovWbeUxhnG0ifgdhz9ZExi1VUxVtRd+WaR7EJvMo5knREQr17jXtUf2KO/vpTld+r9P2GyrAPIMuSwnKVhiblaatgJmCBxkXNnutBKILou4LJjAJPuVrV1Zk5M2ofsSgJzS5ofYVqPKSqWd5yd/At8Kq30VRJVVSjvGlD+BPsZmjUANdyj9iA6VCeTFk3BPwgTazbugXG45pS3226tiyCqhBxDYK/S1s0TgPMfNBPoYnhUC1dyl9P3kzQSKZJW+gusSI9BGvdKzblDfcr4SenJjIFeAhcA34hlNjkD5mRp0rwA3gX/5TuntNCdSPs3dSt/tB+tSnoQUjyZCoEOcL7Je2EwgqUnoVFqePWECflUHhykuD/DTDyRm+UV57fWDvT+85TGo4uHY97+M65We9XPwEvhS6PEnoVPo2XAhKXFCnqDB6BduCg4qn9P+Dt4RcPhY6RlWx7r/hdymdMNbp9/hq0fo8SbhEfGmGXICpuWIGrhRLjH4hJmCnPKYNE2m//Fzp9LqWF/x/S8Rm3Av56KEXil6Jr8ZSNpHYJvwCH5r8pGsNdhGIMOw9SbACHQL/fmo7AFYK15F3qUYNbyKk5amhW0EcmIhX2ouZBqBAl3i6rnI979ULMAe/qlkCOsZET2dhRFHoEegFb9nvS2SdHvQIALLKSist9LysIhJlabA8ggEvhBYZ+UEYKdI9HVoAu0COWVtXATKYtFcdbdxzQR6BfJSnPIAb4lkh7UmponABmEfYUFcAg38IRLKTrI/gVb+E/Zn45YH2CgSFsX5wI9ASmw/Dv3JdFrSHNUG9doAAnLCCqIrElPaRJPV4cfSxwYvgU3C4rDdlaWZLl5kSWUU1mupj9LmQ+AF7QtCPxktw72Mlo76r4Tox/vIBxqFPG/ylLi+lc81/C9aXPGfCTQb+L5hkAyHtBJ6q3ZcQ6Z8Pvx8onkMljsG08PRyAbWMT+QQr34fQ+WSc54bAtcZ8IpXmUrzszlp667m5u/bTMjcAVDzKtkYcSWJs6mgXOMXpDy0DR9IppgxwUp/zMDqGdypXURxpMW7nNZBljNqbm72y2uBbjD+pEvYZEb1QiPz21xkKeEfVw99+UhxWaG+IFN7iPa/y8s6vfmAKIzAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTA3LTIzVDIxOjQ0OjI2KzAyOjAwplz67QAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wNy0yM1QyMTo0NDoyNiswMjowMNcBQlEAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC') no-repeat;
+    
+    width: 35px;
+	height: 35px;
+	background-size: 25px 25px;
+	background-position: center;
+}
+
+
+
+
+.knopfStandard{
+    width: 35px;
+	height: 35px;
+	vertical-align: top;
+    
+    
+}
+
+
+
+
 
 #farben {
 	padding:0;
@@ -292,6 +316,24 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 	text-align: left;
      background-color: #ddddff;
     border-style:none;
+	
+}
+
+.auswahlebene {
+	
+	
+	
+	font-weight: bold;
+    vertical-align:top;
+	width: 35px;
+	height: 35px;
+	background-color: #cccccc;
+	box-sizing: border-box;
+	font-size: 20px;
+	text-align: left;
+    background-color: #ffffaa;
+    border-style:none;
+  
 	
 }
 
@@ -400,6 +442,7 @@ background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqa
 
 #menu{
 	margin-left: 0px;
+    
 }
 
 .unten {
@@ -448,6 +491,10 @@ button:active{
 .aktiv {
 	background-color: #ffff00;
 	
+}
+
+.komplett {
+    background-color: darkorange;
 }
 
 .bereich {

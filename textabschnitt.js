@@ -59,7 +59,7 @@ var Textabschnitt = new function() {
         selectorGlobal = selector;
 		menuGlobal = menuSelector;
 		$(selectorGlobal).html("<table id='markdownTable' style='width:100%;'><tr><td valign='top' style='width:50%;'><textarea wrap='soft' style='width:100%;' id='aktuellerText'>"+startText+"</textarea></td><td  style='width:50%; '><div id='htmlResult' class='adoccss'></div></td></tr></table>");
-        $(menuGlobal).append("<button id='parseMarkdown' class='imagePreview'></button><input id='livepreview' type='checkbox' checked>Live</input>");
+        $(menuGlobal).append("<input id='livepreview' type='checkbox' checked>Live</input><button id='parseMarkdown' class='imagePreview'></button><button id='insertGraph' class='imageGraph'></button>");
         
          parseMarkdown(startText, "#htmlResult"); // Anfangstext darstellen
         
@@ -93,6 +93,12 @@ var Textabschnitt = new function() {
         
         $("#insertTable").on("click",function(){
            ersetzeAuswahl("\n|===\n|Kopf Spalte 1|Kopf Spalte 2|Kopf Spalte 3\n\n|Text 1|Text 2|Text 3\n|Text 1|Text 2|Text 3\n|===\n","#aktuellerText"); 
+            $("#aktuellerText").focus();
+        });
+        
+        $("#insertGraph").on("click",function(){
+            ersetzeAuswahl("\n!!\n!startx:-4.8\n!endex:5\n!starty:-1.8\n!endey:5\n!!\n!ppp\nratio:!!endex-startx!!,!!endey-starty!!\nxaxis:!!startx!!,!!endex!!,1\nyaxis:!!starty!!,!!endey!!,1 \npen:#ccccff,4 \ngrid:0.5,0.5\npen:blue,10,0,0 \nfunction:x^2 \npen:red,10,20,20\nfunction:2x\npen:black,10,0,0\npoint:1,2,15\n!ppp\n","#aktuellerText");
+            $("#aktuellerText").focus();
         });
     
     }
