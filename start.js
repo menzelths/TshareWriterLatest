@@ -1130,6 +1130,9 @@ $(function() {
 	        //console.log($(container).html());
 	        $(container).find(".tshareElement").each(function(){
                 var sb=$(this).attr("sb"); // sichtbarkeit abfragen
+                if (sb==null||sb==""){
+                    sb="0";
+                }
                 if ($(this).hasClass("zeichenflaeche")){
 	        	$("#content").append("<div class='zeichenflaeche tshareElement zeichenflaecheKlick'>"+$(this).html()+"</div>");
 	        	$("#content").append(knopfJS);
