@@ -958,6 +958,9 @@ $(function () {
         $(".menuBar").first().attr("id","tocBar");
         
         $(".transparent").remove();
+        updateWahl();
+        
+        
     });
 
     $(document).on("click", ".neueZeichenflaeche", function () {
