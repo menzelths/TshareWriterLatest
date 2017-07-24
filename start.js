@@ -354,7 +354,7 @@ $(function () {
     }
     //knoepfe=""; // sichtbarkeit später einbauen
 
-    var knopfJS = "<span><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben' lastClick='0'></button><button class='kopiereAbschnitt imageCopy oben'></button>" + knoepfe + "<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button></span><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button>";
+    var knopfJS = "<span class='menuBar'><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben' lastClick='0'></button><button class='kopiereAbschnitt imageCopy oben'></button>" + knoepfe + "<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button></span>";
 
     //$("body").html("<button id='druckansicht'>Druckansicht</button><button id='speichern'>Speichern</button><br><button class='neueZeichenflaeche' >Neue Zeichenfläche</button>");
     //QreatorBezier.init("#zeichnen");
@@ -761,7 +761,10 @@ $(function () {
                         } else if ($(this).hasClass("datei")) {
                             dateiElementZaehler++;
                             code += "<div " + sichtbarkeitsebene + " class='datei tshareElement'>" + $(this).html() + "</div>\n";
-                        }
+                        }  else if ($(this).hasClass("toc")){
+                    code += "<div " + sichtbarkeitsebene + " class='toc tshareElement adoccss'>" + $(this).html() + "</div>\n";
+                            textElementZaehler++;
+                }
                     }
 
                 });
@@ -843,6 +846,9 @@ $(function () {
                 } else if ($(this).hasClass("datei")) {
                     dateiElementZaehler++;
                     code += "<div " + sichtbarkeitsebene + " class='datei tshareElement'>" + $(this).html() + "</div>\n";
+                } else if ($(this).hasClass("toc")){
+                    code += "<div " + sichtbarkeitsebene + " class='toc tshareElement adoccss'>" + $(this).html() + "</div>\n";
+                    textElementZaehler++;
                 }
             }
 
@@ -895,8 +901,29 @@ $(function () {
         nerdamer.flush();
         nerdamer.clearVars();
         var ueberschriften=[];
+        
+        $("body").append("<div class='transparent'></div>");
+        $(".transparent").append("<div class='fenster'>Bitte warten ...</div>");
+        
+        var elementZaehler = 0;
+        var markiertZaehler = 0;
+        var speicherAlles = false;
+        
+        $(".tshareElement").each(function () {
+            elementZaehler++;
+            $(this).next().find(".markieren").each(function () {
+                if ($(this).hasClass("aktiv")) {
+                    markiertZaehler++;
+                }
+            });
+        });
+        if (elementZaehler > 0 && markiertZaehler == 0) {
+            speicherAlles = true;
+        }
+        
         $(".markdownText").each(function () { // alle textelemente durchgehen
             var originaltext = $(this).children(":first").next().text();
+            if (speicherAlles==true||$(this).parent(".tshareElement").next().find(".markieren").hasClass("aktiv")){
             $(this).children(":first").attr("id", "recalculationDiv");
             var bearbeitet = Textabschnitt.recalculate(originaltext, "#recalculationDiv");
             if (bearbeitet!=null&&bearbeitet.length>0){
@@ -905,15 +932,37 @@ $(function () {
             }
             }
             $(this).children(":first").removeAttr("id");
+            }
         });
-        console.log(ueberschriften);
-        // alte überschrift löschen
+        //console.log("Überschriften: " + ueberschriften);
         
+        // alte überschrift löschen
+        var text="\n== Inhaltsverzeichnis\n\n";
+        for (var i=0;i<ueberschriften.length;i++){
+            text+="[none]\n";
+            for (var j=0;j<ueberschriften[i][0]-1;j++){
+                text+="*";
+            }
+            text+=" <<"+ueberschriften[i][1]+","+ueberschriften[i][2]+">>\n";
+        }
+        text+="\n\n---";
+        var options = Opal.hash2(['header_footer', 'attributes'], {
+            'header_footer': false,
+            'attributes': ['icons=font']
+        });
+        var html = Opal.Asciidoctor.$convert(text, options);
+        
+        $("#toc").remove();
+        $("#tocBar").remove();
+        $("#firstMenu").after("<div class='tshareElement toc adoccss' id='toc'><div><div class='adoccss'>"+html+"</div></div></div>"+knopfJS);
+        $(".menuBar").first().attr("id","tocBar");
+        
+        $(".transparent").remove();
     });
 
     $(document).on("click", ".neueZeichenflaeche", function () {
         raeumeAuf();
-        $(this).next().next().next().after("<div class='zeichenflaeche' id='zeichnung'></div>" + knopfJS); // wo erscheint der neue Abschnitt
+        $(this).parent().after("<div class='zeichenflaeche' id='zeichnung'></div>" + knopfJS); // wo erscheint der neue Abschnitt
         bearbeitungAn = true;
         bearbeitungsTyp = "zeichenflaeche";
         breite = breiteStandard;
@@ -1029,14 +1078,15 @@ $(function () {
             raeumeAuf();
             $(".markieren").each(function () {
                 if ($(this).hasClass("aktiv")) {
-
-                    $(this).parent().prev().remove(); //zeichenflaeche
+                    $(this).parent().prev().remove();
+                    $(this).parent().remove();
+                /*    $(this).parent().prev().remove(); //zeichenflaeche
                     $(this).parent().next().remove(); //neu-knopf
                     $(this).parent().next().remove(); // pdf einfügen
 
                     $(this).parent().next().remove(); // Textabschnitt einfügen
                     $(this).parent().next().remove(); // Bild einfügen
-                    $(this).parent().remove(); // knopf selber
+                    $(this).parent().remove(); // knopf selber*/
                 }
             });
         }
@@ -1044,7 +1094,8 @@ $(function () {
     });
 
     $(document).on("click", ".einfuegenClipboard", function () {
-        $(this).parent().next().next().next().next().after("<div id='einsetzen'></div>");
+        //$(this).parent().next().next().next().next().after("<div id='einsetzen'></div>");
+        $(this).parent().after("<div id='einsetzen'></div>");
         $("body").append("<div class='transparent'></div>");
         $(".transparent").append("<div class='fenster'><p>Bitte fügen Sie den Inhalt des Clipboards in das Textfeld ein (z. B. per Strg+V) und drücken Sie dann den Knopf \"Einfügen\"</p><textarea id='clipboardExtern' required='required' ></textArea><button id='clipboardExternEinfuegen'>Einfügen in Dokument</button><button id='abbrechen'>Abbrechen</button></div>");
     });
@@ -1071,8 +1122,8 @@ $(function () {
     $(document).on("click", ".einfuegen", function () {
 
         raeumeAuf();
-        $(this).parent().next().next().next().next().after(clipboard);
-
+        //$(this).parent().next().next().next().next().after(clipboard);
+$(this).parent().after(clipboard);
         // auswahl überprüfen
         updateWahl(); 
 
@@ -1126,7 +1177,7 @@ $(function () {
 
     $(document).on("click", ".markdownEinfuegen", function () {
         raeumeAuf();
-        $(this).next().after("<div class='markdown tshareElement' id='markdown'></div>" + knopfJS); // wo erscheint der neue Abschnitt
+        $(this).parent().after("<div class='markdown tshareElement' id='markdown'></div>" + knopfJS); // wo erscheint der neue Abschnitt
 
         bearbeitungAn = true;
         bearbeitungsTyp = "markdown";
@@ -1166,7 +1217,7 @@ $(function () {
 
     $(document).on("click", ".bildEinfuegen", function () {
         raeumeAuf();
-        $(this).after("<div id='einsetzen'></div>"); // direkt nach Bild einfügen
+        $(this).parent().after("<div id='einsetzen'></div>"); // direkt nach Bild einfügen
         $("body").append("<div class='transparent'></div>");
         $(".transparent").append("<div class='fenster'><input id='bildInput' type='file' required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
         //$(".transparent").append("<div class='fenster'><input id='pdfInput' type='file'  required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
@@ -1265,7 +1316,7 @@ $(function () {
 
     $(document).on("click", ".pdf", function () {
         raeumeAuf();
-        $(this).next().next().after("<div id='einsetzen'></div>"); // next=textabschnitt
+        $(this).parent().after("<div id='einsetzen'></div>"); // next=textabschnitt
         $("body").append("<div class='transparent'></div>");
         $(".transparent").append("<div class='fenster'><input id='pdfInput' type='file' accept='application/pdf' required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
         //$(".transparent").append("<div class='fenster'><input id='pdfInput' type='file'  required='required' ></input><button id='abbrechen'>Abbrechen</button><div id='parameter'></div></div>");
@@ -1512,7 +1563,7 @@ $(function () {
             var container = document.createElement('div');
             container.id = 'container';
             container.innerHTML = text;
-            $("#content").html("<span><button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button></span><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageFotoNeu unten'></button>");
+            $("#content").html("<span id='firstMenu'><button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageFotoNeu unten'></button></span>");
             //console.log($(container).html());
             $(container).find(".tshareElement").each(function () {
                 var sb = $(this).attr("sb"); // sichtbarkeit abfragen
@@ -1532,6 +1583,11 @@ $(function () {
                 } else if ($(this).hasClass("datei")) {
                     $("#content").append("<div class='datei tshareElement'>" + $(this).html() + "</div>");
                     $("#content").append(knopfJS);
+
+                } else if ($(this).hasClass("toc")) {
+                    $("#content").append("<div id='toc' class='toc tshareElement'>" + $(this).html() + "</div>");
+                    $("#content").append(knopfJS);
+                    $(".menuBar").last().attr("id","tocBar");
 
                 }
                 $(".sichtbarkeit").last().val(sb); // aktive sichtbarkeit setzen
@@ -1889,6 +1945,9 @@ $(function () {
         var nachfrage = confirm("Sind Sie sicher, dass die gewählte Zeichenfläche inklusive Inhalt entfernt werden soll? Dieser Schritt kann nicht rückgängig gemacht werden!");
         if (nachfrage == true) {
             raeumeAuf();
+            $(this).parent().prev().remove();
+            $(this).parent().remove();
+            /*
             $(this).parent().prev().remove(); //zeichenflaeche
             $(this).parent().next().remove(); //neu-knopf
             $(this).parent().next().remove(); // pdf einfügen
@@ -1896,7 +1955,7 @@ $(function () {
             $(this).parent().next().remove(); // Textabschnitt einfügen
             $(this).parent().next().remove(); // Bild einfügen
             $(this).parent().remove(); // knopf selber
-            
+            */
             
             // checkboxen prüfen
             updateWahl();

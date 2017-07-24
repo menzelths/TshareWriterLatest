@@ -24,7 +24,8 @@ var Textabschnitt = new function () {
     this.recalculate = function (text, selector) {
 
         var ergebnis = parseMarkdown(text, selector);
-        console.log(ergebnis);
+        //console.log(ergebnis);
+        return ergebnis;
 
     }
 
@@ -51,6 +52,8 @@ var Textabschnitt = new function () {
         var original = v.substring(cursorPosStart, cursorPosEnd);
         $(selector).val(textBefore + davor + original + danach + textAfter);
     }
+    
+    
 
     this.init = function (selector, menuSelector, startText) {
         if (startText == null || startText == undefined) {
@@ -131,32 +134,28 @@ var Textabschnitt = new function () {
         // überschriften automatisch referenzieren
         // nur von aktiven abschnitten, also besser doch in extraabfrage beim speichern
         
-         /*
-        var res=text.replace(/\n={2,6}\s.+\n/g,function myFunction(x){
+         
+        text="\n"+text;
+        var res=text.replace(/\n={2,6} .+\n/g,function myFunction(x){
+         return "\n"+x+"\n";   // leerzeile vor jeder überschrift einfügen
+        });
+                             
+        res=res.replace(/\n={2,6} .+\n/g,function myFunction(x){
             
             var teile=x.trim().split(" ");
             var tiefe=teile[0].length;
             teile.splice(0,1);
             var zufall="ref"+parseInt(Math.random()*100000000);
-            var rg="\n[["+zufall+","+zufall+"]]\n"+x.substr(1);
+            var rg="\n[["+zufall+","+zufall+"]]\n"+x.substr(1)+"\n";
             
-            console.log(tiefe+"_"+zufall+"_"+teile.join(' '));
+            //console.log(tiefe+"_"+zufall+"_"+teile.join(' '));
             ueberschriftensammler.push([tiefe,zufall,teile.join(' ')]);
             return rg;
         });
-        res=res.replace(/^={2,6}\s.+\n/g,function myFunction(x){
-            var teile=x.trim().split(" ");
-            var tiefe=teile[0].length;
-            teile.splice(0,1);
-            var zufall="ref"+parseInt(Math.random()*100000000);
-            var rg="[["+zufall+","+zufall+"]]\n"+x;
-            console.log(tiefe+"_"+zufall+"_"+teile.join(' '));
-            ueberschriftensammler.push([tiefe,zufall,teile.join(' ')]);
-            return rg;
-        });*/
+        
         
         // asciimath überprüfen, dort auch keine nerdamer funktionen
-        res = text.replace(/\$\$\$(.|\n)*?\$\$\$/g, function myFunction(x) {
+        res = res.replace(/\$\$\$(.|\n)*?\$\$\$/g, function myFunction(x) {
             if (x.substring(3, x.length - 3).indexOf('\n') != -1) {
                 return "Hex11 " + stringToHex(AMTparseAMtoTeX(x.substring(3, x.length - 3))) + "Hex12";
             } else {
