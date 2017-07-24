@@ -894,12 +894,21 @@ $(function () {
         raeumeAuf();
         nerdamer.flush();
         nerdamer.clearVars();
+        var ueberschriften=[];
         $(".markdownText").each(function () { // alle textelemente durchgehen
             var originaltext = $(this).children(":first").next().text();
             $(this).children(":first").attr("id", "recalculationDiv");
             var bearbeitet = Textabschnitt.recalculate(originaltext, "#recalculationDiv");
+            if (bearbeitet!=null&&bearbeitet.length>0){
+            for (var i=0;i<bearbeitet.length;i++){
+                ueberschriften.push(bearbeitet[i]);
+            }
+            }
             $(this).children(":first").removeAttr("id");
         });
+        console.log(ueberschriften);
+        // alte überschrift löschen
+        
     });
 
     $(document).on("click", ".neueZeichenflaeche", function () {
