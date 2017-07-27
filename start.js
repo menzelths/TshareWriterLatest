@@ -249,7 +249,7 @@ $(function () {
 
 
     $(document).on("click", ".wahl", function () {
-        if (checkAll($(this).attr("wahl")) == true) {
+        if (checkAll($(this).attr("wahl")) == 2) {
             // alle gewählt, also abwählen
             uncheck($(this).attr("wahl"));
             $(this).removeClass("komplett");
@@ -301,9 +301,11 @@ $(function () {
             }
         });
         if (zaehler > 0 && rg == true) {
-            return true;
+            return 2; // komplett
+        } else if (zaehler>0&&rg==false){
+            return 1; // teilweise
         } else {
-            return false;
+            return 0; // kein einziger gewählt
         }
     }
 
@@ -363,10 +365,17 @@ $(function () {
 
     function updateWahl() {
         for (var i = 0; i < 10; i++) {
-            if (checkAll("" + i) == true) {
+            var rg=checkAll(""+i);
+            if (rg == 2) {
                 $("[wahl='" + i + "']").removeClass("komplett").addClass("komplett");
-            } else {
+                $("[wahl='" + i + "']").attr("style","display:true");
+            } else if (rg==1){
                 $("[wahl='" + i + "']").removeClass("komplett");
+                $("[wahl='" + i + "']").attr("style","display:true");
+                
+            } else if (rg==0){
+                $("[wahl='" + i + "']").removeClass("komplett");
+                $("[wahl='" + i + "']").attr("style","display:none");
             }
         }
     }
@@ -429,6 +438,29 @@ $(function () {
                 return holeMarkierteAbschnitteAlsString();
             }
         });
+        
+        new Clipboard('.kopiereAbschnitt', {
+            text: function (trigger) {
+
+                raeumeAuf();
+                var clipboardIntern = "";
+                var klasse = "";
+                var tshareElement = $(trigger).parent().prev();
+                if (tshareElement.hasClass("markdown")) {
+                    klasse = "markdown adoccss";
+                     clipboardIntern = "<div class='tshareElement " + klasse + "'>" + $(trigger).parent().prev().html() + "</div>" + knopfJS2;
+                } else if (tshareElement.hasClass("zeichenflaeche")) {
+                    klasse = "zeichenflaeche zeichenflaecheKlick";
+                     clipboardIntern = "<div class='tshareElement " + klasse + "'>" + $(trigger).parent().prev().html() + "</div>" + knopfJS;
+                } else if (tshareElement.hasClass("datei")) {
+                    klasse = "datei";
+                     clipboardIntern = "<div class='tshareElement " + klasse + "'>" + $(trigger).parent().prev().html() + "</div>" + knopfJS;
+                }
+                
+                clipboard = clipboardIntern;
+                return magicString + clipboardIntern;
+            }
+        });
 
 
 
@@ -458,32 +490,12 @@ $(function () {
         auswahlebenen += "</select>";
 
         $("#ebenenzuweisung").html(auswahlebenen);
-
+        updateWahl();
         //$("#menuCommon").append(auswahlebenen).append(knoepfe);
 
     });
 
-    $(document).ready(function () {
-        new Clipboard('.kopiereAbschnitt', {
-            text: function (trigger) {
-
-                raeumeAuf();
-                var clipboardIntern = "";
-                var klasse = "";
-                var tshareElement = $(trigger).parent().prev();
-                if (tshareElement.hasClass("markdown")) {
-                    klasse = "markdown adoccss";
-                } else if (tshareElement.hasClass("zeichenflaeche")) {
-                    klasse = "zeichenflaeche zeichenflaecheKlick";
-                } else if (tshareElement.hasClass("datei")) {
-                    klasse = "datei";
-                }
-                clipboardIntern = "<div class='tshareElement " + klasse + "'>" + $(trigger).parent().prev().html() + "</div>" + knopfJS;
-                clipboard = clipboardIntern;
-                return magicString + clipboardIntern;
-            }
-        })
-    });
+    
 
 
 
@@ -1641,6 +1653,7 @@ $(function () {
              });*/
 
             $(".transparent").remove(); // fenster löschen
+            updateWahl();
         };
         fileReader.onerror = function (e) {
             console.log(e.target.error.name);
