@@ -354,7 +354,7 @@ $(function () {
     }
     //knoepfe=""; // sichtbarkeit später einbauen
 
-    var knopfJS = "<span class='menuBar'><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben' lastClick='0'></button><button class='kopiereAbschnitt imageCopy oben'></button>" + knoepfe + "<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button></span>";
+    var knopfJS = "<span class='menuBar'><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben' lastClick='0'></button><button class='kopiereAbschnitt imageCopy oben'></button>" + knoepfe + "<button class='imagePen editPart oben'></button><button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button></span>";
 
     //$("body").html("<button id='druckansicht'>Druckansicht</button><button id='speichern'>Speichern</button><br><button class='neueZeichenflaeche' >Neue Zeichenfläche</button>");
     //QreatorBezier.init("#zeichnen");
@@ -429,6 +429,7 @@ $(function () {
             }
         });
 
+       
 
         knoepfe = "";
 
@@ -442,7 +443,8 @@ $(function () {
             //"</input>";
 
         }
-        knoepfe += "</span><span id='menu'></span>";
+        $("#ebenenwahl").html(knoepfe);
+        
 
         for (var i = 0; i < 11; i++) {
             if (i == 0) {
@@ -454,9 +456,10 @@ $(function () {
         }
         auswahlebenen += "</select>";
 
+        $("#ebenenzuweisung").html(auswahlebenen);
 
-
-        $("#menuCommon").append(auswahlebenen).append(knoepfe);
+        //$("#menuCommon").append(auswahlebenen).append(knoepfe);
+        
     });
 
     $(document).ready(function () {

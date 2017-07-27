@@ -776,6 +776,7 @@ var Textabschnitt = new function () {
 
 
         //AMTparseAMtoTeX(formel)
+        if ($(selector).text()!=null&& $(selector).text()!=""){
         renderMathInElement($(selector)[0], {
             delimiters: [
                 {
@@ -796,6 +797,7 @@ var Textabschnitt = new function () {
 ]
         });
 
+        }
         return ueberschriftensammler;
     }
 
