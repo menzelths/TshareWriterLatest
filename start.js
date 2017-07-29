@@ -265,7 +265,7 @@ $(function () {
     function check(index) {
         var zaehler = 0;
         $(".sichtbarkeit").each(function () {
-            if ($(this).val() == index&& ! $(this).parent().hasClass("versteckt")) {
+            if ($(this).val() == String.fromCharCode(65+parseInt(index))&& ! $(this).parent().hasClass("versteckt")) {
                 zaehler++;
                 $(this).parent().find(".markieren").removeClass("aktiv").addClass("aktiv");
 
@@ -281,7 +281,7 @@ $(function () {
     function uncheck(index) {
 
         $(".sichtbarkeit").each(function () {
-            if ($(this).val() == index&& ! $(this).parent().hasClass("versteckt")) {
+            if ($(this).val() == String.fromCharCode(65+parseInt(index))&& ! $(this).parent().hasClass("versteckt")) {
 
                 $(this).parent().find(".markieren").removeClass("aktiv");
 
@@ -293,7 +293,7 @@ $(function () {
         var rg = true;
         var zaehler = 0;
         $(".sichtbarkeit").each(function () {
-            if ($(this).val() == index&& ! $(this).parent().hasClass("versteckt")) {
+            if ($(this).val() == String.fromCharCode(65+parseInt(index))&& ! $(this).parent().hasClass("versteckt")) {
                 zaehler++;
                 if (!$(this).parent().find(".markieren").hasClass("aktiv")) {
                     if (rg == true) {
@@ -312,11 +312,11 @@ $(function () {
     }
 
     var knoepfe = "<select class='sichtbarkeit'>";
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 26; i++) {
         if (i == 0) {
-            knoepfe += "<option selected sichtbarkeit='" + i + "'>" + i + "</option> ";
+            knoepfe += "<option selected sichtbarkeit='" + i + "'>" + String.fromCharCode(65+i) + "</option> ";
         } else {
-            knoepfe += "<option sichtbarkeit='" + i + "'>" + i + "</option> ";
+            knoepfe += "<option sichtbarkeit='" + i + "'>" + String.fromCharCode(65+i) + "</option> ";
 
         }
     }
@@ -329,7 +329,7 @@ $(function () {
         if (index > 0) { // es wurde wirklich etwas gewählt
             $(".markieren").each(function () {
                 if ($(this).hasClass("aktiv")) {
-                    $(this).parent().find(".sichtbarkeit").val("" + (index - 1));
+                    $(this).parent().find(".sichtbarkeit").val("" + String.fromCharCode(64+index));
                 }
             });
 
@@ -366,7 +366,7 @@ $(function () {
 
 
     function updateWahl() {
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 26; i++) {
             var rg=checkAll(""+i);
             if (rg == 2) {
                 $("[wahl='" + i + "']").removeClass("komplett").addClass("komplett");
@@ -496,9 +496,9 @@ $(function () {
 
         knoepfe = "";
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 26; i++) {
             knoepfe += "<button class='wahl allgemein knopfStandard' wahl='" + i + "' >" +
-                i +
+                String.fromCharCode(65+i) +
                 "</button>"
             //+<input type='checkbox' name='layer' id='checkbox_"
             //+ i + "' value='" + i
@@ -509,11 +509,11 @@ $(function () {
         $("#ebenenwahl").html(knoepfe);
 
 
-        for (var i = 0; i < 11; i++) {
+        for (var i = 0; i < 27; i++) {
             if (i == 0) {
                 auswahlebenen += "<option selected auswahl='-'>-</option> ";
             } else {
-                auswahlebenen += "<option auswahl='" + (i - 1) + "'>" + (i - 1) + "</option> ";
+                auswahlebenen += "<option auswahl='" + (i - 1) + "'>" + String.fromCharCode(64+i) + "</option> ";
 
             }
         }
@@ -1647,7 +1647,7 @@ $(function () {
             $(container).find(".tshareElement").each(function () {
                 var sb = $(this).attr("sb"); // sichtbarkeit abfragen
                 if (sb == null || sb == "") {
-                    sb = "0";
+                    sb = "A";
                 }
                 var tags = $(this).attr("tags"); // für die Zukunft
                 if (tags == null) {
