@@ -830,6 +830,8 @@ $(function () {
 
                     // Beginn Sichtbarkeit speichern
                     var sichtbarkeitsebene = "sb='" + $(this).next().find(".sichtbarkeit :selected").text() + "'";
+                    
+                    var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
                     // Ende Sichtbarkeit speichern
 
                     $(this).next().find(".markieren").each(function () {
@@ -840,15 +842,15 @@ $(function () {
                     }
                     if (speichern == true) {
                         if ($(this).hasClass("zeichenflaeche")) {
-                            code += "<div " + sichtbarkeitsebene + " class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >" + $(this).html() + "</div>\n";
+                            code += "<div " + sichtbarkeitsebene + folientyp+" class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >" + $(this).html() + "</div>\n";
                         } else if ($(this).hasClass("markdown")) {
-                            code += "<div " + sichtbarkeitsebene + " class='markdown tshareElement adoccss'>" + $(this).html() + "</div>\n";
+                            code += "<div " + sichtbarkeitsebene +folientyp+ " class='markdown tshareElement adoccss'>" + $(this).html() + "</div>\n";
                             textElementZaehler++;
                         } else if ($(this).hasClass("datei")) {
                             dateiElementZaehler++;
-                            code += "<div " + sichtbarkeitsebene + " class='datei tshareElement'>" + $(this).html() + "</div>\n";
+                            code += "<div " + sichtbarkeitsebene +folientyp+ " class='datei tshareElement'>" + $(this).html() + "</div>\n";
                         } else if ($(this).hasClass("toc")) {
-                            code += "<div " + sichtbarkeitsebene + " class='toc tshareElement adoccss'>" + $(this).html() + "</div>\n";
+                            code += "<div " + sichtbarkeitsebene + folientyp+" class='toc tshareElement adoccss'>" + $(this).html() + "</div>\n";
                             textElementZaehler++;
                         }
                     }
@@ -919,6 +921,8 @@ $(function () {
             // Beginn Sichtbarkeit speichern
             var sichtbarkeitsebene = "sb='" + $(this).next().find(".sichtbarkeit :selected").text() + "'";
             // Ende Sichtbarkeit speichern
+            
+            var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
 
             $(this).next().find(".markieren").each(function () {
                 speichern = $(this).hasClass("aktiv");
@@ -969,15 +973,15 @@ $(function () {
             }
             if (speichern == true) {
                 if ($(this).hasClass("zeichenflaeche")) {
-                    code += precode+"<div " + sichtbarkeitsebene + " class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >" + $(this).html() + "</div>\n"+postcode;
+                    code += precode+"<div " + sichtbarkeitsebene + folientyp+" class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >" + $(this).html() + "</div>\n"+postcode;
                 } else if ($(this).hasClass("markdown")) {
-                    code += precode+"<div " + sichtbarkeitsebene + " class='markdown tshareElement adoccss'>" + $(this).html() + "</div>\n"+postcode;
+                    code += precode+"<div " + sichtbarkeitsebene + folientyp+" class='markdown tshareElement adoccss'>" + $(this).html() + "</div>\n"+postcode;
                     textElementZaehler++;
                 } else if ($(this).hasClass("datei")) {
                     dateiElementZaehler++;
-                    code += precode+"<div " + sichtbarkeitsebene + " class='datei tshareElement'>" + $(this).html() + "</div>\n"+postcode;
+                    code += precode+"<div " + sichtbarkeitsebene + folientyp+" class='datei tshareElement'>" + $(this).html() + "</div>\n"+postcode;
                 } else if ($(this).hasClass("toc")) {
-                    code += precode+"<div " + sichtbarkeitsebene + " class='toc tshareElement adoccss'>" + $(this).html() + "</div>\n"+postcode;
+                    code += precode+"<div " + sichtbarkeitsebene + folientyp+" class='toc tshareElement adoccss'>" + $(this).html() + "</div>\n"+postcode;
                     textElementZaehler++;
                 }
             }
@@ -1049,6 +1053,8 @@ $(function () {
             // Beginn Sichtbarkeit speichern
             var sichtbarkeitsebene = "sb='" + $(this).next().find(".sichtbarkeit :selected").text() + "'";
             // Ende Sichtbarkeit speichern
+             var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
+
 
             $(this).next().find(".markieren").each(function () {
                 speichern = $(this).hasClass("aktiv");
@@ -1058,15 +1064,15 @@ $(function () {
             }
             if (speichern == true) {
                 if ($(this).hasClass("zeichenflaeche")) {
-                    code += "<div " + sichtbarkeitsebene + " class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >" + $(this).html() + "</div>\n";
+                    code += "<div " + sichtbarkeitsebene + folientyp+" class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >" + $(this).html() + "</div>\n";
                 } else if ($(this).hasClass("markdown")) {
-                    code += "<div " + sichtbarkeitsebene + " class='markdown tshareElement adoccss'>" + $(this).html() + "</div>\n";
+                    code += "<div " + sichtbarkeitsebene + folientyp+" class='markdown tshareElement adoccss'>" + $(this).html() + "</div>\n";
                     textElementZaehler++;
                 } else if ($(this).hasClass("datei")) {
                     dateiElementZaehler++;
-                    code += "<div " + sichtbarkeitsebene + " class='datei tshareElement'>" + $(this).html() + "</div>\n";
+                    code += "<div " + sichtbarkeitsebene + folientyp+" class='datei tshareElement'>" + $(this).html() + "</div>\n";
                 } else if ($(this).hasClass("toc")) {
-                    code += "<div " + sichtbarkeitsebene + " class='toc tshareElement adoccss'>" + $(this).html() + "</div>\n";
+                    code += "<div " + sichtbarkeitsebene + folientyp+" class='toc tshareElement adoccss'>" + $(this).html() + "</div>\n";
                     textElementZaehler++;
                 }
             }
@@ -1793,6 +1799,10 @@ $(function () {
                 if (sb == null || sb == "") {
                     sb = "A";
                 }
+                var ft=$(this).attr("ft");
+                if (ft==null||ft==""){
+                    ft="=";
+                }
                 var tags = $(this).attr("tags"); // für die Zukunft
                 if (tags == null) {
                     tags = "";
@@ -1814,6 +1824,7 @@ $(function () {
 
                 }
                 $(".sichtbarkeit").last().val(sb); // aktive sichtbarkeit setzen
+                $(".folientyp").last().val(ft);
                 //console.log($(this).html());
             });
             /*
