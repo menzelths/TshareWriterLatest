@@ -255,16 +255,105 @@ $(function () {
 
 
     $(document).on("click", ".wahl", function () {
-        if (checkAll($(this).attr("wahl")) == 2) {
+        raeumeAuf();
+        if ($(this).hasClass("komplett")) {
             // alle gewählt, also abwählen
-            uncheck($(this).attr("wahl"));
+            uncheck2($(this).attr("wahl"));
             $(this).removeClass("komplett");
         } else {
-            var test = check($(this).attr("wahl"));
+            check2($(this).attr("wahl"));
             $(this).removeClass("komplett");
-            if (test == true) $(this).addClass("komplett");
+            $(this).addClass("komplett");
         }
+        updateWahl();
     });
+    
+    $(document).on("click","#ebenenzuweisung",function(){
+         $("body").append("<div class='transparent'></div>");
+        var ebenenKnoepfe=erstelleEbenenKnoepfe("");
+        $(".transparent").append("<div class='fenster'>"+ebenenKnoepfe+"<br><button id='ebeneAlle'>Alle wählen</button><button id='ebeneKeine'>Alle abwählen</button><button id='ebeneInvertiere'>Auswahl invertieren</button><br><button id='ebeneZuweisungPlus'>Tags hinzufügen</button><button id='ebeneZuweisungMinus'>Tags abziehen</button><button id='ebeneZuweisungGleich'>Tags übernehmen</button></br><button id='ebeneAbbrechen'>Abbrechen</button></div>");
+    });
+    
+    $(document).on("click","#ebeneZuweisungPlus",function(){
+        aendereTags("plus");
+        updateWahl();
+        $(".transparent").remove();
+    });
+    
+    $(document).on("click","#ebeneZuweisungMinus",function(){
+        aendereTags("minus");
+        updateWahl();
+        $(".transparent").remove();
+    });
+    
+    $(document).on("click","#ebeneZuweisungGleich",function(){
+        aendereTags("gleich");
+        updateWahl();
+        $(".transparent").remove();
+    });
+    
+    function aendereTags(modus){
+         var aktivString="";
+        for (var i=0;i<27;i++){
+            if ($("#bs_"+i).hasClass("aktiv")){
+                aktivString+=String.fromCharCode(64+i);
+            }
+        }
+        $(".markieren").each(function(){
+           if ($(this).hasClass("aktiv")){
+               $(this).parent().find(".ebenenAnzeige").each(function(){
+                   var aktivStringAlt=$(this).attr("aktiv");
+                  if (modus=="plus"){
+                      for (var i=0;i<aktivString.length;i++){
+                          if (! aktivStringAlt.includes(aktivString.charAt(i))){
+                              aktivStringAlt+=aktivString.charAt(i);
+                          }
+                      }
+                  } else if (modus=="minus"){
+                      var aktivStringNeu="";
+                      for (var i=0;i<aktivStringAlt.length;i++){
+                          if (! aktivString.includes(aktivStringAlt.charAt(i))){
+                              aktivStringNeu+=aktivStringAlt.charAt(i);
+                          }
+                      }
+                      aktivStringAlt=aktivStringNeu;
+                  } else if (modus=="gleich"){
+                      aktivStringAlt=aktivString;
+                  }
+                   $(this).attr("aktiv",aktivStringAlt);
+                   
+                   var neuesBild=zeichneEbenenUebersicht(aktivStringAlt); // ebenenuebersicht neu erstellen
+        $(this).wrap("<span id='ersetzung'></span>");
+        $("#ersetzung").html(neuesBild);
+        $("#ersetzung .ebenenAnzeige").unwrap(); // neues Bild einfügen
+        $(".transparent").remove();
+               });
+           } 
+        });
+    }
+    
+    function check2(index){
+     
+        $(".ebenenAnzeige").each(function () {
+            if (! $(this).parent().hasClass("versteckt")) {
+                if ($(this).attr("aktiv").toUpperCase().includes(String.fromCharCode(64+parseInt(index)))){
+                
+                $(this).parent().find(".markieren").removeClass("aktiv").addClass("aktiv");
+                }
+            }
+        });
+    }
+    
+    function uncheck2(index){
+        $(".ebenenAnzeige").each(function () {
+            if (! $(this).parent().hasClass("versteckt")) {
+                if ($(this).attr("aktiv").toUpperCase().includes(String.fromCharCode(64+parseInt(index)))){
+                
+                $(this).parent().find(".markieren").removeClass("aktiv");
+                }
+            }
+        });
+    }
 
     function check(index) {
         var zaehler = 0;
@@ -292,6 +381,33 @@ $(function () {
             }
         });
     }
+    
+    function checkAll2(){
+        var aktivZaehler=new Array(27);
+        var insgesamt=new Array(27);
+        for (var i=0;i<27;i++){
+            aktivZaehler[i]=0;
+            insgesamt[i]=0;
+        }
+       
+        $(".ebenenAnzeige").each(function(){
+            if (! $(this).parent().hasClass("versteckt")){
+                var bs=$(this).attr("aktiv").toUpperCase();
+                
+                for (var i=0;i<bs.length;i++){
+                    insgesamt[bs.charCodeAt(i)-64]++;
+                    
+                }
+                if ($(this).parent().find(".markieren").hasClass("aktiv")) {
+                    for (var i=0;i<bs.length;i++){
+                    aktivZaehler[bs.charCodeAt(i)-64]++;
+                    
+                }
+                    }
+            }
+        });
+        return [aktivZaehler,insgesamt];
+    }
 
     function checkAll(index) {
         var rg = true;
@@ -316,11 +432,11 @@ $(function () {
     }
 
     var knoepfe = "<select class='sichtbarkeit'>";
-    for (var i = 0; i < 26; i++) {
+    for (var i = 0; i < 27; i++) {
         if (i == 0) {
-            knoepfe += "<option selected sichtbarkeit='" + i + "'>" + String.fromCharCode(65+i) + "</option> ";
+            knoepfe += "<option selected sichtbarkeit='" + i + "'>" + String.fromCharCode(64+i) + "</option> ";
         } else {
-            knoepfe += "<option sichtbarkeit='" + i + "'>" + String.fromCharCode(65+i) + "</option> ";
+            knoepfe += "<option sichtbarkeit='" + i + "'>" + String.fromCharCode(64+i) + "</option> ";
 
         }
     }
@@ -369,24 +485,35 @@ $(function () {
     }
     //knoepfe=""; // sichtbarkeit später einbauen
 
-    var knopfJS = "<span class='menuBar'><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben' lastClick='0'></button><button class='kopiereAbschnitt imageCopy oben'></button>" + knoepfe + knoepfe2+"<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button></span>";
-        var knopfJS2 = "<span class='menuBar'><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben' lastClick='0'></button><button class='kopiereAbschnitt imageCopy oben'></button>" + knoepfe+knoepfe2 + "<button class='imagePen editPart oben'></button><button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button></span>";
+    var bildURL=zeichneEbenenUebersicht("@");
+    
+    var dropdown="<span class='dropdown'><button onclick='myFunction()' class='dropbtn'>Dropdown</button><div id='myDropdown' class='dropdown-content'><a href='#'>Link 1</a><a href='#'>Link 2</a><a href='#'>Link 3</a></div></span>"
+    
+    var knopfJS = "<span class='menuBar'><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben' lastClick='0'></button><button class='kopiereAbschnitt imageCopy oben'></button>" + knoepfe2+bildURL+"<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button></span>";
+        var knopfJS2 = "<span class='menuBar'><button class='loeschen imageTonne oben'></button><button class='markieren imageSelect oben' lastClick='0'></button><button class='kopiereAbschnitt imageCopy oben'></button>" + knoepfe2 + "<button class='imagePen editPart oben'></button>"+bildURL+"<button class='einfuegen imageInsertInternal unten'></button><button class='einfuegenClipboard imagePaste unten'></button><button class='neueZeichenflaeche imageJournal unten' ></button><button class='pdf imagePDF unten'></button><button class='markdownEinfuegen imageNew unten'></button><button class='bildEinfuegen imageOpen unten'></button></span>";
 
     //$("body").html("<button id='druckansicht'>Druckansicht</button><button id='speichern'>Speichern</button><br><button class='neueZeichenflaeche' >Neue Zeichenfläche</button>");
     //QreatorBezier.init("#zeichnen");
 
 
     function updateWahl() {
-        for (var i = 0; i < 26; i++) {
-            var rg=checkAll(""+i);
-            if (rg == 2) {
+        
+        var rg=checkAll2();
+        var aktivZaehler=rg[0];
+        var insgesamt=rg[1];
+        
+        
+        
+        for (var i = 0; i < 27; i++) {
+        
+            if (insgesamt[i]>0&&aktivZaehler[i]==insgesamt[i]) {
                 $("[wahl='" + i + "']").removeClass("komplett").addClass("komplett");
                 $("[wahl='" + i + "']").attr("style","display:true");
-            } else if (rg==1){
+            } else if (insgesamt[i]>0&&aktivZaehler[i]<insgesamt[i]){
                 $("[wahl='" + i + "']").removeClass("komplett");
                 $("[wahl='" + i + "']").attr("style","display:true");
                 
-            } else if (rg==0){
+            } else if (insgesamt[i]==0){
                 $("[wahl='" + i + "']").removeClass("komplett");
                 $("[wahl='" + i + "']").attr("style","display:none");
             }
@@ -480,6 +607,10 @@ $(function () {
             }
         });
         
+        
+        
+        
+        
         new Clipboard('.kopiereAbschnitt', {
             text: function (trigger) {
 
@@ -507,9 +638,9 @@ $(function () {
 
         knoepfe = "";
 
-        for (var i = 0; i < 26; i++) {
+        for (var i = 0; i < 27; i++) {
             knoepfe += "<button class='wahl allgemein knopfStandard' wahl='" + i + "' >" +
-                String.fromCharCode(65+i) +
+                String.fromCharCode(64+i) +
                 "</button>"
             //+<input type='checkbox' name='layer' id='checkbox_"
             //+ i + "' value='" + i
@@ -520,7 +651,7 @@ $(function () {
         $("#ebenenwahl").html(knoepfe);
 
 
-        for (var i = 0; i < 27; i++) {
+       /* for (var i = 0; i < 27; i++) {
             if (i == 0) {
                 auswahlebenen += "<option selected auswahl='-'>-</option> ";
             } else {
@@ -530,7 +661,7 @@ $(function () {
         }
         auswahlebenen += "</select>";
 
-        $("#ebenenzuweisung").html(auswahlebenen);
+        $("#ebenenzuweisung").html(auswahlebenen);*/
         updateWahl();
         //$("#menuCommon").append(auswahlebenen).append(knoepfe);
 
@@ -713,6 +844,104 @@ $(function () {
 
 
     });
+    
+    function zeichneEbenenUebersicht(buchstaben){
+        var c = document.createElement('canvas');
+        buchstaben=buchstaben.toUpperCase();
+        var gctxt=c.getContext("2d");
+        c.height=35;
+        c.width=106;
+        gctxt.font ="10px Sans-Serif";
+        gctxt.fillStyle="#ffff00";
+        //gctxt.fillRect(0,0,106,35);
+        gctxt.fillStyle="#000000";
+        for (var i=0;i<27;i++){
+            if (buchstaben.includes(String.fromCharCode(64+i))){
+                gctxt.fillStyle="#ffffaa";
+                gctxt.fillRect((i%9)*12,12*parseInt(i/9),12,12);
+                gctxt.fillStyle="#000000";
+            } else {
+                gctxt.fillStyle="#aaaaaa";
+            }
+            
+                gctxt.fillText(String.fromCharCode(64+i),2+(i%9)*12,10+12*parseInt(i/9));
+            
+        }
+        var aktivString="";
+        for (var i=0;i<buchstaben.length;i++){
+            if (!aktivString.includes(buchstaben.charAt(i))){
+                aktivString+=buchstaben.charAt(i);
+            }
+        }
+        return "<span class='ebenenAnzeige' aktiv='"+aktivString+"'><img src='" + c.toDataURL() + "'   ></img></span>";
+    }
+    
+    function erstelleEbenenKnoepfe(buchstaben){
+        var ebenenKnoepfe="<div>";
+        for (var i=0;i<27;i++){
+            var aktivString="";
+            if (buchstaben.includes(String.fromCharCode(64+i))){
+                aktivString="aktiv";
+            }
+            ebenenKnoepfe+="<button id='bs_"+i+"' class='ebenenknopf "+aktivString+"'>"+String.fromCharCode(64+i)+"</button>";
+            if ((i+1)%9==0){
+                ebenenKnoepfe+="<br>";
+            }
+        }
+        ebenenKnoepfe+="</div>";
+        
+        return ebenenKnoepfe;
+    }
+    
+    $(document).on("click",".ebenenknopf",function(){
+        $(this).toggleClass("aktiv");
+    });
+    
+    $(document).on("click","#ebeneOK",function(){
+        var aktivString="";
+        for (var i=0;i<27;i++){
+            if ($("#bs_"+i).hasClass("aktiv")){
+                aktivString+=String.fromCharCode(64+i);
+            }
+        }
+        var neuesBild=zeichneEbenenUebersicht(aktivString); // ebenenuebersicht neu erstellen
+        $("#ebenenAenderung").wrap("<span id='ersetzung'></span>");
+        $("#ersetzung").html(neuesBild);
+        $("#ersetzung .ebenenAnzeige").unwrap(); // neues Bild einfügen
+        $(".transparent").remove();
+        updateWahl();
+    });
+    
+    $(document).on("click","#ebeneAbbrechen",function(){
+        $("#ebenenAenderung").removeAttr("id");
+        $(".transparent").remove();
+    });
+    
+    $(document).on("click","#ebeneAlle",function(){
+        for (var i=0;i<27;i++){
+            $("#bs_"+i).removeClass("aktiv").addClass("aktiv");
+        }
+    });
+    
+        $(document).on("click","#ebeneKeine",function(){
+        for (var i=0;i<27;i++){
+            $("#bs_"+i).removeClass("aktiv");
+        }
+    });
+    
+         $(document).on("click","#ebeneInvertiere",function(){
+        for (var i=0;i<27;i++){
+            $("#bs_"+i).toggleClass("aktiv");
+        }
+    });
+    
+    
+    $(document).on("click",".ebenenAnzeige",function(){
+        $(this).attr("id","ebenenAenderung");
+        $("body").append("<div class='transparent'></div>");
+        var ebenenKnoepfe=erstelleEbenenKnoepfe($(this).attr("aktiv"));
+        $(".transparent").append("<div class='fenster'>"+ebenenKnoepfe+"<br><button id='ebeneAlle'>Alle wählen</button><button id='ebeneKeine'>Alle abwählen</button><button id='ebeneInvertiere'>Auswahl invertieren</button><br><button id='ebeneOK'>OK</button><button id='ebeneAbbrechen'>Abbrechen</button></div>");
+    });
 
     function sammelSchriften(speicherAlles) {
         var gesamtText = "";
@@ -811,7 +1040,7 @@ $(function () {
             var anhang = holeZeitstempel();
             $(".transparent").remove();
             if (editorSpeichern == true) {
-                var blob = new Blob(["<!DOCTYPE html><html>" + $("html").html() + "</html>"], {
+                var blob = new Blob(["<!DOCTYPE html>" + $("html").html() + "</html>"], {
                     type: "text/html;charset=utf-8"
                 });
                 saveAs(blob, dateiname + "_Editor_" + anhang + ".html");
@@ -842,7 +1071,7 @@ $(function () {
                     var speichern = false;
 
                     // Beginn Sichtbarkeit speichern
-                    var sichtbarkeitsebene = "sb='" + $(this).next().find(".sichtbarkeit :selected").text() + "'";
+                    var sichtbarkeitsebene = "sb='" + $(this).next().find(".ebenenAnzeige").attr("aktiv") + "'";
                     
                     var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
                     // Ende Sichtbarkeit speichern
@@ -915,7 +1144,7 @@ $(function () {
             var js = "PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZ0LmZpcnN0Q2hpbGQ7dmFyIHphZWhsZXI9MDtmb3IgKHZhciBpPTA7aTwxMDtpKyspe3ZhciBlbGVtZW50PWEuZ2V0RWxlbWVudEJ5SWQoJ2xheWVyXycraSk7aWYgKGVsZW1lbnQhPW51bGwmJmVsZW1lbnQuZ2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5Jyk9PSdoaWRkZW4nKXtlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTsgIGJyZWFrO316YWVobGVyKys7fWlmICh6YWVobGVyPT0xMCl7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsKSB7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCdoaWRkZW4nKTsgIH0gfSBmb3IgKHZhciBpPTA7aTwxMDtpKyspeyB2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7IGVsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywndmlzaWJsZScpO2JyZWFrOyB9fX19PC9zY3JpcHQ+";
 
 
-            aktuellerDateiname = dateiname;
+            //aktuellerDateiname = dateiname;
             var anhang = holeZeitstempel();
             dateiname=dateiname+"_"+anhang+".html";
             $(".transparent").remove();
@@ -948,7 +1177,7 @@ $(function () {
             var speichern = false;
 
             // Beginn Sichtbarkeit speichern
-            var sichtbarkeitsebene = "sb='" + $(this).next().find(".sichtbarkeit :selected").text() + "'";
+            var sichtbarkeitsebene = "sb='" + $(this).next().find(".ebenenAnzeige").attr("aktiv") + "'";
             // Ende Sichtbarkeit speichern
             
             var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
@@ -1047,6 +1276,8 @@ $(function () {
     }
     
     
+    
+    
     $("#druckansicht").click(function () {
 
         raeumeAuf();
@@ -1084,7 +1315,7 @@ $(function () {
             var speichern = false;
 
             // Beginn Sichtbarkeit speichern
-            var sichtbarkeitsebene = "sb='" + $(this).next().find(".sichtbarkeit :selected").text() + "'";
+            var sichtbarkeitsebene = "sb='" + $(this).next().find(".ebenenAnzeige").attr("aktiv") + "'";
             // Ende Sichtbarkeit speichern
              var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
 
@@ -1360,6 +1591,7 @@ $(function () {
         $(this).parent().after("<div id='einsetzen'></div>");
         $("body").append("<div class='transparent'></div>");
         $(".transparent").append("<div class='fenster'><p>Bitte fügen Sie den Inhalt des Clipboards in das Textfeld ein (z. B. per Strg+V) und drücken Sie dann den Knopf \"Einfügen\"</p><textarea id='clipboardExtern' required='required' ></textArea><button id='clipboardExternEinfuegen'>Einfügen in Dokument</button><button id='abbrechen'>Abbrechen</button></div>");
+        $("#clipboardExtern").focus();
     });
 
     $(document).on("click", "#clipboardExternEinfuegen", function () {
@@ -1830,7 +2062,7 @@ $(function () {
             $(container).find(".tshareElement").each(function () {
                 var sb = $(this).attr("sb"); // sichtbarkeit abfragen
                 if (sb == null || sb == "") {
-                    sb = "A";
+                    sb = "@";
                 }
                 var ft=$(this).attr("ft");
                 if (ft==null||ft==""){
@@ -1856,8 +2088,13 @@ $(function () {
                     $(".menuBar").last().attr("id", "tocBar");
 
                 }
-                $(".sichtbarkeit").last().val(sb); // aktive sichtbarkeit setzen
+                $(".ebenenAnzeige").last().attr("aktiv",sb); // aktive sichtbarkeit setzen
                 $(".folientyp").last().val(ft);
+                var neuesBild=zeichneEbenenUebersicht(sb); // ebenenuebersicht neu erstellen
+        $(".ebenenAnzeige").last().wrap("<span id='ersetzung'></span>");
+        $("#ersetzung").html(neuesBild);
+        $("#ersetzung .ebenenAnzeige").unwrap(); // neues Bild einfügen
+        
                 //console.log($(this).html());
             });
             /*
