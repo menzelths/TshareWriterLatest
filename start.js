@@ -692,6 +692,19 @@ $(function () {
 
 
     });
+    
+    $("#slideshow").click(function () {
+        raeumeAuf();
+
+        $("body").append("<div class='transparent'></div>");
+        var platzhalter = aktuellerDateiname;
+        if (aktuellerDateiname == "") {
+            platzhalter = "Slideshow";
+        }
+        $(".transparent").append("<div class='fenster'>Speichern / Zeigen der aktuellen Slideshow (Zeitstempel und Endung werden beim Speichern angehängt)<br>Dateiname: <input type='text' id='dateiname' value='" + platzhalter + "'></input><br><button id='speichereSlideshow'>Speichern</button><button id='zeigeSlideshow'>Zeigen</button><button id='abbrechen'>Abbrechen</button></div>");
+
+
+    });
 
     $("#menuansicht").click(function () {
         $("body").append("<div class='transparent'></div>");
@@ -880,16 +893,32 @@ $(function () {
         //saveAs(blob, "hello world.html");
     });
     
-    $("#slideshow").click(function(){
-        raeumeAuf();
-        //$(".loeschen").hide();
-        //$(".neueZeichenflaeche").hide();
-        //druckansicht=true;
+    $(document).on("click","#zeigeSlideshow",function(){
+        slideShow(false);
+    });
+    
+    $(document).on("click","#speichereSlideshow",function(){
+        slideShow(true);
+    });
+    
+    function slideShow(speichern){
+         var dateiname = $("#dateiname").val();
+        
+        if (dateiname != null) {
+            if (dateiname == "") {
+                dateiname = "Slideshow";
+            }
+        }
 
-        // neu: alle svg-teile sammeln und dann in neuem fenster darstellen
+            // var js="<script>function nextLayer(evt){var a =evt.firstChild;var zaehler=0;for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){element.setAttribute('visibility','visible');  break;}zaehler++;}if (zaehler==10){for (var i=0;i<10;i++){var element=a.getElementById('layer_'+i);if (element!=null) {element.setAttribute('visibility','hidden');  } } for (var i=0;i<10;i++){ var element=a.getElementById('layer_'+i);if (element!=null&&element.getAttribute('visibility')=='hidden'){ element.setAttribute('visibility','visible');break; }}}}</script>";
 
-        var js = "PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZ0LmZpcnN0Q2hpbGQ7dmFyIHphZWhsZXI9MDtmb3IgKHZhciBpPTA7aTwxMDtpKyspe3ZhciBlbGVtZW50PWEuZ2V0RWxlbWVudEJ5SWQoJ2xheWVyXycraSk7aWYgKGVsZW1lbnQhPW51bGwmJmVsZW1lbnQuZ2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5Jyk9PSdoaWRkZW4nKXtlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTsgIGJyZWFrO316YWVobGVyKys7fWlmICh6YWVobGVyPT0xMCl7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsKSB7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCdoaWRkZW4nKTsgIH0gfSBmb3IgKHZhciBpPTA7aTwxMDtpKyspeyB2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7IGVsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywndmlzaWJsZScpO2JyZWFrOyB9fX19PC9zY3JpcHQ+";
+            var js = "PHNjcmlwdD5mdW5jdGlvbiBuZXh0TGF5ZXIoZXZ0KXt2YXIgYSA9ZXZ0LmZpcnN0Q2hpbGQ7dmFyIHphZWhsZXI9MDtmb3IgKHZhciBpPTA7aTwxMDtpKyspe3ZhciBlbGVtZW50PWEuZ2V0RWxlbWVudEJ5SWQoJ2xheWVyXycraSk7aWYgKGVsZW1lbnQhPW51bGwmJmVsZW1lbnQuZ2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5Jyk9PSdoaWRkZW4nKXtlbGVtZW50LnNldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScsJ3Zpc2libGUnKTsgIGJyZWFrO316YWVobGVyKys7fWlmICh6YWVobGVyPT0xMCl7Zm9yICh2YXIgaT0wO2k8MTA7aSsrKXt2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsKSB7ZWxlbWVudC5zZXRBdHRyaWJ1dGUoJ3Zpc2liaWxpdHknLCdoaWRkZW4nKTsgIH0gfSBmb3IgKHZhciBpPTA7aTwxMDtpKyspeyB2YXIgZWxlbWVudD1hLmdldEVsZW1lbnRCeUlkKCdsYXllcl8nK2kpO2lmIChlbGVtZW50IT1udWxsJiZlbGVtZW50LmdldEF0dHJpYnV0ZSgndmlzaWJpbGl0eScpPT0naGlkZGVuJyl7IGVsZW1lbnQuc2V0QXR0cmlidXRlKCd2aXNpYmlsaXR5JywndmlzaWJsZScpO2JyZWFrOyB9fX19PC9zY3JpcHQ+";
 
+
+            aktuellerDateiname = dateiname;
+            var anhang = holeZeitstempel();
+            dateiname=dateiname+"_"+anhang+".html";
+            $(".transparent").remove();
         var code = "";
         var precode="";
         var postcode="";
@@ -1003,17 +1032,21 @@ $(function () {
             asciidoctorText = $("#asciidoctorstyle").text();
         }
         var header = "<meta name='description' content='Journal for HTML' ><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
-        var w = window.open();
+        if (speichern==false){
+            var w = window.open();
         w.document.open();
         w.document.write("<!DOCTYPE html><head>" + header + window.atob(js) + "<script>" + window.atob(saveAs64) + "\n" + window.atob(saveObject64) + "</script><style>" + gesamtText + asciidoctorText + window.atob(revealcss64)+window.atob(serifcss64) +"</style></head><body><div class='reveal'><div class='slides'>" + code + "</div></div><script>"+window.atob(revealjs64)+"</script><script>Reveal.initialize();</script></body></html>");
+        } else {
         //w.document.close();
         //window.open("data:text/html,<!DOCTYPE html><html>"+code+"</html>");
         var blob = new Blob(["<!DOCTYPE html><head>" + header + window.atob(js) + "<script>" + window.atob(saveAs64) + "\n" + window.atob(saveObject64) + "</script><style>" + gesamtText + asciidoctorText + window.atob(revealcss64)+window.atob(serifcss64)+ "</style></head><body><div class='reveal'><div class='slides'>" + code + "</div></div><script>"+window.atob(revealjs64)+"</script><script>Reveal.initialize();</script></body></html>"], {
                     type: "text/html;charset=utf-8"
                 });
-                saveAs(blob,  "test_ss" + parseInt(Math.random()*100000) + ".html");
-
-    })
+                saveAs(blob, dateiname);
+        }
+    }
+    
+    
     $("#druckansicht").click(function () {
 
         raeumeAuf();
