@@ -323,6 +323,7 @@ $(function () {
                    $(this).attr("aktiv",aktivStringAlt);
                    
                    var neuesBild=zeichneEbenenUebersicht(aktivStringAlt); // ebenenuebersicht neu erstellen
+                   $(this).parent().prev(".tshareElement").attr("sb",aktivStringAlt); // auch in tshare ändern
         $(this).wrap("<span id='ersetzung'></span>");
         $("#ersetzung").html(neuesBild);
         $("#ersetzung .ebenenAnzeige").unwrap(); // neues Bild einfügen
@@ -448,6 +449,13 @@ $(function () {
     knoepfe2+="<option folientyp='2'>++</option>"; // neue folie Untertyp
      knoepfe2+="<option folientyp='3'>/</option>"; // neues Fragment
     knoepfe2+="</select>";
+    
+    $(document).on("change", ".folientyp", function (event) { // im Element speichern
+        event.preventDefault();
+
+        var wahlFolientyp=$(this).val();
+        $(this).parent().prev(".tshareElement").attr("ft",wahlFolientyp);
+    });
     
     $(document).on("change", ".auswahlebene", function (event) {
         event.preventDefault();
@@ -651,6 +659,16 @@ $(function () {
         $("#ebenenwahl").html(knoepfe);
 
 
+        // noch alle ebenenknoepfe setzen, falls datei sich selbst öffnet
+        
+        $(".tshareElement").each(function(){
+           var ft=$(this).attr("ft");
+            if (ft==null||ft==""){
+                ft="=";
+            } 
+            $(this).next().find(".folientyp").val(ft);
+        });
+        
        /* for (var i = 0; i < 27; i++) {
             if (i == 0) {
                 auswahlebenen += "<option selected auswahl='-'>-</option> ";
@@ -905,6 +923,7 @@ $(function () {
             }
         }
         var neuesBild=zeichneEbenenUebersicht(aktivString); // ebenenuebersicht neu erstellen
+        $("#ebenenAenderung").parent().prev(".tshareElement").attr("sb",aktivString);
         $("#ebenenAenderung").wrap("<span id='ersetzung'></span>");
         $("#ersetzung").html(neuesBild);
         $("#ersetzung .ebenenAnzeige").unwrap(); // neues Bild einfügen
