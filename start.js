@@ -1405,6 +1405,12 @@ var test=2;*/
             if (slidetype=="="){
                 precode="";
                 postcode="";
+                if (baumebene==0){
+                    precode="<section>";
+                    baumebene=1;
+                }
+                
+                
             } else if (slidetype=="+"){
                 if (baumebene==0){
                 precode="<section>";
