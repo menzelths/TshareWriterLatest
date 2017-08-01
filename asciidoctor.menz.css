@@ -407,3 +407,16 @@
 .adoccss 	.hide-for-print{display:none!important}
 .adoccss 	.show-for-print{display:inherit!important}}
 .adoccss .icon>i {font-style:normal; line-height:inherit}
+
+.qrcode img {
+    margin: 20px;
+    display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.center {
+ font-family: arial;
+ text-align: center;
+ margin-bottom: 10px;
+}
