@@ -957,7 +957,7 @@ var test=2;*/
      $(document).on("click",".imageQR",function(){
         $("body").append("<div class='transparent'></div>");
          $(this).parent().after("<div id='einsetzen' class='tshareElement qrcode adoccss' sb='@' ft='='></div>");
-          $(".transparent").append("<div class='fenster'>Link eingeben:<br> <input type='text' width='200' id='qrLink' ></input><button id='qrdieseSeite'>Aktuelle Seite verwenden</button><br>Text:<br><input type='text' width='200' id='qrText' ></input><br><input type='checkbox' id='qrTextZeigen'>Text anzeigen</input><br><button id='qrfertig'>OK</button><button id='qrabbrechen'>Abbrechen</button></div>");
+          $(".transparent").append("<div class='fenster'>Link eingeben:<br> <input type='text' size='100' id='qrLink' ></input><button id='qrdieseSeite'>Aktuelle Seite verwenden</button><br>Text:<br><input type='text' size='100' id='qrText' ></input><br>Kantenlänge in Pixel:<br><input type='text' size='15' id='qrKante' value='250'></input><br><input type='checkbox' id='qrTextZeigen'>Text anzeigen</input><p><button id='qrfertig'>OK</button><button id='qrabbrechen'>Abbrechen</button></div>");
     });
     
     $(document).on("click","#qrabbrechen",function(){
@@ -974,8 +974,8 @@ var test=2;*/
     $(document).on("click","#qrfertig",function(){
         var qrcode = new QRCode($("#einsetzen")[0], {
 	text: $("#qrLink").val(),
-	width: 200,
-	height: 200,
+	width: parseInt($("#qrKante").val()),
+	height: parseInt($("#qrKante").val()),
 	colorDark : "#000000",
 	colorLight : "#ffffff",
 	correctLevel : QRCode.CorrectLevel.H
