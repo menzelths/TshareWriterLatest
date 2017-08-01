@@ -953,15 +953,24 @@ var test=2;*/
         sekundenstring += sekunde;
         return "" + (1900 + jetzt.getYear()) + monatsstring + tagesstring + "_" + stundenstring + minutenstring + sekundenstring;
     }
+    
+    var qrFeld="<div class='fenster'>QR-Code<p>Zu codierender Text:<br> <textarea  cols='80' rows='8' id='qrLink' ></textarea><br><button id='qrdieseSeite'>Aktuelle Seite verwenden</button><p><input type='checkbox' id='qrTextZeigen'>Bildunterschrift:</input><br><input type='text' size='80' id='qrText' ></input><br><p>Kantenlänge in Pixel:<br><input type='text' size='15' id='qrKante' value='250'></input><p>Farbe:<br><input id='qrFarbe'  type='color' value='#000000' list='color' /><datalist id='color'><option>#000000</option><option>#ff0000</option><option>#0000ff</option><option>#ff9900</option><option>#008000</option><option>#a52a2a</option><option>#999999</option></datalist><br><p><button id='qrfertig'>OK</button><button id='qrabbrechen'>Abbrechen</button></div>";
+    
+    var qrFeld2="<div class='fenster'>QR-Code<p>Zu codierender Text:<br> <textarea  cols='80' rows='8' id='qrLink' ></textarea><br><button id='qrdieseSeite'>Aktuelle Seite verwenden</button><p><input type='checkbox' id='qrTextZeigen'>Bildunterschrift:</input><br><input type='text' size='80' id='qrText' ></input><br><p>Kantenlänge in Pixel:<br><input type='text' size='15' id='qrKante' value='250'></input><p>Farbe:<br><input id='qrFarbe'  type='color' value='#000000' list='color' /><datalist id='color'><option>#000000</option><option>#ff0000</option><option>#0000ff</option><option>#ff9900</option><option>#008000</option><option>#a52a2a</option><option>#999999</option></datalist><br><p><button id='qrfertig2'>OK</button><button id='qrabbrechen2'>Abbrechen</button></div>";
 
      $(document).on("click",".imageQR",function(){
         $("body").append("<div class='transparent'></div>");
          $(this).parent().after("<div id='einsetzen' class='tshareElement qrcode adoccss' sb='@' ft='='></div>");
-          $(".transparent").append("<div class='fenster'>Link eingeben:<br> <input type='text' size='100' id='qrLink' ></input><button id='qrdieseSeite'>Aktuelle Seite verwenden</button><br>Text:<br><input type='text' size='100' id='qrText' ></input><br>Kantenlänge in Pixel:<br><input type='text' size='15' id='qrKante' value='250'></input><br><input type='checkbox' id='qrTextZeigen'>Text anzeigen</input><p><button id='qrfertig'>OK</button><button id='qrabbrechen'>Abbrechen</button></div>");
+          $(".transparent").append(qrFeld);
     });
     
     $(document).on("click","#qrabbrechen",function(){
        $("#einsetzen").remove();
+        $(".transparent").remove();
+    });
+    
+    $(document).on("click","#qrabbrechen2",function(){
+       $("#ersetzen").removeAttr("id");
         $(".transparent").remove();
     });
     
@@ -971,12 +980,13 @@ var test=2;*/
         $("#qrText").val(link);
     });
     
-    $(document).on("click","#qrfertig",function(){
+    function fuegeQRCodeEin(menuAnhaengen){
+        $("#einsetzen").html(""); // bisherigen Inhalt löschen
         var qrcode = new QRCode($("#einsetzen")[0], {
 	text: $("#qrLink").val(),
 	width: parseInt($("#qrKante").val()),
 	height: parseInt($("#qrKante").val()),
-	colorDark : "#000000",
+	colorDark : $("#qrFarbe").val(),
 	colorLight : "#ffffff",
 	correctLevel : QRCode.CorrectLevel.H
 });
@@ -986,12 +996,47 @@ var test=2;*/
         if (textzeigen==true){
             text=$("#qrText").val();
         }
-        $("#einsetzen").after(knopfJS);
-        $("#einsetzen").append("<div class='center'>"+text+"</div>");
+        if (menuAnhaengen==true){
+            $("#einsetzen").after(knopfJS);
+        }
+        
+        $("#einsetzen").append("<div class='qrinfo' qrtext='"+$("#qrLink").val()+"' qrcapture='"+text+"' qrsize='"+parseInt($("#qrKante").val())+"' qrfarbe='"+$("#qrFarbe").val()+"'></div><div class='center'>"+text+"</div>");
         $("#einsetzen").removeAttr("id");
         $(".transparent").remove();
         updateWahl();
+    }
+    
+    $(document).on("click","#qrfertig",function(){
+        fuegeQRCodeEin(true);
 
+    });
+    
+    $(document).on("click","#qrfertig2",function(){
+        fuegeQRCodeEin(false);
+
+    });
+    
+    
+    
+    
+    
+    $(document).on("click",".qrcode",function(){
+        var qrtext=$(this).find(".qrinfo").attr("qrtext");
+        var qrcapture=$(this).find(".qrinfo").attr("qrcapture");
+        var qrsize=$(this).find(".qrinfo").attr("qrsize");
+        var qrfarbe=$(this).find(".qrinfo").attr("qrfarbe");
+        $(this).attr("id","einsetzen");
+        $("body").append("<div class='transparent'></div>");
+         
+          $(".transparent").append(qrFeld2);
+        $("#qrLink").val(qrtext);
+        $("#qrText").val(qrcapture);
+        if (qrcapture.trim()!=""){
+            $("#qrTextZeigen").prop("checked",true);
+        }
+        $("#qrKante").val(qrsize);
+        $("#qrFarbe").val(qrfarbe);
+        
     });
     
     $("#speichern").click(function () {
@@ -1806,7 +1851,7 @@ var test=2;*/
                 }
             });
         }
-
+        updateWahl();
     });
 
     $(document).on("click", ".einfuegenClipboard", function () {
