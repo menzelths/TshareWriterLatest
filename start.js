@@ -537,6 +537,7 @@ function zeigeHashTags(hash){
     if (hash==""){
         allesSichtbar=true;
     }
+    
     $(".tshareElement").each(function(){
         var sb=$(this).attr("sb");
         if (sb==null||sb==""){
@@ -566,6 +567,7 @@ function zeigeHashTags(hash){
         updateWahl();
         $("#hideShow").removeClass("komplett").addClass("komplett");
         }
+        
     }
     
     $(window).on('hashchange', function() {
@@ -1337,12 +1339,30 @@ var test=2;*/
                 $(".tshareElement").each(function () {
                     //code+=$(this).html()+"\n";
                     var speichern = false;
-
-                    // Beginn Sichtbarkeit speichern
-                    var sichtbarkeitsebene = "sb='" + $(this).next().find(".ebenenAnzeige").attr("aktiv") + "'";
                     
-                    var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
-                    // Ende Sichtbarkeit speichern
+                    
+                    var sichtbar=false;
+            
+            
+            // Beginn Sichtbarkeit speichern
+            var sichtbarkeitsebene = "sb='" + $(this).next().find(".ebenenAnzeige").attr("aktiv") + "'";
+            if ($(this).next().find(".ebenenAnzeige").attr("aktiv").includes("@")){
+                sichtbar=true;
+            }
+            // Ende Sichtbarkeit speichern
+             var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
+
+            sichtbar=false; // alles unsichtbar und erst mit javascript werden die einzelnen Abschnitte sichtbar gemacht
+                    
+            if (sichtbar==false){
+                folientyp+=" style='display:none;'";
+            } else {
+                folientyp+=" style='display:true;'";
+            }
+                    
+                    
+
+                    
 
                     $(this).next().find(".markieren").each(function () {
                         speichern = $(this).hasClass("aktiv");
@@ -1632,12 +1652,22 @@ var test=2;*/
         $(".tshareElement").each(function () {
             //code+=$(this).html()+"\n";
             var speichern = false;
-
+            var sichtbar=false;
+            
+            
             // Beginn Sichtbarkeit speichern
             var sichtbarkeitsebene = "sb='" + $(this).next().find(".ebenenAnzeige").attr("aktiv") + "'";
+            if ($(this).next().find(".ebenenAnzeige").attr("aktiv").includes("@")){
+                sichtbar=true;
+            }
             // Ende Sichtbarkeit speichern
              var folientyp = " ft='" + $(this).next().find(".folientyp :selected").text() + "' ";
 
+            if (sichtbar==false){
+                folientyp+=" style='display:none;'";
+            } else {
+                folientyp+=" style='display:true;'";
+            }
 
             $(this).next().find(".markieren").each(function () {
                 speichern = $(this).hasClass("aktiv");
@@ -1677,7 +1707,7 @@ var test=2;*/
         var header = "<meta name='description' content='Journal for HTML' ><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>";
         var w = window.open();
         w.document.open();
-        w.document.write("<!DOCTYPE html><html><head>" + header + window.atob(js) + "<script>" + window.atob(saveAs64) + "</script><script>\n" + window.atob(saveObject64) +"</script><script>"+$("#jqueryminified").text()+ "</script>\n<script>"+window.atob(hash64)+"</script><style>" + gesamtText + asciidoctorText + "</style></head><body>" + code + "</body></html>");
+        w.document.write("<!DOCTYPE html><html><head>" + header + window.atob(js) + "<script>" + window.atob(saveAs64) + "</script><script>\n" + window.atob(saveObject64) +"</script><script>"+$("#jqueryminified").text()+ "</script>\n<script>"+window.atob(hash64)+"</script><style>" + gesamtText + asciidoctorText + "</style></head><body>" + code + "<script>location.hash='tags_@';</script></body></html>");
         //w.document.close();
         //window.open("data:text/html,<!DOCTYPE html><html>"+code+"</html>");
 
