@@ -1481,6 +1481,7 @@ var test=2;*/
 
         var elementZaehler = 0;
         var markiertZaehler = 0;
+        var marker="jafijfßjwßmfw829384uß8wfg";
         var speicherAlles = false;
         var baumebene=0; // 0 keine section, 1 section erste stufe, 2 section zweiter stufe
         $(".tshareElement").each(function () {
@@ -1514,24 +1515,30 @@ var test=2;*/
                 slidetype = $(this).val();
             });
             
+            if (speicherAlles == true) {
+                speichern = true; // falls alles gespeichert wird, entsprechend markieren
+            }
+            
+            if (speichern==true){
             if (slidetype=="="){
                 precode="";
                 postcode="";
                 if (baumebene==0){
-                    precode="<section>";
+                    precode="<section>"+marker;
                     baumebene=1;
                 }
                 
                 
             } else if (slidetype=="+"){
                 if (baumebene==0){
-                precode="<section>";
+                precode="<section>"+marker;
                 
                 } else if (baumebene==1){
-                    precode="</section><section>";
+                    code=code.replace(marker,"");
+                    precode="</section><section>"+marker;
                     
                 } else if (baumebene==2){
-                    precode="</section></section><section>";
+                    precode="</section></section><section>"+marker;
                     
                 }
                 postcode="";
@@ -1540,8 +1547,9 @@ var test=2;*/
                 if (baumebene==0){
                     precode="<section><section>";
                     
-                } else if (baumebene==1){
-                    precode="</section><section><section>";
+                } else if (baumebene==1){ // plus war schon davor, in stufe 2 umwandeln
+                    code=code.replace(marker,"<section>");
+                    precode="</section><section>";
                     
                 } else if (baumebene==2){
                     precode="</section><section>";
@@ -1553,11 +1561,9 @@ var test=2;*/
                 postcode="</span>";
             }
             
-            
-            
-            if (speicherAlles == true) {
-                speichern = true; // falls alles gespeichert wird, entsprechend markieren
             }
+            
+            
             if (speichern == true) {
                 if ($(this).hasClass("zeichenflaeche")) {
                     code += precode+"<div " + sichtbarkeitsebene + folientyp+" class='zeichenflaeche tshareElement' onClick='nextLayer(this)' >" + $(this).html() + "</div>\n"+postcode;
@@ -1582,6 +1588,7 @@ var test=2;*/
         } else if (baumebene==2){
             code+="</section></section>";
         }
+        code=code.replace(marker,"");
         var gesamtText = "";
         var asciidoctorText = "";
         if (textElementZaehler > 0) {
