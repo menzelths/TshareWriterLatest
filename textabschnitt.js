@@ -832,9 +832,9 @@ var Textabschnitt = new function () {
         return [expression, scope];
     }
 
-    function process(text, evaluate, decimalNumber, latex) {
+    function process(textEingabe, evaluate, decimalNumber, latex) {
 
-        var expressionAndScope = prepareExpression(text),
+        var expressionAndScope = prepareExpression(textEingabe),
             expression = expressionAndScope[0],
             scope = expressionAndScope[1],
             //alternative regex: ^([a-z_][a-z\d\_]*)\(([a-z_,])\):=([\+\-\*\/a-z\d*_,\^!\(\)]+)
@@ -871,11 +871,11 @@ var Textabschnitt = new function () {
                 if (latex == true) {
                     return LaTeX.split('\n').join('');
                 } else {
-                    return text;
+                    return textEingabe;
                 }
                 //clear();
             } catch (e) {
-                return text('Error: Could not set function: ' + e.toString());
+                return console.log('Error: Could not set function: ' + e.toString());
             }
         } else {
             var variableDeclaration = /^([a-z_][a-z\d\_]*):(.+)$/gi.exec(expression);
@@ -884,8 +884,10 @@ var Textabschnitt = new function () {
                     var varName = variableDeclaration[1],
                         varValue = variableDeclaration[2];
                     //set the value
-                    nerdamer.setVar(varName, nerdamer(varValue).text());
+                    nerdamer.setVar(varName, nerdamer(varValue));
                     //generate the LaTeX
+                   // var LaTeX2=varName + '=' + nerdamer("vector(1,2,3)").toTeX();
+                    console.log(varName + '=' + nerdamer(varValue).text());
                     LaTeX = varName + '=' + nerdamer(varValue).toTeX();
                     //addToPanel(LaTeX, expression, undefined, varName); 
 
@@ -893,12 +895,12 @@ var Textabschnitt = new function () {
                     if (latex == true) {
                         return LaTeX.split('\n').join('');
                     } else {
-                        return text;
+                        return textEingabe;
                     }
 
                     //clear();
                 } catch (e) {
-                    return text('Something went wrong. Nerdamer could not parse expression: ' + e.toString());
+                    console.log('Something went wrong with variables. Nerdamer could not parse expression: ' + e.toString());
                 }
             } else {
                 try {
@@ -923,11 +925,11 @@ var Textabschnitt = new function () {
                     if (latex == true) {
                         return LaTeX.split('\n').join('');
                     } else {
-                        return text;
+                        return textEingabe;
                     }
                     //clear();
                 } catch (e) {
-                    return text('Something went wrong. Nerdamer could not parse expression: ' + e.toString());
+                    console.log('Something went wrong. Nerdamer could not parse expression: ' + e.toString());
                 }
             }
         }
