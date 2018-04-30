@@ -4,6 +4,515 @@
 <meta name='description' content='Journal for HTML' >
   <meta charset='utf-8'>
    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style id=`spectrumstyle`>
+        /***
+Spectrum Colorpicker v1.8.0
+https://github.com/bgrins/spectrum
+Author: Brian Grinstead
+License: MIT
+***/
+
+.sp-container {
+    position:absolute;
+    top:0;
+    left:0;
+    display:inline-block;
+    *display: inline;
+    *zoom: 1;
+    /* https://github.com/bgrins/spectrum/issues/40 */
+    z-index: 9999994;
+    overflow: hidden;
+}
+.sp-container.sp-flat {
+    position: relative;
+}
+
+/* Fix for * { box-sizing: border-box; } */
+.sp-container,
+.sp-container * {
+    -webkit-box-sizing: content-box;
+       -moz-box-sizing: content-box;
+            box-sizing: content-box;
+}
+
+/* http://ansciath.tumblr.com/post/7347495869/css-aspect-ratio */
+.sp-top {
+  position:relative;
+  width: 100%;
+  display:inline-block;
+}
+.sp-top-inner {
+   position:absolute;
+   top:0;
+   left:0;
+   bottom:0;
+   right:0;
+}
+.sp-color {
+    position: absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:20%;
+}
+.sp-hue {
+    position: absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:84%;
+    height: 100%;
+}
+
+.sp-clear-enabled .sp-hue {
+    top:33px;
+    height: 77.5%;
+}
+
+.sp-fill {
+    padding-top: 80%;
+}
+.sp-sat, .sp-val {
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+
+.sp-alpha-enabled .sp-top {
+    margin-bottom: 18px;
+}
+.sp-alpha-enabled .sp-alpha {
+    display: block;
+}
+.sp-alpha-handle {
+    position:absolute;
+    top:-4px;
+    bottom: -4px;
+    width: 6px;
+    left: 50%;
+    cursor: pointer;
+    border: 1px solid black;
+    background: white;
+    opacity: .8;
+}
+.sp-alpha {
+    display: none;
+    position: absolute;
+    bottom: -14px;
+    right: 0;
+    left: 0;
+    height: 8px;
+}
+.sp-alpha-inner {
+    border: solid 1px #333;
+}
+
+.sp-clear {
+    display: none;
+}
+
+.sp-clear.sp-clear-display {
+    background-position: center;
+}
+
+.sp-clear-enabled .sp-clear {
+    display: block;
+    position:absolute;
+    top:0px;
+    right:0;
+    bottom:0;
+    left:84%;
+    height: 28px;
+}
+
+/* Don't allow text selection */
+.sp-container, .sp-replacer, .sp-preview, .sp-dragger, .sp-slider, .sp-alpha, .sp-clear, .sp-alpha-handle, .sp-container.sp-dragging .sp-input, .sp-container button  {
+    -webkit-user-select:none;
+    -moz-user-select: -moz-none;
+    -o-user-select:none;
+    user-select: none;
+}
+
+.sp-container.sp-input-disabled .sp-input-container {
+    display: none;
+}
+.sp-container.sp-buttons-disabled .sp-button-container {
+    display: none;
+}
+.sp-container.sp-palette-buttons-disabled .sp-palette-button-container {
+    display: none;
+}
+.sp-palette-only .sp-picker-container {
+    display: none;
+}
+.sp-palette-disabled .sp-palette-container {
+    display: none;
+}
+
+.sp-initial-disabled .sp-initial {
+    display: none;
+}
+
+
+/* Gradients for hue, saturation and value instead of images.  Not pretty... but it works */
+.sp-sat {
+    background-image: -webkit-gradient(linear,  0 0, 100% 0, from(#FFF), to(rgba(204, 154, 129, 0)));
+    background-image: -webkit-linear-gradient(left, #FFF, rgba(204, 154, 129, 0));
+    background-image: -moz-linear-gradient(left, #fff, rgba(204, 154, 129, 0));
+    background-image: -o-linear-gradient(left, #fff, rgba(204, 154, 129, 0));
+    background-image: -ms-linear-gradient(left, #fff, rgba(204, 154, 129, 0));
+    background-image: linear-gradient(to right, #fff, rgba(204, 154, 129, 0));
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType = 1, startColorstr=#FFFFFFFF, endColorstr=#00CC9A81)";
+    filter : progid:DXImageTransform.Microsoft.gradient(GradientType = 1, startColorstr='#FFFFFFFF', endColorstr='#00CC9A81');
+}
+.sp-val {
+    background-image: -webkit-gradient(linear, 0 100%, 0 0, from(#000000), to(rgba(204, 154, 129, 0)));
+    background-image: -webkit-linear-gradient(bottom, #000000, rgba(204, 154, 129, 0));
+    background-image: -moz-linear-gradient(bottom, #000, rgba(204, 154, 129, 0));
+    background-image: -o-linear-gradient(bottom, #000, rgba(204, 154, 129, 0));
+    background-image: -ms-linear-gradient(bottom, #000, rgba(204, 154, 129, 0));
+    background-image: linear-gradient(to top, #000, rgba(204, 154, 129, 0));
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#00CC9A81, endColorstr=#FF000000)";
+    filter : progid:DXImageTransform.Microsoft.gradient(startColorstr='#00CC9A81', endColorstr='#FF000000');
+}
+
+.sp-hue {
+    background: -moz-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+    background: -ms-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+    background: -o-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff0000), color-stop(0.17, #ffff00), color-stop(0.33, #00ff00), color-stop(0.5, #00ffff), color-stop(0.67, #0000ff), color-stop(0.83, #ff00ff), to(#ff0000));
+    background: -webkit-linear-gradient(top, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+    background: linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+}
+
+/* IE filters do not support multiple color stops.
+   Generate 6 divs, line them up, and do two color gradients for each.
+   Yes, really.
+ */
+.sp-1 {
+    height:17%;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0000', endColorstr='#ffff00');
+}
+.sp-2 {
+    height:16%;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffff00', endColorstr='#00ff00');
+}
+.sp-3 {
+    height:17%;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ff00', endColorstr='#00ffff');
+}
+.sp-4 {
+    height:17%;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffff', endColorstr='#0000ff');
+}
+.sp-5 {
+    height:16%;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0000ff', endColorstr='#ff00ff');
+}
+.sp-6 {
+    height:17%;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff00ff', endColorstr='#ff0000');
+}
+
+.sp-hidden {
+    display: none !important;
+}
+
+/* Clearfix hack */
+.sp-cf:before, .sp-cf:after { content: ""; display: table; }
+.sp-cf:after { clear: both; }
+.sp-cf { *zoom: 1; }
+
+/* Mobile devices, make hue slider bigger so it is easier to slide */
+@media (max-device-width: 480px) {
+    .sp-color { right: 40%; }
+    .sp-hue { left: 63%; }
+    .sp-fill { padding-top: 60%; }
+}
+.sp-dragger {
+   border-radius: 5px;
+   height: 5px;
+   width: 5px;
+   border: 1px solid #fff;
+   background: #000;
+   cursor: pointer;
+   position:absolute;
+   top:0;
+   left: 0;
+}
+.sp-slider {
+    position: absolute;
+    top:0;
+    cursor:pointer;
+    height: 3px;
+    left: -1px;
+    right: -1px;
+    border: 1px solid #000;
+    background: white;
+    opacity: .8;
+}
+
+/*
+Theme authors:
+Here are the basic themeable display options (colors, fonts, global widths).
+See http://bgrins.github.io/spectrum/themes/ for instructions.
+*/
+
+.sp-container {
+    border-radius: 0;
+    background-color: #ECECEC;
+    border: solid 1px #f0c49B;
+    padding: 0;
+}
+.sp-container, .sp-container button, .sp-container input, .sp-color, .sp-hue, .sp-clear {
+    font: normal 12px "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.sp-top {
+    margin-bottom: 3px;
+}
+.sp-color, .sp-hue, .sp-clear {
+    border: solid 1px #666;
+}
+
+/* Input */
+.sp-input-container {
+    float:right;
+    width: 100px;
+    margin-bottom: 4px;
+}
+.sp-initial-disabled  .sp-input-container {
+    width: 100%;
+}
+.sp-input {
+   font-size: 12px !important;
+   border: 1px inset;
+   padding: 4px 5px;
+   margin: 0;
+   width: 100%;
+   background:transparent;
+   border-radius: 3px;
+   color: #222;
+}
+.sp-input:focus  {
+    border: 1px solid orange;
+}
+.sp-input.sp-validation-error {
+    border: 1px solid red;
+    background: #fdd;
+}
+.sp-picker-container , .sp-palette-container {
+    float:left;
+    position: relative;
+    padding: 10px;
+    padding-bottom: 300px;
+    margin-bottom: -290px;
+}
+.sp-picker-container {
+    width: 172px;
+    border-left: solid 1px #fff;
+}
+
+/* Palettes */
+.sp-palette-container {
+    border-right: solid 1px #ccc;
+}
+
+.sp-palette-only .sp-palette-container {
+    border: 0;
+}
+
+.sp-palette .sp-thumb-el {
+    display: block;
+    position:relative;
+    float:left;
+    width: 24px;
+    height: 15px;
+    margin: 3px;
+    cursor: pointer;
+    border:solid 2px transparent;
+}
+.sp-palette .sp-thumb-el:hover, .sp-palette .sp-thumb-el.sp-thumb-active {
+    border-color: orange;
+}
+.sp-thumb-el {
+    position:relative;
+}
+
+/* Initial */
+.sp-initial {
+    float: left;
+    border: solid 1px #333;
+}
+.sp-initial span {
+    width: 30px;
+    height: 25px;
+    border:none;
+    display:block;
+    float:left;
+    margin:0;
+}
+
+.sp-initial .sp-clear-display {
+    background-position: center;
+}
+
+/* Buttons */
+.sp-palette-button-container,
+.sp-button-container {
+    float: right;
+}
+
+/* Replacer (the little preview div that shows up instead of the <input>) */
+.sp-replacer {
+    margin:0;
+    overflow:hidden;
+    cursor:pointer;
+    padding: 4px;
+    display:inline-block;
+    *zoom: 1;
+    *display: inline;
+    border: solid 1px #91765d;
+    background: #eee;
+    color: #333;
+    vertical-align: middle;
+}
+.sp-replacer:hover, .sp-replacer.sp-active {
+    border-color: #F0C49B;
+    color: #111;
+}
+.sp-replacer.sp-disabled {
+    cursor:default;
+    border-color: silver;
+    color: silver;
+}
+.sp-dd {
+    padding: 2px 0;
+    height: 16px;
+    line-height: 16px;
+    float:left;
+    font-size:10px;
+}
+.sp-preview {
+    position:relative;
+    width:25px;
+    height: 20px;
+    border: solid 1px #222;
+    margin-right: 5px;
+    float:left;
+    z-index: 0;
+}
+
+.sp-palette {
+    *width: 220px;
+    max-width: 220px;
+}
+.sp-palette .sp-thumb-el {
+    width:16px;
+    height: 16px;
+    margin:2px 1px;
+    border: solid 1px #d0d0d0;
+}
+
+.sp-container {
+    padding-bottom:0;
+}
+
+
+/* Buttons: http://hellohappy.org/css3-buttons/ */
+.sp-container button {
+  background-color: #eeeeee;
+  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: linear-gradient(to bottom, #eeeeee, #cccccc);
+  border: 1px solid #ccc;
+  border-bottom: 1px solid #bbb;
+  border-radius: 3px;
+  color: #333;
+  font-size: 14px;
+  line-height: 1;
+  padding: 5px 4px;
+  text-align: center;
+  text-shadow: 0 1px 0 #eee;
+  vertical-align: middle;
+}
+.sp-container button:hover {
+    background-color: #dddddd;
+    background-image: -webkit-linear-gradient(top, #dddddd, #bbbbbb);
+    background-image: -moz-linear-gradient(top, #dddddd, #bbbbbb);
+    background-image: -ms-linear-gradient(top, #dddddd, #bbbbbb);
+    background-image: -o-linear-gradient(top, #dddddd, #bbbbbb);
+    background-image: linear-gradient(to bottom, #dddddd, #bbbbbb);
+    border: 1px solid #bbb;
+    border-bottom: 1px solid #999;
+    cursor: pointer;
+    text-shadow: 0 1px 0 #ddd;
+}
+.sp-container button:active {
+    border: 1px solid #aaa;
+    border-bottom: 1px solid #888;
+    -webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+    -moz-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+    -ms-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+    -o-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+    box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+}
+.sp-cancel {
+    font-size: 11px;
+    color: #d93f3f !important;
+    margin:0;
+    padding:2px;
+    margin-right: 5px;
+    vertical-align: middle;
+    text-decoration:none;
+
+}
+.sp-cancel:hover {
+    color: #d93f3f !important;
+    text-decoration: underline;
+}
+
+
+.sp-palette span:hover, .sp-palette span.sp-thumb-active {
+    border-color: #000;
+}
+
+.sp-preview, .sp-alpha, .sp-thumb-el {
+    position:relative;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
+}
+.sp-preview-inner, .sp-alpha-inner, .sp-thumb-inner {
+    display:block;
+    position:absolute;
+    top:0;left:0;bottom:0;right:0;
+}
+
+.sp-palette .sp-thumb-inner {
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+.sp-palette .sp-thumb-light.sp-thumb-active .sp-thumb-inner {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAIVJREFUeNpiYBhsgJFMffxAXABlN5JruT4Q3wfi/0DsT64h8UD8HmpIPCWG/KemIfOJCUB+Aoacx6EGBZyHBqI+WsDCwuQ9mhxeg2A210Ntfo8klk9sOMijaURm7yc1UP2RNCMbKE9ODK1HM6iegYLkfx8pligC9lCD7KmRof0ZhjQACDAAceovrtpVBRkAAAAASUVORK5CYII=);
+}
+
+.sp-palette .sp-thumb-dark.sp-thumb-active .sp-thumb-inner {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAMdJREFUOE+tkgsNwzAMRMugEAahEAahEAZhEAqlEAZhEAohEAYh81X2dIm8fKpEspLGvudPOsUYpxE2BIJCroJmEW9qJ+MKaBFhEMNabSy9oIcIPwrB+afvAUFoK4H0tMaQ3XtlrggDhOVVMuT4E5MMG0FBbCEYzjYT7OxLEvIHQLY2zWwQ3D+9luyOQTfKDiFD3iUIfPk8VqrKjgAiSfGFPecrg6HN6m/iBcwiDAo7WiBeawa+Kwh7tZoSCGLMqwlSAzVDhoK+6vH4G0P5wdkAAAAASUVORK5CYII=);
+}
+
+.sp-clear-display {
+    background-repeat:no-repeat;
+    background-position: center;
+    background-image: url(data:image/gif;base64,R0lGODlhFAAUAPcAAAAAAJmZmZ2dnZ6enqKioqOjo6SkpKWlpaampqenp6ioqKmpqaqqqqurq/Hx8fLy8vT09PX19ff39/j4+Pn5+fr6+vv7+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAAUABQAAAihAP9FoPCvoMGDBy08+EdhQAIJCCMybCDAAYUEARBAlFiQQoMABQhKUJBxY0SPICEYHBnggEmDKAuoPMjS5cGYMxHW3IiT478JJA8M/CjTZ0GgLRekNGpwAsYABHIypcAgQMsITDtWJYBR6NSqMico9cqR6tKfY7GeBCuVwlipDNmefAtTrkSzB1RaIAoXodsABiZAEFB06gIBWC1mLVgBa0AAOw==);
+}
+    </style>
 <style id='katexStyle'>
   /* KaTeX_AMS */
 @font-face {
@@ -4651,6 +5160,68 @@ hr.style_2 {
 
 
     </style>
+    
+<script id="spectrumminified">
+    var $jscomp=$jscomp||{};$jscomp.scope={};$jscomp.findInternal=function(b,w,m){b instanceof String&&(b=String(b));for(var G=b.length,y=0;y<G;y++){var oa=b[y];if(w.call(m,oa,y,b))return{i:y,v:oa}}return{i:-1,v:void 0}};$jscomp.ASSUME_ES5=!1;$jscomp.ASSUME_NO_NATIVE_MAP=!1;$jscomp.ASSUME_NO_NATIVE_SET=!1;$jscomp.defineProperty=$jscomp.ASSUME_ES5||"function"==typeof Object.defineProperties?Object.defineProperty:function(b,w,m){b!=Array.prototype&&b!=Object.prototype&&(b[w]=m.value)};
+$jscomp.getGlobal=function(b){return"undefined"!=typeof window&&window===b?b:"undefined"!=typeof global&&null!=global?global:b};$jscomp.global=$jscomp.getGlobal(this);$jscomp.polyfill=function(b,w,m,G){if(w){m=$jscomp.global;b=b.split(".");for(G=0;G<b.length-1;G++){var y=b[G];y in m||(m[y]={});m=m[y]}b=b[b.length-1];G=m[b];w=w(G);w!=G&&null!=w&&$jscomp.defineProperty(m,b,{configurable:!0,writable:!0,value:w})}};
+$jscomp.polyfill("Array.prototype.find",function(b){return b?b:function(b,m){return $jscomp.findInternal(this,b,m).v}},"es6","es3");
+(function(b){"function"===typeof define&&define.amd?define(["jquery"],b):"object"==typeof exports&&"object"==typeof module?module.exports=b(require("jquery")):b(jQuery)})(function(b,w){function m(k,e,q,C){for(var z=[],x=0;x<k.length;x++){var n=k[x];if(n){var v=tinycolor(n),m=.5>v.toHsl().l?"sp-thumb-el sp-thumb-dark":"sp-thumb-el sp-thumb-light";m+=tinycolor.equals(e,n)?" sp-thumb-active":"";n=v.toString(C.preferredFormat||"rgb");var w=Ga?"background-color:"+v.toRgbString():"filter:"+v.toFilter();
+z.push('<span title="'+n+'" data-color="'+v.toRgbString()+'" class="'+m+'"><span class="sp-thumb-inner" style="'+w+';" /></span>')}else z.push(b("<div />").append(b('<span data-color="" style="background-color:transparent;" class="sp-clear-display"></span>').attr("title",C.noColorSelectedText)).html())}return"<div class='sp-cf "+q+"'>"+z.join("")+"</div>"}function G(k,e){k=b.extend({},pa,k);k.callbacks={move:M(k.move,e),change:M(k.change,e),show:M(k.show,e),hide:M(k.hide,e),beforeShow:M(k.beforeShow,
+e)};return k}function y(k,e){function q(){f.showPaletteOnly&&(f.showPalette=!0);za.text(f.showPaletteOnly?f.togglePaletteMoreText:f.togglePaletteLessText);if(f.palette){qa=f.palette.slice(0);ha=b.isArray(qa[0])?qa:[qa];I={};for(var a=0;a<ha.length;a++)for(var c=0;c<ha[a].length;c++){var d=tinycolor(ha[a][c]).toRgbString();I[d]=!0}}p.toggleClass("sp-flat",N);p.toggleClass("sp-input-disabled",!f.showInput);p.toggleClass("sp-alpha-enabled",f.showAlpha);p.toggleClass("sp-clear-enabled",ba);p.toggleClass("sp-buttons-disabled",
+!f.showButtons);p.toggleClass("sp-palette-buttons-disabled",!f.togglePaletteOnly);p.toggleClass("sp-palette-disabled",!f.showPalette);p.toggleClass("sp-palette-only",f.showPaletteOnly);p.toggleClass("sp-initial-disabled",!f.showInitial);p.addClass(f.className).addClass(f.containerClassName);J()}function C(){if(l&&window.localStorage){try{var a=window.localStorage[l].split(",#");1<a.length&&(delete window.localStorage[l],b.each(a,function(a,c){z(c)}))}catch(Ha){}try{O=window.localStorage[l].split(";")}catch(Ha){}}}
+function z(a){if(W){a=tinycolor(a).toRgbString();if(!I[a]&&-1===b.inArray(a,O))for(O.push(a);O.length>pa;)O.shift();if(l&&window.localStorage)try{window.localStorage[l]=O.join(";")}catch(Ha){}}}function x(){var a=[];if(f.showPalette)for(var c=0;c<O.length;c++){var d=tinycolor(O[c]).toRgbString();I[d]||a.push(O[c])}return a.reverse().slice(0,f.maxSelectionSize)}function n(){var a=D(),c=b.map(ha,function(c,d){return m(c,a,"sp-palette-row sp-palette-row-"+d,f)});C();O&&c.push(m(x(),a,"sp-palette-row sp-palette-row-selection",
+f));Ia.html(c.join(""))}function v(){if(f.showInitial){var a=ca,c=D();Ja.html(m([a,c],c,"sp-palette-row-initial",f))}}function y(){(0>=K||0>=P||0>=a)&&J();g=!0;p.addClass("sp-dragging");X=null;A.trigger("dragstart.spectrum",[D()])}function ya(){g=!1;p.removeClass("sp-dragging");A.trigger("dragstop.spectrum",[D()])}function Aa(){var a=Q.val();null!==a&&""!==a||!ba?(a=tinycolor(a),a.isValid()?(R(a),S(),E()):Q.addClass("sp-validation-error")):(R(null),S(),E())}function Ka(){T?U():Ba()}function Ba(){var a=
+b.Event("beforeShow.spectrum");if(T)J();else if(A.trigger(a,[D()]),!1!==B.beforeShow(D())&&!a.isDefaultPrevented()){for(a=0;a<Y.length;a++)Y[a]&&Y[a].hide();T=!0;b(ia).on("keydown.spectrum",L);b(ia).on("click.spectrum",La);b(window).on("resize.spectrum",H);da.addClass("sp-active");p.removeClass("sp-hidden");J();V();ca=D();v();B.show(ca);A.trigger("show.spectrum",[ca])}}function L(a){27===a.keyCode&&U()}function La(a){2==a.button||g||(Pa||R(ca,!0),E(!0),U())}function U(){T&&!N&&(T=!1,b(ia).off("keydown.spectrum",
+L),b(ia).off("click.spectrum",La),b(window).off("resize.spectrum",H),da.removeClass("sp-active"),p.addClass("sp-hidden"),B.hide(D()),A.trigger("hide.spectrum",[D()]))}function R(a,c){if(tinycolor.equals(a,D()))V();else{if(!a&&ba)Z=!0;else{Z=!1;var d=tinycolor(a);a=d.toHsv();h=a.h%360/360;ja=a.s;ka=a.v;r=a.a}V();d&&d.isValid()&&!c&&(ea=f.preferredFormat||d.getFormat())}}function D(a){a=a||{};return ba&&Z?null:tinycolor.fromRatio({h:h,s:ja,v:ka,a:Math.round(1E3*r)/1E3},{format:a.format||ea})}function S(){V();
+B.move(D());A.trigger("move.spectrum",[D()])}function V(){Q.removeClass("sp-validation-error");u();var a=tinycolor.fromRatio({h:h,s:1,v:1});ra.css("background-color",a.toHexString());a=ea;!(1>r)||0===r&&"name"===a||"hex"!==a&&"hex3"!==a&&"hex6"!==a&&"name"!==a||(a="rgb");var c=D({format:a}),d="";fa.removeClass("sp-clear-display");fa.css("background-color","transparent");if(!c&&ba)fa.addClass("sp-clear-display");else{d=c.toHexString();var t=c.toRgbString();Ga||1===c.alpha?fa.css("background-color",
+t):(fa.css("background-color","transparent"),fa.css("filter",c.toFilter()));if(f.showAlpha){t=c.toRgb();t.a=0;t=tinycolor(t).toRgbString();var b="linear-gradient(left, "+t+", "+d+")";aa?la.css("filter",tinycolor(t).toFilter({gradientType:1},d)):(la.css("background","-webkit-"+b),la.css("background","-moz-"+b),la.css("background","-ms-"+b),la.css("background","linear-gradient(to right, "+t+", "+d+")"))}d=c.toString(a)}f.showInput&&Q.val(d);f.showPalette&&n();v()}function u(){var b=ja,f=ka;ba&&Z?(sa.hide(),
+ta.hide(),ua.hide()):(sa.show(),ta.show(),ua.show(),b*=P,f=K-f*K,b=Math.max(-F,Math.min(P-F,b-F)),f=Math.max(-F,Math.min(K-F,f-F)),ua.css({top:f+"px",left:b+"px"}),sa.css({left:r*c-d/2+"px"}),ta.css({top:h*a-t+"px"}))}function E(a){var c=D(),d="",t=!tinycolor.equals(c,ca);c&&(d=c.toString(ea),z(c));va&&A.val(d);a&&t&&(B.change(c),A.trigger("change",[c]))}function J(){T&&(P=ra.width(),K=ra.height(),F=ua.height(),Ca.width(),a=Ca.height(),t=ta.height(),c=Ma.width(),d=sa.width(),N||(p.css("position",
+"absolute"),f.offset?p.offset(f.offset):p.offset(oa(p,ma))),u(),f.showPalette&&n(),A.trigger("reflow.spectrum"))}function M(){U();Da=!0;A.attr("disabled",!0);ma.addClass("sp-disabled")}var f=G(e,k),N=f.flat,W=f.showSelectionPalette,l=f.localStorageKey;e=f.theme;var B=f.callbacks,H=Qa(J,10),T=!1,g=!1,P=0,K=0,F=0,a=0,c=0,d=0,t=0,h=0,ja=0,ka=0,r=1,qa=[],ha=[],I={},O=f.selectionPalette.slice(0),pa=f.maxSelectionSize,X=null,ia=k.ownerDocument,A=b(k),Da=!1,p=b(Ra,ia).addClass(e),Sa=p.find(".sp-picker-container"),
+ra=p.find(".sp-color"),ua=p.find(".sp-dragger"),Ca=p.find(".sp-hue"),ta=p.find(".sp-slider"),la=p.find(".sp-alpha-inner"),Ma=p.find(".sp-alpha"),sa=p.find(".sp-alpha-handle"),Q=p.find(".sp-input"),Ia=p.find(".sp-palette"),Ja=p.find(".sp-initial"),Na=p.find(".sp-cancel"),Ea=p.find(".sp-clear"),Oa=p.find(".sp-choose"),za=p.find(".sp-palette-toggle"),va=A.is("input");k=va&&"color"===A.attr("type")&&b.fn.spectrum.inputTypeColorSupport();var Fa=va&&!N,da=Fa?b("<div class='sp-replacer'><div class='sp-preview'><div class='sp-preview-inner'></div></div><div class='sp-dd'>&#9660;</div></div>").addClass(e).addClass(f.className).addClass(f.replacerClassName):
+b([]),ma=Fa?da:A,fa=da.find(".sp-preview-inner"),na=f.color||va&&A.val(),ca=!1,ea=f.preferredFormat,Pa=!f.showButtons||f.clickoutFiresChange,Z=!na,ba=f.allowEmpty&&!k;(function(){function d(a){a.data&&a.data.ignore?(R(b(a.target).closest(".sp-thumb-el").data("color")),S()):(R(b(a.target).closest(".sp-thumb-el").data("color")),S(),f.hideAfterPaletteSelect?(E(!0),U()):E());return!1}aa&&p.find("*:not(input)").attr("unselectable","on");q();Fa&&A.after(da).hide();ba||Ea.hide();if(N)A.after(p).hide();else{var t=
+"parent"===f.appendTo?A.parent():b(f.appendTo);1!==t.length&&(t=b("body"));t.append(p)}C();ma.on("click.spectrum touchstart.spectrum",function(a){Da||Ka();a.stopPropagation();b(a.target).is("input")||a.preventDefault()});(A.is(":disabled")||!0===f.disabled)&&M();p.click(Ta);Q.change(Aa);Q.on("paste",function(){setTimeout(Aa,1)});Q.keydown(function(a){13==a.keyCode&&Aa()});Na.text(f.cancelText);Na.on("click.spectrum",function(a){a.stopPropagation();a.preventDefault();R(ca,!0);E(!0);U()});Ea.attr("title",
+f.clearText);Ea.on("click.spectrum",function(a){a.stopPropagation();a.preventDefault();Z=!0;S();N&&E(!0)});Oa.text(f.chooseText);Oa.on("click.spectrum",function(a){a.stopPropagation();a.preventDefault();aa&&Q.is(":focus")&&Q.trigger("change");Q.hasClass("sp-validation-error")||(E(!0),U())});za.text(f.showPaletteOnly?f.togglePaletteMoreText:f.togglePaletteLessText);za.on("click.spectrum",function(a){a.stopPropagation();a.preventDefault();f.showPaletteOnly=!f.showPaletteOnly;f.showPaletteOnly||N||p.css("left",
+"-="+(Sa.outerWidth(!0)+5));q()});wa(Ma,function(a,d,t){r=a/c;Z=!1;t.shiftKey&&(r=Math.round(10*r)/10);S()},y,ya);wa(Ca,function(c,d){h=parseFloat(d/a);Z=!1;f.showAlpha||(r=1);S()},y,ya);wa(ra,function(a,c,d){d.shiftKey?X||(X=Math.abs(a-ja*P)>Math.abs(c-(K-ka*K))?"x":"y"):X=null;d=!X||"y"===X;X&&"x"!==X||(ja=parseFloat(a/P));d&&(ka=parseFloat((K-c)/K));Z=!1;f.showAlpha||(r=1);S()},y,ya);na?(R(na),V(),ea=f.preferredFormat||tinycolor(na).format,z(na)):V();N&&Ba();t=aa?"mousedown.spectrum":"click.spectrum touchstart.spectrum";
+Ia.on(t,".sp-thumb-el",d);Ja.on(t,".sp-thumb-el:nth-child(1)",{ignore:!0},d)})();var xa={show:Ba,hide:U,toggle:Ka,reflow:J,option:function(a,c){if(a===w)return b.extend({},f);if(c===w)return f[a];f[a]=c;"preferredFormat"===a&&(ea=f.preferredFormat);q()},enable:function(){Da=!1;A.attr("disabled",!1);ma.removeClass("sp-disabled")},disable:M,offset:function(a){f.offset=a;J()},set:function(a){R(a);E()},get:D,destroy:function(){A.show();ma.off("click.spectrum touchstart.spectrum");p.remove();da.remove();
+Y[xa.id]=null},container:p};xa.id=Y.push(xa)-1;return xa}function oa(k,e){var q=k.outerWidth(),C=k.outerHeight(),z=e.outerHeight(),x=k[0].ownerDocument,n=x.documentElement;k=n.clientWidth+b(x).scrollLeft();x=n.clientHeight+b(x).scrollTop();e=e.offset();n=e.left;var v=e.top;v+=z;n-=Math.min(n,n+q>k&&k>q?Math.abs(n+q-k):0);v-=Math.min(v,v+C>x&&x>C?Math.abs(C+z-0):0);return{top:v,bottom:e.bottom,left:n,right:e.right,width:e.width,height:e.height}}function I(){}function Ta(b){b.stopPropagation()}function M(b,
+e){var k=Array.prototype.slice,C=k.call(arguments,2);return function(){return b.apply(e,C.concat(k.call(arguments)))}}function wa(k,e,q,C){function z(b){b.stopPropagation&&b.stopPropagation();b.preventDefault&&b.preventDefault();b.returnValue=!1}function x(b){if(m){if(aa&&9>v.documentMode&&!b.button)return n();var q=b.originalEvent&&b.originalEvent.touches&&b.originalEvent.touches[0],C=Math.max(0,Math.min((q&&q.pageX||b.pageX)-w.left,G));q=Math.max(0,Math.min((q&&q.pageY||b.pageY)-w.top,y));I&&z(b);
+e.apply(k,[C,q,b])}}function n(){m&&(b(v).off(L),b(v.body).removeClass("sp-dragging"),setTimeout(function(){C.apply(k,arguments)},0));m=!1}e=e||function(){};q=q||function(){};C=C||function(){};var v=document,m=!1,w={},y=0,G=0,I="ontouchstart"in window,L={};L.selectstart=z;L.dragstart=z;L["touchmove mousemove"]=x;L["touchend mouseup"]=n;b(k).on("touchstart mousedown",function(e){(e.which?3==e.which:2==e.button)||m||!1===q.apply(k,arguments)||(m=!0,y=b(k).height(),G=b(k).width(),w=b(k).offset(),b(v).on(L),
+b(v.body).addClass("sp-dragging"),x(e),z(e))})}function Qa(b,e,q){var k;return function(){var z=this,m=arguments,n=function(){k=null;b.apply(z,m)};q&&clearTimeout(k);if(q||!k)k=setTimeout(n,e)}}var pa={beforeShow:I,move:I,change:I,show:I,hide:I,color:!1,flat:!1,showInput:!1,allowEmpty:!1,showButtons:!0,clickoutFiresChange:!0,showInitial:!1,showPalette:!1,showPaletteOnly:!1,hideAfterPaletteSelect:!1,togglePaletteOnly:!1,showSelectionPalette:!0,localStorageKey:!1,appendTo:"body",maxSelectionSize:7,
+cancelText:"cancel",chooseText:"choose",togglePaletteMoreText:"more",togglePaletteLessText:"less",clearText:"Clear Color Selection",noColorSelectedText:"No Color Selected",preferredFormat:!1,className:"",containerClassName:"",replacerClassName:"",showAlpha:!1,theme:"sp-light",palette:["#ffffff #000000 #ff0000 #ff8000 #ffff00 #008000 #0000ff #4b0082 #9400d3".split(" ")],selectionPalette:[],disabled:!1,offset:null},Y=[],aa=!!/msie/i.exec(window.navigator.userAgent),Ga=function(){var b=document.createElement("div").style;
+b.cssText="background-color:rgba(0,0,0,.5)";return!!~(""+b.backgroundColor).indexOf("rgba")||!!~(""+b.backgroundColor).indexOf("hsla")}(),Ra=function(){var b="";if(aa)for(var e=1;6>=e;e++)b+="<div class='sp-"+e+"'></div>";return["<div class='sp-container sp-hidden'><div class='sp-palette-container'><div class='sp-palette sp-thumb sp-cf'></div><div class='sp-palette-button-container sp-cf'><button type='button' class='sp-palette-toggle'></button></div></div><div class='sp-picker-container'><div class='sp-top sp-cf'><div class='sp-fill'></div><div class='sp-top-inner'><div class='sp-color'><div class='sp-sat'><div class='sp-val'><div class='sp-dragger'></div></div></div></div><div class='sp-clear sp-clear-display'></div><div class='sp-hue'><div class='sp-slider'></div>",
+b,"</div></div><div class='sp-alpha'><div class='sp-alpha-inner'><div class='sp-alpha-handle'></div></div></div></div><div class='sp-input-container sp-cf'><input class='sp-input' type='text' spellcheck='false'  /></div><div class='sp-initial sp-thumb sp-cf'></div><div class='sp-button-container sp-cf'><a class='sp-cancel' href='#'></a><button type='button' class='sp-choose'></button></div></div></div>"].join("")}();b.fn.spectrum=function(k,e){if("string"==typeof k){var q=this,m=Array.prototype.slice.call(arguments,
+1);this.each(function(){var e=Y[b(this).data("spectrum.id")];if(e){var x=e[k];if(!x)throw Error("Spectrum: no such method: '"+k+"'");"get"==k?q=e.get():"container"==k?q=e.container:"option"==k?q=e.option.apply(e,m):"destroy"==k?(e.destroy(),b(this).removeData("spectrum.id")):x.apply(e,m)}});return q}return this.spectrum("destroy").each(function(){var e=b.extend({},b(this).data(),k);e=y(this,e);b(this).data("spectrum.id",e.id)})};b.fn.spectrum.load=!0;b.fn.spectrum.loadOpts={};b.fn.spectrum.draggable=
+wa;b.fn.spectrum.defaults=pa;b.fn.spectrum.inputTypeColorSupport=function e(){if("undefined"===typeof e._cachedResult){var q=b("<input type='color'/>")[0];e._cachedResult="color"===q.type&&""!==q.value}return e._cachedResult};b.spectrum={};b.spectrum.localization={};b.spectrum.palettes={};b.fn.spectrum.processNativeColorInputs=function(){var e=b("input[type=color]");e.length&&!b.fn.spectrum.inputTypeColorSupport()&&e.spectrum({preferredFormat:"hex6"})};(function(){function b(a,c,d){a=u(a,255);c=u(c,
+255);d=u(d,255);var t=H(a,c,d),b=B(a,c,d),f=(t+b)/2;if(t==b)var g=b=0;else{var e=t-b;b=.5<f?e/(2-t-b):e/(t+b);switch(t){case a:g=(c-d)/e+(c<d?6:0);break;case c:g=(d-a)/e+2;break;case d:g=(a-c)/e+4}g/=6}return{h:g,s:b,l:f}}function q(a,c,d){function b(a,c,d){0>d&&(d+=1);1<d&&--d;return d<1/6?a+6*(c-a)*d:.5>d?c:d<2/3?a+(c-a)*(2/3-d)*6:a}a=u(a,360);c=u(c,100);d=u(d,100);if(0===c)d=c=a=d;else{var h=.5>d?d*(1+c):d+c-d*c,f=2*d-h;d=b(f,h,a+1/3);c=b(f,h,a);a=b(f,h,a-1/3)}return{r:255*d,g:255*c,b:255*a}}function m(a,
+c,d){a=u(a,255);c=u(c,255);d=u(d,255);var b=H(a,c,d),h=B(a,c,d),f=b-h;if(b==h)var g=0;else{switch(b){case a:g=(c-d)/f+(c<d?6:0);break;case c:g=(d-a)/f+2;break;case d:g=(a-c)/f+4}g/=6}return{h:g,s:0===b?0:f/b,v:b}}function z(a,c,d,b){a=[E(l(a).toString(16)),E(l(c).toString(16)),E(l(d).toString(16))];return b&&a[0].charAt(0)==a[0].charAt(1)&&a[1].charAt(0)==a[1].charAt(1)&&a[2].charAt(0)==a[2].charAt(1)?a[0].charAt(0)+a[1].charAt(0)+a[2].charAt(0):a.join("")}function x(a,c,d,b){return[E(Math.round(255*
+parseFloat(b)).toString(16)),E(l(a).toString(16)),E(l(c).toString(16)),E(l(d).toString(16))].join("")}function n(a,c){c=0===c?0:c||10;a=g(a).toHsl();a.s-=c/100;a.s=B(1,H(0,a.s));return g(a)}function v(a,c){c=0===c?0:c||10;a=g(a).toHsl();a.s+=c/100;a.s=B(1,H(0,a.s));return g(a)}function w(a){return g(a).desaturate(100)}function y(a,c){c=0===c?0:c||10;a=g(a).toHsl();a.l+=c/100;a.l=B(1,H(0,a.l));return g(a)}function G(a,c){c=0===c?0:c||10;a=g(a).toRgb();a.r=H(0,B(255,a.r-l(255*-(c/100))));a.g=H(0,B(255,
+a.g-l(255*-(c/100))));a.b=H(0,B(255,a.b-l(255*-(c/100))));return g(a)}function I(a,c){c=0===c?0:c||10;a=g(a).toHsl();a.l-=c/100;a.l=B(1,H(0,a.l));return g(a)}function M(a,c){a=g(a).toHsl();c=(l(a.h)+c)%360;a.h=0>c?360+c:c;return g(a)}function L(a){a=g(a).toHsl();a.h=(a.h+180)%360;return g(a)}function Y(a){var c=g(a).toHsl(),d=c.h;return[g(a),g({h:(d+120)%360,s:c.s,l:c.l}),g({h:(d+240)%360,s:c.s,l:c.l})]}function U(a){var c=g(a).toHsl(),d=c.h;return[g(a),g({h:(d+90)%360,s:c.s,l:c.l}),g({h:(d+180)%
+360,s:c.s,l:c.l}),g({h:(d+270)%360,s:c.s,l:c.l})]}function R(a){var c=g(a).toHsl(),d=c.h;return[g(a),g({h:(d+72)%360,s:c.s,l:c.l}),g({h:(d+216)%360,s:c.s,l:c.l})]}function D(a,c,d){c=c||6;d=d||30;var b=g(a).toHsl();d=360/d;a=[g(a)];for(b.h=(b.h-(d*c>>1)+720)%360;--c;)b.h=(b.h+d)%360,a.push(g(b));return a}function S(a,c){c=c||6;var d=g(a).toHsv();a=d.h;var b=d.s;d=d.v;for(var f=[],e=1/c;c--;)f.push(g({h:a,s:b,v:d})),d=(d+e)%1;return f}function V(a){a=parseFloat(a);if(isNaN(a)||0>a||1<a)a=1;return a}
+function u(a,c){var d=a;"string"==typeof d&&-1!=d.indexOf(".")&&1===parseFloat(d)&&(a="100%");d="string"===typeof a&&-1!=a.indexOf("%");a=B(c,H(0,parseFloat(a)));d&&(a=parseInt(a*c,10)/100);return 1E-6>W.abs(a-c)?1:a%c/parseFloat(c)}function E(a){return 1==a.length?"0"+a:""+a}function J(a){1>=a&&(a=100*a+"%");return a}var aa=/^[\s,#]+/,f=/\s+$/,N=0,W=Math,l=W.round,B=W.min,H=W.max,T=W.random,g=function(a,c){var d,b;a=a?a:"";c=c||{};if(a instanceof g)return a;if(!(this instanceof g))return new g(a,
+c);var h=a;var e={r:0,g:0,b:0};var m=1;var r=d=!1;if("string"==typeof h)a:{h=h.replace(aa,"").replace(f,"").toLowerCase();var n=!1;if(P[h])h=P[h],n=!0;else if("transparent"==h){h={r:0,g:0,b:0,a:0,format:"name"};break a}h=(b=F.rgb.exec(h))?{r:b[1],g:b[2],b:b[3]}:(b=F.rgba.exec(h))?{r:b[1],g:b[2],b:b[3],a:b[4]}:(b=F.hsl.exec(h))?{h:b[1],s:b[2],l:b[3]}:(b=F.hsla.exec(h))?{h:b[1],s:b[2],l:b[3],a:b[4]}:(b=F.hsv.exec(h))?{h:b[1],s:b[2],v:b[3]}:(b=F.hsva.exec(h))?{h:b[1],s:b[2],v:b[3],a:b[4]}:(b=F.hex8.exec(h))?
+{a:parseInt(b[1],16)/255,r:parseInt(b[2],16),g:parseInt(b[3],16),b:parseInt(b[4],16),format:n?"name":"hex8"}:(b=F.hex6.exec(h))?{r:parseInt(b[1],16),g:parseInt(b[2],16),b:parseInt(b[3],16),format:n?"name":"hex"}:(b=F.hex3.exec(h))?{r:parseInt(b[1]+""+b[1],16),g:parseInt(b[2]+""+b[2],16),b:parseInt(b[3]+""+b[3],16),format:n?"name":"hex"}:!1}if("object"==typeof h){if(h.hasOwnProperty("r")&&h.hasOwnProperty("g")&&h.hasOwnProperty("b"))e=h.g,d=h.b,e={r:255*u(h.r,255),g:255*u(e,255),b:255*u(d,255)},d=
+!0,r="%"===String(h.r).substr(-1)?"prgb":"rgb";else if(h.hasOwnProperty("h")&&h.hasOwnProperty("s")&&h.hasOwnProperty("v")){h.s=J(h.s);h.v=J(h.v);r=h.h;n=h.s;e=h.v;r=6*u(r,360);n=u(n,100);e=u(e,100);d=W.floor(r);var v=r-d;r=e*(1-n);b=e*(1-v*n);n=e*(1-(1-v)*n);d%=6;e={r:255*[e,b,r,r,n,e][d],g:255*[n,e,e,b,r,r][d],b:255*[r,r,n,e,e,b][d]};d=!0;r="hsv"}else h.hasOwnProperty("h")&&h.hasOwnProperty("s")&&h.hasOwnProperty("l")&&(h.s=J(h.s),h.l=J(h.l),e=q(h.h,h.s,h.l),d=!0,r="hsl");h.hasOwnProperty("a")&&
+(m=h.a)}m=V(m);h=h.format||r;r=B(255,H(e.r,0));b=B(255,H(e.g,0));e=B(255,H(e.b,0));this._originalInput=a;this._r=r;this._g=b;this._b=e;this._a=m;this._roundA=l(1E3*this._a)/1E3;this._format=c.format||h;this._gradientType=c.gradientType;1>this._r&&(this._r=l(this._r));1>this._g&&(this._g=l(this._g));1>this._b&&(this._b=l(this._b));this._ok=d;this._tc_id=N++};g.prototype={isDark:function(){return 128>this.getBrightness()},isLight:function(){return!this.isDark()},isValid:function(){return this._ok},
+getOriginalInput:function(){return this._originalInput},getFormat:function(){return this._format},getAlpha:function(){return this._a},getBrightness:function(){var a=this.toRgb();return(299*a.r+587*a.g+114*a.b)/1E3},setAlpha:function(a){this._a=V(a);this._roundA=l(1E3*this._a)/1E3;return this},toHsv:function(){var a=m(this._r,this._g,this._b);return{h:360*a.h,s:a.s,v:a.v,a:this._a}},toHsvString:function(){var a=m(this._r,this._g,this._b),b=l(360*a.h),d=l(100*a.s);a=l(100*a.v);return 1==this._a?"hsv("+
+b+", "+d+"%, "+a+"%)":"hsva("+b+", "+d+"%, "+a+"%, "+this._roundA+")"},toHsl:function(){var a=b(this._r,this._g,this._b);return{h:360*a.h,s:a.s,l:a.l,a:this._a}},toHslString:function(){var a=b(this._r,this._g,this._b),c=l(360*a.h),d=l(100*a.s);a=l(100*a.l);return 1==this._a?"hsl("+c+", "+d+"%, "+a+"%)":"hsla("+c+", "+d+"%, "+a+"%, "+this._roundA+")"},toHex:function(a){return z(this._r,this._g,this._b,a)},toHexString:function(a){return"#"+this.toHex(a)},toHex8:function(){return x(this._r,this._g,this._b,
+this._a)},toHex8String:function(){return"#"+this.toHex8()},toRgb:function(){return{r:l(this._r),g:l(this._g),b:l(this._b),a:this._a}},toRgbString:function(){return 1==this._a?"rgb("+l(this._r)+", "+l(this._g)+", "+l(this._b)+")":"rgba("+l(this._r)+", "+l(this._g)+", "+l(this._b)+", "+this._roundA+")"},toPercentageRgb:function(){return{r:l(100*u(this._r,255))+"%",g:l(100*u(this._g,255))+"%",b:l(100*u(this._b,255))+"%",a:this._a}},toPercentageRgbString:function(){return 1==this._a?"rgb("+l(100*u(this._r,
+255))+"%, "+l(100*u(this._g,255))+"%, "+l(100*u(this._b,255))+"%)":"rgba("+l(100*u(this._r,255))+"%, "+l(100*u(this._g,255))+"%, "+l(100*u(this._b,255))+"%, "+this._roundA+")"},toName:function(){return 0===this._a?"transparent":1>this._a?!1:K[z(this._r,this._g,this._b,!0)]||!1},toFilter:function(a){var b="#"+x(this._r,this._g,this._b,this._a),d=b,e=this._gradientType?"GradientType = 1, ":"";a&&(d=g(a).toHex8String());return"progid:DXImageTransform.Microsoft.gradient("+e+"startColorstr="+b+",endColorstr="+
+d+")"},toString:function(a){var b=!!a;a=a||this._format;var d=!1,e=1>this._a&&0<=this._a;if(!b&&e&&("hex"===a||"hex6"===a||"hex3"===a||"name"===a))return"name"===a&&0===this._a?this.toName():this.toRgbString();"rgb"===a&&(d=this.toRgbString());"prgb"===a&&(d=this.toPercentageRgbString());if("hex"===a||"hex6"===a)d=this.toHexString();"hex3"===a&&(d=this.toHexString(!0));"hex8"===a&&(d=this.toHex8String());"name"===a&&(d=this.toName());"hsl"===a&&(d=this.toHslString());"hsv"===a&&(d=this.toHsvString());
+return d||this.toHexString()},_applyModification:function(a,b){a=a.apply(null,[this].concat([].slice.call(b)));this._r=a._r;this._g=a._g;this._b=a._b;this.setAlpha(a._a);return this},lighten:function(){return this._applyModification(y,arguments)},brighten:function(){return this._applyModification(G,arguments)},darken:function(){return this._applyModification(I,arguments)},desaturate:function(){return this._applyModification(n,arguments)},saturate:function(){return this._applyModification(v,arguments)},
+greyscale:function(){return this._applyModification(w,arguments)},spin:function(){return this._applyModification(M,arguments)},_applyCombination:function(a,b){return a.apply(null,[this].concat([].slice.call(b)))},analogous:function(){return this._applyCombination(D,arguments)},complement:function(){return this._applyCombination(L,arguments)},monochromatic:function(){return this._applyCombination(S,arguments)},splitcomplement:function(){return this._applyCombination(R,arguments)},triad:function(){return this._applyCombination(Y,
+arguments)},tetrad:function(){return this._applyCombination(U,arguments)}};g.fromRatio=function(a,b){if("object"==typeof a){var c={},e;for(e in a)a.hasOwnProperty(e)&&(c[e]="a"===e?a[e]:J(a[e]));a=c}return g(a,b)};g.equals=function(a,b){return a&&b?g(a).toRgbString()==g(b).toRgbString():!1};g.random=function(){return g.fromRatio({r:T(),g:T(),b:T()})};g.mix=function(a,b,d){d=0===d?0:d||50;a=g(a).toRgb();b=g(b).toRgb();d/=100;var c=2*d-1,e=b.a-a.a;c=((-1==c*e?c:(c+e)/(1+c*e))+1)/2;e=1-c;return g({r:b.r*
+c+a.r*e,g:b.g*c+a.g*e,b:b.b*c+a.b*e,a:b.a*d+a.a*(1-d)})};g.readability=function(a,b){var c=g(a),e=g(b);b=c.toRgb();a=e.toRgb();c=c.getBrightness();e=e.getBrightness();return{brightness:Math.abs(c-e),color:Math.max(b.r,a.r)-Math.min(b.r,a.r)+Math.max(b.g,a.g)-Math.min(b.g,a.g)+Math.max(b.b,a.b)-Math.min(b.b,a.b)}};g.isReadable=function(a,b){a=g.readability(a,b);return 125<a.brightness&&500<a.color};g.mostReadable=function(a,b){for(var c=null,e=0,f=!1,l=0;l<b.length;l++){var m=g.readability(a,b[l]),
+n=125<m.brightness&&500<m.color;m=m.brightness/125*3+m.color/500;if(n&&!f||n&&f&&m>e||!n&&!f&&m>e)f=n,e=m,c=g(b[l])}return c};var P=g.names={aliceblue:"f0f8ff",antiquewhite:"faebd7",aqua:"0ff",aquamarine:"7fffd4",azure:"f0ffff",beige:"f5f5dc",bisque:"ffe4c4",black:"000",blanchedalmond:"ffebcd",blue:"00f",blueviolet:"8a2be2",brown:"a52a2a",burlywood:"deb887",burntsienna:"ea7e5d",cadetblue:"5f9ea0",chartreuse:"7fff00",chocolate:"d2691e",coral:"ff7f50",cornflowerblue:"6495ed",cornsilk:"fff8dc",crimson:"dc143c",
+cyan:"0ff",darkblue:"00008b",darkcyan:"008b8b",darkgoldenrod:"b8860b",darkgray:"a9a9a9",darkgreen:"006400",darkgrey:"a9a9a9",darkkhaki:"bdb76b",darkmagenta:"8b008b",darkolivegreen:"556b2f",darkorange:"ff8c00",darkorchid:"9932cc",darkred:"8b0000",darksalmon:"e9967a",darkseagreen:"8fbc8f",darkslateblue:"483d8b",darkslategray:"2f4f4f",darkslategrey:"2f4f4f",darkturquoise:"00ced1",darkviolet:"9400d3",deeppink:"ff1493",deepskyblue:"00bfff",dimgray:"696969",dimgrey:"696969",dodgerblue:"1e90ff",firebrick:"b22222",
+floralwhite:"fffaf0",forestgreen:"228b22",fuchsia:"f0f",gainsboro:"dcdcdc",ghostwhite:"f8f8ff",gold:"ffd700",goldenrod:"daa520",gray:"808080",green:"008000",greenyellow:"adff2f",grey:"808080",honeydew:"f0fff0",hotpink:"ff69b4",indianred:"cd5c5c",indigo:"4b0082",ivory:"fffff0",khaki:"f0e68c",lavender:"e6e6fa",lavenderblush:"fff0f5",lawngreen:"7cfc00",lemonchiffon:"fffacd",lightblue:"add8e6",lightcoral:"f08080",lightcyan:"e0ffff",lightgoldenrodyellow:"fafad2",lightgray:"d3d3d3",lightgreen:"90ee90",
+lightgrey:"d3d3d3",lightpink:"ffb6c1",lightsalmon:"ffa07a",lightseagreen:"20b2aa",lightskyblue:"87cefa",lightslategray:"789",lightslategrey:"789",lightsteelblue:"b0c4de",lightyellow:"ffffe0",lime:"0f0",limegreen:"32cd32",linen:"faf0e6",magenta:"f0f",maroon:"800000",mediumaquamarine:"66cdaa",mediumblue:"0000cd",mediumorchid:"ba55d3",mediumpurple:"9370db",mediumseagreen:"3cb371",mediumslateblue:"7b68ee",mediumspringgreen:"00fa9a",mediumturquoise:"48d1cc",mediumvioletred:"c71585",midnightblue:"191970",
+mintcream:"f5fffa",mistyrose:"ffe4e1",moccasin:"ffe4b5",navajowhite:"ffdead",navy:"000080",oldlace:"fdf5e6",olive:"808000",olivedrab:"6b8e23",orange:"ffa500",orangered:"ff4500",orchid:"da70d6",palegoldenrod:"eee8aa",palegreen:"98fb98",paleturquoise:"afeeee",palevioletred:"db7093",papayawhip:"ffefd5",peachpuff:"ffdab9",peru:"cd853f",pink:"ffc0cb",plum:"dda0dd",powderblue:"b0e0e6",purple:"800080",rebeccapurple:"663399",red:"f00",rosybrown:"bc8f8f",royalblue:"4169e1",saddlebrown:"8b4513",salmon:"fa8072",
+sandybrown:"f4a460",seagreen:"2e8b57",seashell:"fff5ee",sienna:"a0522d",silver:"c0c0c0",skyblue:"87ceeb",slateblue:"6a5acd",slategray:"708090",slategrey:"708090",snow:"fffafa",springgreen:"00ff7f",steelblue:"4682b4",tan:"d2b48c",teal:"008080",thistle:"d8bfd8",tomato:"ff6347",turquoise:"40e0d0",violet:"ee82ee",wheat:"f5deb3",white:"fff",whitesmoke:"f5f5f5",yellow:"ff0",yellowgreen:"9acd32"},K=g.hexNames=function(a){var b={},d;for(d in a)a.hasOwnProperty(d)&&(b[a[d]]=d);return b}(P),F={rgb:/rgb[\s|\(]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))\s*\)?/,
+rgba:/rgba[\s|\(]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))\s*\)?/,hsl:/hsl[\s|\(]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))\s*\)?/,hsla:/hsla[\s|\(]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))\s*\)?/,
+hsv:/hsv[\s|\(]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))\s*\)?/,hsva:/hsva[\s|\(]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))[,|\s]+((?:[-\+]?\d*\.\d+%?)|(?:[-\+]?\d+%?))\s*\)?/,hex3:/^([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,hex6:/^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,hex8:/^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/};
+window.tinycolor=g})();b(function(){b.fn.spectrum.load&&b.fn.spectrum.processNativeColorInputs()})});
+
+    </script>
     
     
 <script id="jqueryminified">
