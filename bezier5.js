@@ -333,6 +333,7 @@ var QreatorBezier = new function() {
 				mausBewegt(event);
 			}
 		};*/
+        $("#farben").spectrum(); // spectrum initialisieren
         
         if (window.PointerEvent) {
         c.addEventListener("pointerdown", function(event){

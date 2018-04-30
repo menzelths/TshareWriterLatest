@@ -2309,7 +2309,7 @@ var test=2;*/
                         completeCallback.call(this, error);
                         this.seitennummer = this.pageNumber;
                         var that2 = this;
-
+                        /*
                         // nicht mehr transparent machen!!
                         //console.log("Fertig");
                         var transparentColor = { // weiß transparent machen 
@@ -2329,9 +2329,11 @@ var test=2;*/
                             if (r == transparentColor.r && g == transparentColor.g && b == transparentColor.b) {
                                 pixels.data[i + 3] = 0;
                             }
+                            
                         }
 
                         context.putImageData(pixels, 0, 0);
+                        */  // bis hierher Transparenz gelöscht
                         aktuellesBild = new Image();
                         aktuellesBild.onload = function () {
                             zeichenbreite = canvas.width;
