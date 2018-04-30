@@ -1403,7 +1403,8 @@ var test=2;*/
                 var blob=null;
                 if (relativerPfad==false){
                 blob = new Blob(["<!DOCTYPE html><html><head>" + header+"\n" + window.atob(js) + "<script>" + window.atob(saveAs64) + "</script>\n<script>" + window.atob(saveObject64)+"</script>\n<script>" +$("#jqueryminified").text()+"</script>\n<script>"+ window.atob(hash64)+"</script><style>" + gesamtText + asciidoctorText + "</style></head><body>" + code + "</body></html>"], {
-                    type: "text/html;charset=utf-8"
+                    //type: "text/html;charset=utf-8"
+                    type: "application/xhtml+xml"
                 });
                 saveAs(blob, dateiname + "_" + anhang + ".html");
                 } else {
