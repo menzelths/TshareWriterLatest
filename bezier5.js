@@ -210,6 +210,7 @@ var QreatorBezier = new function() {
 		gc.strokeStyle = "#ff0000";
 
 		c = $("#layer3")[0];
+		c.style['-webkit-user-select'] = 'none';
 
 		changesPosition = 0; // gibt die position des ersten elements an, das
 		// nicht
